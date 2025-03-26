@@ -1,0 +1,16 @@
+[
+    {
+      "id": 1,
+      "topic": "UniConnect",
+      "title": "How to set up React Js?",
+      "date": "03/23/2024",
+      "author": "@PhinPab",
+      "tags": ["HTML", "CSS"],
+      "content": "What are the things I should download on my PC so I can use React JS?",
+      "likes": 90,
+      "dislikes": 13,
+      "isFavorited": true,
+      "tab": "Saved Forums",
+      "response": 1
+    }
+  ]
