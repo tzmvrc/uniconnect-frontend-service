@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import badgeIcon from "../images/badge icon.png";
 import profilePic1 from "../images/icon-user1.png";
@@ -9,6 +9,8 @@ import back from "../images/Back.png";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 import Leaderboards from "../Leaderboards";
+import axiosInstance from "../Utils/axiosInstance";
+import { getInitials } from "../Utils/Helper";
 
 const Leaderboard = () => {
   const [menuCollapsed, setMenuCollapsed] = useState(true);
@@ -19,99 +21,21 @@ const Leaderboard = () => {
     setMenuCollapsed(!menuCollapsed);
   };
 
-  const handleBackClick = () => {
-    navigate(-1);
-  };
-
   const [activeTab, setActiveTab] = useState("users");
+  const [leaderboard, setLeaderboard] = useState([]);
 
-  const usersData = [
-    {
-      name: "Jane Doe",
-      username: "@janedoe",
-      points: 452,
-      profilePic: profilePic2,
-      path: " /otherprofile",
-    },
-    {
-      name: "Phineas Pablo",
-      username: "@phin123",
-      points: 451,
-      profilePic: profilePic1,
-    },
-    {
-      name: "Juice Leyson",
-      username: "@juicelz",
-      points: 435,
-      profilePic: profilePic1,
-    },
-    {
-      name: "Harry Vilencio",
-      username: "@hvilencio",
-      points: 355,
-      profilePic: profilePic1,
-    },
-    {
-      name: "Mia Reyes",
-      username: "@mreyes",
-      points: 332,
-      profilePic: profilePic2,
-    },
-    {
-      name: "Jared Beon",
-      username: "@jbeon",
-      points: 325,
-      profilePic: profilePic1,
-    },
-    {
-      name: "Sarah Kim",
-      username: "@sarahk",
-      points: 319,
-      profilePic: profilePic2,
-    },
-    {
-      name: "Clianney Kyle",
-      username: "@clianneyk",
-      points: 310,
-      profilePic: profilePic1,
-    },
-    {
-      name: "Emma Navarro",
-      username: "@emnavarro",
-      points: 301,
-      profilePic: profilePic2,
-    },
-    {
-      name: "Daniel Garcia",
-      username: "@dgarcia",
-      points: 282,
-      profilePic: profilePic1,
-    },
-    {
-      name: "Ava Santos",
-      username: "@asantos",
-      points: 277,
-      profilePic: profilePic2,
-    },
-    {
-      name: "James Cruz",
-      username: "@jcruz",
-      points: 269,
-      profilePic: profilePic1,
-    },
-    {
-      name: "Albert Douglas",
-      username: "@adouglas",
-      points: 266,
-      profilePic: profilePic1,
-    },
-    {
-      name: "Juan Dela Cruz",
-      username: "@jdcruz",
-      points: 252,
-      profilePic: profilePic1,
-    },
-  ];
+  useEffect(() => {
+    const getUsersLeaderboard = async () => {
+      try {
+        const response = await axiosInstance.get("/leaderboard/users");
+        setLeaderboard(response.data.leaderboard || []);
+      } catch (error) {
+        console.error("Error fetching users leaderboard:", error);
+      }
+    };
+
+    getUsersLeaderboard();
+  }, []);
 
   const schoolsData = [
     {
@@ -225,9 +149,9 @@ const Leaderboard = () => {
                 </div>
 
                 <div className="divide-y divide-gray-200">
-                  {usersData.map((user, index) => (
+                  {leaderboard.map((user) => (
                     <div
-                      key={index}
+                      key={user._id}
                       className="flex justify-between items-center py-3 px-2 md:px-4"
                     >
                       {/* Clickable Profile Picture */}
@@ -235,29 +159,27 @@ const Leaderboard = () => {
                         to={`/otherprofile/${user.username}`}
                         className="w-10 h-10 rounded-full block"
                       >
-                        <img
-                          src={user.profilePic}
-                          alt="User Profile"
-                          className="w-full h-full rounded-full"
-                        />
+                        <div className="w-[95px] h-[95px] md:w-full md:h-full flex items-center border border-black justify-center rounded-full text-slate-950 bg-slate-200 text-[16px]">
+                          {getInitials(`${user.first_name} ${user.last_name}`)}
+                        </div>
                       </Link>
 
                       {/* Clickable Name & Username */}
                       <div className="flex-1 text-[#141E46]">
                         <Link
                           to={`/otherprofile/${user.username}`}
-                          className="font-semibold"
+                          className="font-semibold ml-[15px]"
                         >
-                          {user.name}
+                          {user.first_name} {user.last_name}
                         </Link>
                         <img
                           src={badgeIcon}
                           alt="Badge Icon"
                           className="inline-block w-5 h-5 ml-2"
                         />
-                        <p className="text-sm text-[#141E46]">
+                        <p className="text-sm ml-[15px] text-[#141E46]">
                           <Link to={`/otherprofile/${user.username}`}>
-                            {user.username}
+                            @{user.username}
                           </Link>
                         </p>
                       </div>

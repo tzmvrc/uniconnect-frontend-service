@@ -31,7 +31,7 @@ import { isTokenExpired } from "./components/Utils/Auth";
 
 function App() {
   useEffect(() => {
-    const socket = new WebSocket("wss://https://uniconnect-service-api.onrender.com"); // Change URL if deployed
+    const socket = new WebSocket("ws://https://uniconnect-service-api.onrender.com"); // Change URL if deployed
 
     socket.onopen = () => {
       console.log("✅ WebSocket connected!");

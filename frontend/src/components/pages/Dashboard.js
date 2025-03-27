@@ -59,6 +59,7 @@ const Dashboard = () => {
        userLiked: false,
        userDisliked: false,
        date: new Date(forum.createdAt).toLocaleDateString(),
+       rawDate: new Date(forum.createdAt),
      }));
 
      const visibleForums = mappedForums.filter(
@@ -136,19 +137,21 @@ const Dashboard = () => {
     setFilteredForums(updatedForums);
   };
 
-  const handleSort = (criterion) => {
-    setSortCriterion(criterion);
-    setFilteredForums((prevForums) =>
-      [...forums].sort((a, b) => {
-        if (criterion === "mostLiked") {
-          return b.likes - a.likes;
-        } else {
-          return new Date(b.date) - new Date(a.date);
-        }
-      })
-    );
-    setShowSortOptions(false);
-  };
+const handleSort = (criterion) => {
+  setSortCriterion(criterion);
+  setFilteredForums(
+    [...forums].sort((a, b) => {
+      if (criterion === "mostLiked") {
+        return b.likes - a.likes;
+      } else  {
+        return b.rawDate.getTime() - a.rawDate.getTime(); // 🕒 Sort by raw date
+      }
+    })
+  );
+  setShowSortOptions(false);
+};
+
+
 
   const handlePageChange = (page) => {
     setCurrentPage(page);

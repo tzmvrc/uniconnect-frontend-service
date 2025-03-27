@@ -7,8 +7,6 @@ import exit from "../images/exit.png";
 import forum from "../images/forumIcon.png";
 import points from "../images/badgerank.png";
 import ai from "../images/ai.png";
-import showIcon from "../images/ShowPass.png"; // Show password icon
-import hideIcon from "../images/BlindPass.png"; // Hide password icon
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getInitials } from "../Utils/Helper";
@@ -16,6 +14,7 @@ import axiosInstance from "../Utils/axiosInstance";
 import { Pencil, HelpCircle, Check, X } from "lucide-react";
 import Toast from "./ToastMessage/ToastMessage";
 import Loading from "./Loading/Loading";
+import AccountManagementModal from "./AccountManagementModal";
 
 const Settings = () => {
   const tabs = [
@@ -565,223 +564,7 @@ const Settings = () => {
             </div>
           )}
 
-          {/* Edit account tab */}
-          {activeTab === "account" && (
-            <div className="flex flex-col items-center mt-[30px] md:mt-[0px]">
-              <div className="flex flex-col items-center h-[530px] w-[800px]">
-                <div className="flex flex-col items-center w-[400px]">
-                  <h2 className="text-[25px] font-[600]">Account Password</h2>
-                  <p className="text-center text-[13px] md:text-[14px] font-[500]">
-                    To enhance your account security, <br />
-                    please choose a new password.
-                  </p>
-                  <div className="relative mt-[15px]">
-                    <input
-                      className="w-[280px] h-[30px] md:w-[300px] md:h-[35px] border border-black bg-white rounded-[10px] pl-[10px] pr-[35px]"
-                      type={showPasswords.current ? "text" : "password"}
-                      placeholder="Current Password"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                    />
-                    {currentPassword && (
-                      <img
-                        src={showPasswords.current ? hideIcon : showIcon}
-                        alt="Toggle visibility"
-                        className="absolute top-[50%] right-[10px] transform -translate-y-[50%] cursor-pointer w-[20px] h-[20px]"
-                        onClick={() => togglePasswordVisibility("current")}
-                      />
-                    )}
-                  </div>
-
-                  <div className="relative mt-[10px]">
-                    <input
-                      className="w-[280px] h-[30px] md:w-[300px] md:h-[35px] border border-black bg-white rounded-[10px] pl-[10px] pr-[35px]"
-                      type={showPasswords.new ? "text" : "password"}
-                      placeholder="New Password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                    />
-                    {newPassword && (
-                      <img
-                        src={showPasswords.new ? hideIcon : showIcon}
-                        alt="Toggle visibility"
-                        className="absolute top-[50%] right-[10px] transform -translate-y-[50%] cursor-pointer w-[20px] h-[20px]"
-                        onClick={() => togglePasswordVisibility("new")}
-                      />
-                    )}
-                  </div>
-
-                  <div className="relative mt-[10px]">
-                    <input
-                      className="w-[280px] h-[30px] md:w-[300px] md:h-[35px] border border-black bg-white rounded-[10px] pl-[10px] pr-[35px]"
-                      type={showPasswords.confirm ? "text" : "password"}
-                      placeholder="Confirm Password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
-                    {confirmPassword && (
-                      <img
-                        src={showPasswords.confirm ? hideIcon : showIcon}
-                        alt="Toggle visibility"
-                        className="absolute top-[50%] right-[10px] transform -translate-y-[50%] cursor-pointer w-[20px] h-[20px]"
-                        onClick={() => togglePasswordVisibility("confirm")}
-                      />
-                    )}
-                  </div>
-
-                  {errorMessage && (
-                    <p className="text-red-500 mt-[10px] transform transition-all duration-500 ease-out opacity-0 translate-y-[-20px] animate-slide-fade text-center text-[14px] md:text-base mx-[80px] md:mx-[50px]">
-                      {errorMessage}
-                    </p>
-                  )}
-
-                  <button
-                    className="text-white bg-[#1D274D] rounded-[10px] px-[35px] py-[5px] mt-[10px]"
-                    onClick={handleSubmit}
-                  >
-                    Change Password
-                  </button>
-                </div>
-
-                {isModalVisible && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    {/* Feedback message at the top */}
-                    {changepassmsg && (
-                      <div className="absolute top-20 mt-[60px] w-full flex justify-center">
-                        <div className="flex justify-center w-[700px] py-[5px] bg-[#b9e49d] text-black font-[500] text-[14px] rounded-md shadow-md animate-slide-fade">
-                          {changepassmsg}
-                        </div>
-                      </div>
-                    )}
-                    <div className="flex flex-col justify-center items-center">
-                      <div className="flex flex-col items-center text-center bg-[#FFCDA9] rounded-lg w-[300px] md:w-[350px] shadow-lg p-4 md:p-6">
-                        <p className="text-[22px] md:text-[25px] font-bold w-full">
-                          Confirm Changes
-                        </p>
-                        <p className="text-[13px] md:text-[14px] font-[500] mx-[30px] md:mx-[0]">
-                          Are you sure you want to update your password?
-                        </p>
-                        <div className="flex justify-between w-[80%] text-[14px] md:text-base mt-[20px]">
-                          <button
-                            className="border-2 border-[#1D274D] font-semibold py-[5px] px-[20px] rounded-md text-[#1D274D] mr-2"
-                            onClick={() => setIsModalVisible(false)}
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            className="bg-[#1D274D] text-white font-semibold py-[5px] px-[33px] rounded-md"
-                            onClick={handleSave}
-                          >
-                            Save
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="border border-[#1D274D] w-[45%] md:w-full mt-[50px]"></div>
-                <div className="flex flex-col items-center mt-[40px]">
-                  <h1 className="text-[25px] font-[600]">Account Deletion</h1>
-                  <p className="text-center text-[13px] md:text-[14px] font-[500]">
-                    No longer need your account?
-                  </p>
-                  <button
-                    className="mt-[10px] border-2 border-[#ff6b6b] rounded-[10px] px-[35px] py-[5px] hover:bg-[#ff6b6b] hover:text-white"
-                    onClick={handleDeleteAccount}
-                  >
-                    Delete Account
-                  </button>
-                </div>
-
-                {isDeleteAccountVisible && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="flex flex-col justify-center items-center">
-                      <div className="flex flex-col items-center text-center bg-[#FFCDA9] rounded-lg w-[300px] md:w-[400px] shadow-lg p-6">
-                        <p className="text-[22px] md:text-[25px]  font-bold w-full">
-                          Delete Account
-                        </p>
-                        <p className="text-[13px] md:text-[14px] font-[500] mx-[10px] md:mx-[20px]">
-                          Are you sure you want to delete your account? this
-                          action is permanent.
-                        </p>
-                        <div className="flex justify-center space-x-[20px] md:space-x-[40px] w-[80%] text-[14px] md:text-base mt-[20px]">
-                          <button
-                            className="border-2 border-[#1D274D] font-semibold py-[5px] px-[25px] rounded-md text-[#1D274D]"
-                            onClick={() => setDeleteAccountVisibile(false)}
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            className="bg-[#1D274D] text-white font-[500] py-[5px] px-[25px] rounded-md"
-                            onClick={handlePass}
-                          >
-                            Proceed
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {isEnterpassVisible && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="flex flex-col justify-center items-center">
-                      <div className="flex flex-col items-center text-center bg-[#FFCDA9] rounded-lg w-[400px] shadow-lg p-6">
-                        <p className="text-[25px] font-bold w-full">
-                          Delete Account
-                        </p>
-                        <p className="text-[14px] font-[500]">
-                          Please enter your password to confirm
-                          <br /> account deletion.
-                        </p>
-                        {/* Password Input */}
-                        <div className="relative mt-[10px] w-[300px]">
-                          <input
-                            className="w-full h-[35px] border border-black bg-white rounded-[10px] pl-[10px] pr-[35px]"
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                          />
-
-                          {/* Eye Icon */}
-                          {password && (
-                            <img
-                              src={showPassword ? hideIcon : showIcon} // Use your eye icon files
-                              alt="Toggle visibility"
-                              className="absolute top-[50%] right-[10px] transform -translate-y-[50%] cursor-pointer w-[20px] h-[20px]"
-                              onClick={() => setShowPassword((prev) => !prev)}
-                            />
-                          )}
-                        </div>
-
-                        {feedbackMsg && (
-                          <div className="text-red-500 text-sm  ml-[5px] mt-[5px]">
-                            {feedbackMsg}
-                          </div>
-                        )}
-                        <div className="flex justify-between w-[80%] mt-[20px]">
-                          <button
-                            className="border-2 border-[#1D274D] font-semibold py-[5px] px-[20px] rounded-md text-[#1D274D] mr-2"
-                            onClick={() => setEnterpassVisible(false)}
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            className="bg-[#1D274D] text-white font-[500] py-[5px] px-[25px] rounded-md"
-                            onClick={handlepassword}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+    {activeTab === "account" && <AccountManagementModal />}
 
           {/* Help tab */}
           {activeTab === "help" && (
@@ -1035,7 +818,7 @@ const Settings = () => {
                       className="text-[#002ACA] underline cursor-pointer"
                       onClick={() => navigate("/FAQs")}
                     >
-                      help page ->
+                      help page - FAQs
                     </span>
                   </p>
                 </div>

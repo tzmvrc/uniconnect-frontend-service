@@ -253,7 +253,7 @@ const Notification = () => {
     ${menuCollapsed ? "md:ml-[110px]" : "md:ml-[310px]"} 
     mr-[0px] md:mr-[270px]`}
       >
-        <div className="flex justify-center w-full md:w-[849px] ">
+        <div className="flex justify-center w-full  md:w-[849px] ">
           <div className="border border-black rounded-[10px] md:rounded-[15px] md:w-[90%] bg-white p-4 h-screen flex flex-col">
             <div className="mb-4">
               <h1 className="text-[24px] md:text-[33px] font-semibold">
@@ -269,7 +269,7 @@ const Notification = () => {
             {loading ? (
               <Loading message={""} />
             ) : (
-              <div className="max-h-screen overflow-y-auto pr-0 md:pr-2">
+              <div className="h-[400px] md:h-[500px] overflow-y-auto pr-0 md:pr-2">
                 {notifications.today.length > 0 && (
                   <div className="mb-8">
                     <h2 className="text-[18px] md:text-[25px] font-semibold ml-[10px]">

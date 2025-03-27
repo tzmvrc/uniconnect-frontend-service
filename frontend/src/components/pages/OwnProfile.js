@@ -22,6 +22,7 @@ const OwnProfile = () => {
   const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const fullname = userInfo ? `${userInfo.FirstName} ${userInfo.LastName}` : "";
+  const hasBadge = userInfo ? userInfo.hasBadge : false;
 
   const navigate = useNavigate();
 
@@ -331,11 +332,14 @@ const fetchResponseHistory = async () => {
                   {userInfo
                     ? `${userInfo.FirstName} ${userInfo.LastName}`
                     : "Loading..."}
-                  <img
-                    src={badgeIcon}
-                    alt="Badge"
-                    className="w-[19px] h-auto md:w-6 md:h-6 ml-2"
-                  />
+                  {hasBadge && (
+                    <img
+                      src={badgeIcon}
+                      alt="Badge"
+                      className="w-[19px] h-auto md:w-6 md:h-6 ml-2"
+                    />
+                  )}
+
                 </h2>
                 <p className="text-[14px] md:text-[16px] font-regular">
                   {userInfo ? `@${userInfo.Username}` : ""}
