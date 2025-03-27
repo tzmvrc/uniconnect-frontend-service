@@ -38,7 +38,7 @@ const Responses = ({ forum_id, userInfo, setResponseCount }) => {
 
   useEffect(() => {
     // ✅ WebSocket Setup
-    const socket = new WebSocket("ws://https://uniconnect-service-api.onrender.com");
+    const socket = new WebSocket("wss://https://uniconnect-service-api.onrender.com");
     setSocket(socket);
 
     socket.onopen = () => {
