@@ -219,14 +219,14 @@ const Leaderboard = () => {
                         key={school._id}
                         className="flex justify-between items-center py-3 px-4"
                       >
-                        <div className="w-11 h-11 md:w-12 md:h-12 rounded-full  border-black border-[1px] flex items-center justify-center text-[16px] text-slate-950 bg-slate-200">
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-full  border-black border-[1px] flex items-center justify-center text-[16px] text-slate-950 bg-slate-200">
                           <img
                             src={getSchoolLogo(school.school_name)}
                             alt={`${school.school_name} Logo`}
                             className="w-full h-full object-contain"
                           />
                         </div>
-                        <span className="text-[13px] md:text-[14px] text-left md:text-center pl-[15px] md:pl-[0px] mr-[35px] md:mr-[0px] md:text-base text-[#141E46] font-semibold">
+                        <span className="text-[12px] md:text-[14px] text-left md:text-center pl-[15px] md:pl-[0px] mr-[30px] md:mr-[0px] md:text-base text-[#141E46] font-semibold">
                           {school.school_name}
                         </span>
                         <div className="text-center bg-white py-1 border-[1px] border-black rounded-md shadow-sm text-sm text-[#141E46] font-semibold w-[50px] md:w-[60px]">
