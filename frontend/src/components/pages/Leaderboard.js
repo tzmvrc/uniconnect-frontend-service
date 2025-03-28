@@ -3,14 +3,31 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import badgeIcon from "../images/badge icon.png";
-import profilePic1 from "../images/icon-user1.png";
-import profilePic2 from "../images/icon-user2.png";
-import back from "../images/Back.png";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 import Leaderboards from "../Leaderboards";
 import axiosInstance from "../Utils/axiosInstance";
 import { getInitials } from "../Utils/Helper";
+import LeaderboardsRules from "./LeaderboardRules";
+
+import up_logo from "../images/icon-univ-up.png";
+import ceu_logo from "../images/icon-univ-ceu.png";
+import dlsu_logo from "../images/icon-univ-dlsu.png";
+import ue_logo from "../images/icon-univ-ue.png";
+import ust_logo from "../images/icon-univ-ust.png";
+import pup_logo from "../images/icon-pup.png";
+import mapua_logo from "../images/icon-mapua.png";
+import letran_logo from "../images/icon-letran.png";
+import ateneo_logo from "../images/icon-ateneo.png";
+import adu_logo from "../images/icon-adu.png";
+import feu_logo from "../images/icon-univ-feu.png";
+
+import nu_logo from "../images/icon-univ-nu.png";
+import sbu_logo from "../images/icon-univ-sbu.png";
+import umak_logo from "../images/icon-univ-umak.png";
+import um_logo from "../images/icon-univ-um.png";
+import rtu_logo from "../images/icon-univ-rtu.png";
+
 
 const Leaderboard = () => {
   const [menuCollapsed, setMenuCollapsed] = useState(true);
@@ -23,6 +40,30 @@ const Leaderboard = () => {
 
   const [activeTab, setActiveTab] = useState("users");
   const [leaderboard, setLeaderboard] = useState([]);
+  const [schoolLeaderboard, setSchoolLeaderboard] = useState([]);
+
+  const getSchoolLogo = (schoolName) => {
+    const schoolLogos = {
+      "University of the Philippines": up_logo,
+      "Centro Escolar University": ceu_logo,
+      "De La Salle University": dlsu_logo,
+      "University of the East": ue_logo,
+      "University of Santo Tomas": ust_logo,
+      "Polytechnic University of the Philippines": pup_logo,
+      "Mapua University": mapua_logo,
+      "Letran University": letran_logo,
+      "Ateneo de Manila University": ateneo_logo,
+      "Adamson University": adu_logo,
+      "Far Eastern University": feu_logo,
+      "National University": nu_logo,
+      "San Beda University": sbu_logo,
+      "University of Makati": umak_logo,
+      "University of Manila": um_logo,
+      "Rizal Technological University": rtu_logo,
+    };
+
+    return schoolLogos[schoolName];
+  };
 
   useEffect(() => {
     const getUsersLeaderboard = async () => {
@@ -37,58 +78,18 @@ const Leaderboard = () => {
     getUsersLeaderboard();
   }, []);
 
-  const schoolsData = [
-    {
-      name: "University of Santo Tomas",
-      points: 5901,
-      profilePic: require("../images/icon-univ-ust.png"),
-    },
-    {
-      name: "De La Salle University",
-      points: 5841,
-      profilePic: require("../images/icon-univ-dlsu.png"),
-    },
-    {
-      name: "University of the East",
-      points: 5688,
-      profilePic: require("../images/icon-univ-ue.png"),
-    },
-    {
-      name: "University of the Philippines",
-      points: 5556,
-      profilePic: require("../images/icon-univ-up.png"),
-    },
-    {
-      name: "Centro Escolar University",
-      points: 5498,
-      profilePic: require("../images/icon-univ-ceu.png"),
-    },
-    {
-      name: "Mapua University",
-      points: 5422,
-      profilePic: require("../images/icon-mapua.png"),
-    },
-    {
-      name: "Polytechnic University of the Philippines",
-      points: 5323,
-      profilePic: require("../images/icon-pup.png"),
-    },
-    {
-      name: "Colegio de San Juan de Letran",
-      points: 5008,
-      profilePic: require("../images/icon-letran.png"),
-    },
-    {
-      name: "Ateneo De Manila University",
-      points: 4764,
-      profilePic: require("../images/icon-ateneo.png"),
-    },
-    {
-      name: "Adamson University",
-      points: 4123,
-      profilePic: require("../images/icon-adu.png"),
-    },
-  ];
+  useEffect(() => {
+    const getSchoolLeaderboard = async () => {
+      try {
+        const response = await axiosInstance.get("/leaderboard/schools");
+        setSchoolLeaderboard(response.data.leaderboard || []);
+      } catch (error) {
+        console.error("Error fetching users leaderboard:", error);
+      }
+    };
+
+    getSchoolLeaderboard();
+  }, []);
 
   return (
     <div
@@ -97,7 +98,7 @@ const Leaderboard = () => {
     >
       <Header />
       <Sidebar menuCollapsed={menuCollapsed} toggleMenu={toggleMenu} />
-      <Leaderboards />
+      <LeaderboardsRules/>
 
       <main
         className={`w-full h-full flex justify-center mt-20 md:mt-28 transition-all duration-300 p-3 md:p-0
@@ -185,7 +186,7 @@ const Leaderboard = () => {
                       </div>
 
                       {/* Points Section */}
-                      <div className="text-right bg-white px-2 py-1 border-[1px] border-black rounded-md shadow-sm text-sm text-[#141E46] font-semibold w-[45px]">
+                      <div className="text-center bg-white px-2 py-1 border-[1px] border-black rounded-md shadow-sm text-sm text-[#141E46] font-semibold w-[55px]">
                         {user.points}
                       </div>
                     </div>
@@ -210,22 +211,29 @@ const Leaderboard = () => {
                 </div>
 
                 <div className="divide-y divide-gray-200">
-                  {schoolsData.map((school, index) => (
-                    <div
-                      key={index}
-                      className="flex justify-between items-center py-3 px-4"
-                    >
-                      <img
-                        src={school.profilePic}
-                        alt={school.name}
-                        className="w-10 h-10 rounded-full"
-                      />
-                      <span>{school.name}</span>
-                      <div className="text-left bg-white px-2 py-1 border-[1px] border-black rounded-md shadow-sm text-sm text-[#141E46] font-semibold w-auto">
-                        {school.points}
+                  {schoolLeaderboard
+                    .sort((a, b) => b.points - a.points) // Sort by points (highest first)
+                    .slice(0, 10)
+                    .map((school) => (
+                      <div
+                        key={school._id}
+                        className="flex justify-between items-center py-3 px-4"
+                      >
+                        <div className="w-12 h-12 rounded-full  border-black border-[1px] flex items-center justify-center text-[16px] text-slate-950 bg-slate-200">
+                          <img
+                            src={getSchoolLogo(school.school_name)}
+                            alt={`${school.school_name} Logo`}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <span className="text-[14px] text-left md:text-center pl-[15px] md:pl-[0px] mr-[35px] md:mr-[0px] md:text-base text-[#141E46] font-semibold">
+                          {school.school_name}
+                        </span>
+                        <div className="text-center bg-white py-1 border-[1px] border-black rounded-md shadow-sm text-sm text-[#141E46] font-semibold w-[50px] md:w-[60px]">
+                          {school.total_points}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </div>
             </div>

@@ -313,7 +313,7 @@ const fetchResponseHistory = async () => {
             <img
               src={setbg}
               alt="bg settings"
-              className="h-[90px] md:h-[146px] md:w-[684px]"
+              className="h-[90px] w-full md:h-[146px] md:w-[684px]"
             />
             {/* Profile Picture */}
             <div className="absolute bottom-[-50px] md:bottom-[-70px] left-1/2 transform -translate-x-1/2 w-[100px] h-[100px] md:w-[140px] md:h-[140px] rounded-full border-4 border-slate-700 overflow-hidden">

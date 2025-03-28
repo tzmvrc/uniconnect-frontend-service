@@ -7,10 +7,52 @@ import badgeIcon from "./images/badge icon.png";
 import axiosInstance from "./Utils/axiosInstance";
 import { getInitials } from "./Utils/Helper";
 
+import up_logo from "./images/icon-univ-up.png";
+import ceu_logo from "./images/icon-univ-ceu.png";
+import dlsu_logo from "./images/icon-univ-dlsu.png";
+import ue_logo from "./images/icon-univ-ue.png";
+import ust_logo from "./images/icon-univ-ust.png";
+import pup_logo from "./images/icon-pup.png";
+import mapua_logo from "./images/icon-mapua.png";
+import letran_logo from "./images/icon-letran.png";
+import ateneo_logo from "./images/icon-ateneo.png";
+import adu_logo from "./images/icon-adu.png";
+import feu_logo from "./images/icon-univ-feu.png";
+
+import nu_logo from "./images/icon-univ-nu.png";
+import sbu_logo from "./images/icon-univ-sbu.png";
+import umak_logo from "./images/icon-univ-umak.png";
+import um_logo from "./images/icon-univ-um.png";
+import rtu_logo from "./images/icon-univ-rtu.png";
+
 const Leaderboards = () => {
   const navigate = useNavigate();
   const [leaderboard, setLeaderboard] = useState([]);
+  const [schoolLeaderboard, setSchoolLeaderboard] = useState([]);
 
+
+  const getSchoolLogo = (schoolName) => {
+    const schoolLogos = {
+      "University of the Philippines": up_logo,
+      "Centro Escolar University": ceu_logo,
+      "De La Salle University": dlsu_logo,
+      "University of the East": ue_logo,
+      "University of Santo Tomas": ust_logo,
+      "Polytechnic University of the Philippines": pup_logo,
+      "Mapua University": mapua_logo,
+      "Letran University": letran_logo,
+      "Ateneo de Manila University": ateneo_logo,
+      "Adamson University": adu_logo,
+      "Far Eastern University": feu_logo,
+      "National University": nu_logo,
+      "San Beda University": sbu_logo,
+      "University of Makati": umak_logo,
+      "University of Manila": um_logo,
+      "Rizal Technological University": rtu_logo,
+    };
+
+    return schoolLogos[schoolName];
+  };
 
   useEffect(() => {
     const getUsersLeaderboard = async () => {
@@ -23,6 +65,19 @@ const Leaderboards = () => {
     };
 
     getUsersLeaderboard();
+  }, []);
+
+  useEffect(() => {
+    const getSchoolLeaderboard = async () => {
+      try {
+        const response = await axiosInstance.get("/leaderboard/schools");
+        setSchoolLeaderboard(response.data.leaderboard || []);
+      } catch (error) {
+        console.error("Error fetching users leaderboard:", error);
+      }
+    };
+
+    getSchoolLeaderboard();
   }, []);
 
   return (
@@ -75,15 +130,56 @@ const Leaderboards = () => {
                   </div>
 
                   {/* User Points */}
-                  <div className="text-right bg-white px-2 py-1 border-[1px] border-black rounded-md shadow-sm text-[13px] text-[#141E46] font-semibold w-[40px]">
+                  <div className="text-center bg-white px-2 py-1 border-[1px] border-black rounded-md shadow-sm text-[13px] text-[#141E46] font-semibold w-[40px]">
                     {user.points}
                   </div>
                 </li>
               ))
           ) : (
-            <p className="text-gray-500 text-[12px]">
+            <p className="text-gray-500 text-[15px]">
               No users with a badge found.
             </p>
+          )}
+        </ul>
+
+        {/* Top School Section */}
+        <h4 className="font-medium mb-2 mt-9 text-[17px] text-[#141E46]">
+          Top Schools
+        </h4>
+        <ul className="space-y-4">
+          {schoolLeaderboard.length > 0 ? (
+            schoolLeaderboard
+              .sort((a, b) => b.points - a.points) // Sort by points (highest first)
+              .slice(0, 3)
+              .map((school) => (
+                <li
+                  key={school._id} // ✅ FIXED: Use `school._id`
+                  className="text-[#141E46] flex items-center space-x-3"
+                >
+                  {/* School Icon Placeholder */}
+                  <div className="w-10 h-10 rounded-full  border-black border-[1px] flex items-center justify-center text-[16px] text-slate-950 bg-slate-200">
+                    <img
+                      src={getSchoolLogo(school.school_name)}
+                      alt={`${school.school_name} Logo`}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+
+                  {/* School Name */}
+                  <div className="flex-1">
+                    <span className="font-semibold text-[14px]">
+                      {school.school_name}
+                    </span>
+                  </div>
+
+                  {/* School Points */}
+                  <div className="text-center bg-white px-2 py-1 border-[1px] border-black rounded-md shadow-sm text-[13px] text-[#141E46] font-semibold w-[40px]">
+                    {school.total_points}
+                  </div>
+                </li>
+              ))
+          ) : (
+            <p className="text-gray-500 text-[12px]">No Schools Found.</p>
           )}
         </ul>
 
@@ -91,7 +187,7 @@ const Leaderboards = () => {
         <div className="mt-7">
           <button
             onClick={() => navigate("/leaderboard")}
-            className="w-full px-4 py-1 bg-[#1D274D] rounded-[10px] text-white text-[13px] hover:bg-[#1D254A] focus:outline-none flex items-center justify-center"
+            className="w-full px-4 py-1 bg-[#1D274D] rounded-[6px] text-white text-[13px] hover:bg-[#1D254A] focus:outline-none flex items-center justify-center"
             aria-label="View all leaderboards"
           >
             <img src={iconRank} alt="Rank Icon" className="w-3 h-3 mr-2" />
