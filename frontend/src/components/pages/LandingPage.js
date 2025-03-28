@@ -55,6 +55,13 @@ const LandingPage = () => {
           className="flex flex-col items-center md:block md:flex-1 text-white text-center md:text-left mb-[25px] md:mb-[85px]"
           variants={itemVariants}
         >
+          <motion.img
+            className="md:hidden w-[250px] md:w-[550px] h-auto "
+            src={image1}
+            alt="image1"
+            variants={itemVariants}
+          />
+
           <img
             className="w-[250px] md:w-[500px] h-auto mb-[10px] mt-[20px] md:mt-[80px] "
             src={logo}
@@ -77,7 +84,7 @@ const LandingPage = () => {
         </motion.div>
 
         <motion.img
-          className="w-[250px] md:w-[550px] h-auto "
+          className="hidden md:flex w-[250px] md:w-[550px] h-auto "
           src={image1}
           alt="image1"
           variants={itemVariants}
