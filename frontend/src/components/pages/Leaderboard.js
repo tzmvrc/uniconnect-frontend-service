@@ -159,7 +159,7 @@ const Leaderboard = () => {
                         to={`/otherprofile/${user.username}`}
                         className="w-10 h-10 rounded-full block"
                       >
-                        <div className="w-[95px] h-[95px] md:w-full md:h-full flex items-center border border-black justify-center rounded-full text-slate-950 bg-slate-200 text-[16px]">
+                        <div className="w-[43px] h-[43px] md:w-full md:h-full flex items-center border border-black justify-center rounded-full text-slate-950 bg-slate-200 text-[16px]">
                           {getInitials(`${user.first_name} ${user.last_name}`)}
                         </div>
                       </Link>

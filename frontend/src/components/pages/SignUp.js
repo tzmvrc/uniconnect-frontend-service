@@ -56,12 +56,16 @@ const SignUp = () => {
 
   useEffect(() => {
     const fetchSchools = async () => {
+      setLoading(true);
       try {
         const res = await axiosInstance.get("/school/get-all-schools");
         console.log("Fetched Schools:", res.data); // ✅ Debug: Ensure data is an array
         setSchools(res.data);
       } catch (error) {
         console.error("Error fetching schools:", error);
+        showToastMessage("error", "Failed to fetch schools.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -238,10 +242,9 @@ const SignUp = () => {
 
       const errorMessage =
         err.response?.data?.message || "Signup failed. Please try again.";
-
-      setLoading(false);
-
       showToastMessage("error", errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 

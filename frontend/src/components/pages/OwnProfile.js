@@ -339,7 +339,6 @@ const fetchResponseHistory = async () => {
                       className="w-[19px] h-auto md:w-6 md:h-6 ml-2"
                     />
                   )}
-
                 </h2>
                 <p className="text-[14px] md:text-[16px] font-regular">
                   {userInfo ? `@${userInfo.Username}` : ""}
@@ -389,6 +388,7 @@ const fetchResponseHistory = async () => {
               ) : getActiveForums().length > 0 ? (
                 <ForumFunctions
                   forums={getActiveForums()}
+                  userInfo={userInfo}
                   handleForumClick={handleForumClick}
                   compact={true}
                 />

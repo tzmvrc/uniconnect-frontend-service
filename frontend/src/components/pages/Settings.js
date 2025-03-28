@@ -33,36 +33,14 @@ const Settings = () => {
   const [otp, setOtp] = useState("");
   const [tempUsername, setTempusername] = useState(username);
   const [tempEmail, setTempEmail] = useState(email); // for editing
-
   const [isEditingFullName, setIsEditingFullName] = useState(false);
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isEditingSchool, setIsEditingSchool] = useState(false);
+  const [confirmSchool, setConfirmSchool] = useState(false);
   const [otpModalOpen, setOtpModalOpen] = useState(false);
-
-  const [password, setPassword] = useState(""); // Tracks entered password
-  const [showPassword, setShowPassword] = useState(false); // Toggles visibility
   const [activeTab, setActiveTab] = useState(tabs[0].id);
   const [aactiveTab, setAactiveTab] = useState("public");
-
-  const [editField, setEditField] = useState(null);
-  const [editValue, setEditValue] = useState("");
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPasswords, setShowPasswords] = useState({
-    current: false,
-    new: false,
-    confirm: false,
-  });
-
-  const [errorMessage, setErrorMessage] = useState("");
-  const [feedbackMsg, setFeedbackMsg] = useState("");
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [changepassmsg, setchangepassmsg] = useState("");
-  const [isDeleteAccountVisible, setDeleteAccountVisibile] = useState(false);
-  const [isEnterpassVisible, setEnterpassVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState({
     isShown: false,
@@ -107,23 +85,6 @@ const Settings = () => {
     }
   };
 
-  const handlepassword = () => {
-    setFeedbackMsg("Incorrect password. Please try again.");
-    setTimeout(() => {
-      setFeedbackMsg("");
-    }, 1800);
-    if (password === staticPassword) {
-      navigate("/"); // Navigate to the Picture page
-    }
-  };
-
-  const togglePasswordVisibility = (field) => {
-    setShowPasswords((prev) => ({
-      ...prev,
-      [field]: !prev[field],
-    }));
-  };
-
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -136,17 +97,16 @@ const Settings = () => {
     };
   }, [navigate]);
 
- const getUnderlineClasses = (activeTab) => {
-   if (activeTab === "profile") {
-     return "w-[95px] left-[17px] md:left-0 md:w-[105px]";
-   } else if (activeTab === "account") {
-     return "w-[117px] left-[137px] md:w-[135px] md:left-[139px]";
-   } else if (activeTab === "help") {
-     return "w-[60px] left-[278px] md:left-[317px]";
-   }
-   return "";
- };
-
+  const getUnderlineClasses = (activeTab) => {
+    if (activeTab === "profile") {
+      return "w-[95px] left-[17px] md:left-0 md:w-[105px]";
+    } else if (activeTab === "account") {
+      return "w-[117px] left-[137px] md:w-[135px] md:left-[139px]";
+    } else if (activeTab === "help") {
+      return "w-[60px] left-[278px] md:left-[317px]";
+    }
+    return "";
+  };
 
   const handleUpdateUserProfile = async () => {
     // ✅ Trim all values before validation
@@ -194,15 +154,20 @@ const Settings = () => {
   };
 
   const handleSendOTPEmail = async () => {
-    const emailLower = tempEmail.toLowerCase();
 
-    // ✅ Basic format check
-    if (!email.includes("@")) {
-      showToastMessage("error", "Please enter a valid email address");
-      return;
-    }
+    setLoading(true);
+  
 
     try {
+        const emailLower = tempEmail.toLowerCase();
+
+        // ✅ Basic format check
+        if (!email.includes("@")) {
+          showToastMessage("error", "Please enter a valid email address");
+          setLoading(false);
+          return;
+        }
+        
       // ✅ Updated to the new OTP API route
       const response = await axiosInstance.post("/otp/send-otp", {
         email: email,
@@ -211,44 +176,23 @@ const Settings = () => {
 
       // ✅ Show success or error toast
       if (response.data.success) {
-        setLoading(true);
         setTimeout(() => {
           showToastMessage("success", "Code sent to your old email.");
           setOtpModalOpen(true); // Show OTP modal/input box
           setLoading(false);
         }, 1000); // You can change 1000 to any delay in milliseconds
       } else {
+        setLoading(false);
         showToastMessage(
           "error",
           response.data.message || "Failed to send OTP"
         );
       }
     } catch (err) {
+      setLoading(false);
       const serverMsg = err.response?.data?.message;
       showToastMessage("error", serverMsg || "Something went wrong.");
     }
-  };
-
-  const handleDeleteAccount = () => {
-    setDeleteAccountVisibile(true);
-  };
-
-  const handlePass = () => {
-    setDeleteAccountVisibile(false);
-    setEnterpassVisible(true);
-  };
-
-  const handleSave = () => {
-    setchangepassmsg("Password updated successfully!");
-    setTimeout(() => {
-      setchangepassmsg("");
-      setIsModalVisible(false);
-    }, 1800);
-
-    // (Optional) Reset the fields
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
   };
 
   const handleSaveClick = async () => {
@@ -289,21 +233,6 @@ const Settings = () => {
 
   const handleTabClick = (tab) => {
     setAactiveTab(tab);
-  };
-
-  const handleSubmit = () => {
-    if (!currentPassword) {
-      setErrorMessage("Current password cannot be empty.");
-      setTimeout(() => setErrorMessage(""), 1800);
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setErrorMessage("New Password and Confirm Password do not match.");
-      setTimeout(() => setErrorMessage(""), 1800);
-      return;
-    }
-    setErrorMessage(""); // Clear any previous errors
-    setIsModalVisible(true); // Show confirmation modal
   };
 
   return (
@@ -523,7 +452,7 @@ const Settings = () => {
                                     return;
                                   }
 
-                                  handleSendOTPEmail();
+                                  setConfirmSchool(true);
                                 }}
                                 className="border border-black rounded-[5px] bg-green-700 px-[10px] py-[5px] text-white hover:bg-green-800"
                                 title="Save"
@@ -564,7 +493,7 @@ const Settings = () => {
             </div>
           )}
 
-    {activeTab === "account" && <AccountManagementModal />}
+          {activeTab === "account" && <AccountManagementModal />}
 
           {/* Help tab */}
           {activeTab === "help" && (
@@ -829,7 +758,7 @@ const Settings = () => {
       </div>
 
       {otpModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
           <div className="flex flex-col items-center bg-[#FFCDA9] border-black border p-4 rounded-lg w-[350px]">
             <h2 className="text-[20px] font-semibold">Verify your Email</h2>
 
@@ -865,6 +794,43 @@ const Settings = () => {
                 onClick={handleSaveClick}
               >
                 Verify
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmSchool && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
+          <div className="flex flex-col items-center bg-[#FFCDA9] border-black border p-4 rounded-lg w-[350px]">
+            <h2 className="text-[20px] font-semibold">Note:</h2>
+
+            <p className="text-sm text-center mx-[25px]">
+              Changing your email means changing your school. All of your points
+              will be transfered to your new school.
+            </p>
+
+            <div className="flex justify-center space-x-7 mt-[25px]">
+              <button
+                className="bg-transparent border border-[#231c4b] px-5 py-2 rounded"
+                onClick={() => {
+                  // setIsEditingFullName(false);
+                  // setIsEditingSchool(false);
+                  // setIsEditingEmail(false);
+                  setConfirmSchool(false);
+                }}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="text-white px-5 font-[600] bg-[#231c4b] py-2 rounded-[5px] hover:bg-[#2b2670]"
+                onClick={() => {
+                  setConfirmSchool(false);
+                  handleSendOTPEmail();
+                }}
+              >
+                Continue
               </button>
             </div>
           </div>

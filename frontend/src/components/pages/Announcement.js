@@ -6,8 +6,8 @@ import Sidebar from "../Sidebar";
 import Leaderboards from "../Leaderboards";
 import exit from "../images/exit.png";
 import Toast from "./ToastMessage/ToastMessage";
-
-
+import Loading from "./Loading/Loading";
+import ConfirmDeletion from "../Confirmation/confirmation";
 
 const Announcement = () => {
   const [menuCollapsed, setMenuCollapsed] = useState(true);
@@ -30,6 +30,11 @@ const Announcement = () => {
     type: "",
     message: "",
   });
+
+  const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [announcementToDelete, setAnnouncementToDelete] = useState(null);
 
   const handleCloseToast = () => {
     setShowToast({ isShown: false, message: "" });
@@ -124,8 +129,12 @@ const Announcement = () => {
     }
 
     try {
+      setLoading(true); 
+      setIsFormVisible(false);
+      setLoadingMessage(isEditing ? "Updating Announcement" : "Creating Announcement");
+
       if (isEditing && currentAnnouncementId) {
-        // Match the backend API expectations
+        // Editing existing announcement
         const response = await axiosInstance.put(
           `/announcement/${currentAnnouncementId}`,
           {
@@ -136,16 +145,19 @@ const Announcement = () => {
         );
 
         if (response.data) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+
           setTitle("");
           setDescription("");
           setIsFormVisible(false);
           setIsEditing(false);
           setCurrentAnnouncementId(null);
+          setLoading(false);
           showToastMessage("success", "Announcement updated successfully!");
           fetchAnnouncements();
         }
       } else {
-        // Create new announcement - match backend expects username, title, description
+        // Creating new announcement
         const response = await axiosInstance.post("/announcement/create", {
           username: userInfo.Username,
           title: title.trim(),
@@ -153,15 +165,19 @@ const Announcement = () => {
         });
 
         if (response.data) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+
           setTitle("");
           setDescription("");
           setIsFormVisible(false);
+          setLoading(false);
           showToastMessage("success", "Announcement posted successfully!");
           fetchAnnouncements();
         }
       }
     } catch (error) {
       console.error("Error with announcement:", error);
+      setLoading(false);
       const errorMsg =
         error.response?.data?.message ||
         (isEditing
@@ -172,27 +188,37 @@ const Announcement = () => {
     }
   };
 
-  const handleDelete = async (announcementId) => {
+  const handleDelete = async () => {
+    if (!announcementToDelete) return;
+
     try {
-      // Send delete request with proper data
+      setLoading(true);
+      setLoadingMessage("Deleting Announcement");
+      setIsModalOpen(false);
+      
       const response = await axiosInstance.delete(
-        `/announcement/${announcementId}`,
+        `/announcement/${announcementToDelete}`,
         {
           data: { username: userInfo.Username }
         }
       );
 
       if (response.data) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        setLoading(false);
         showToastMessage("success", "Announcement deleted successfully!");
-        fetchAnnouncements(); // Refetch the list to ensure it's up to date
+        fetchAnnouncements(); 
       }
     } catch (error) {
       console.error("Error deleting announcement:", error);
       const errorMsg =
         error.response?.data?.message || "Failed to delete announcement";
       showToastMessage("error", errorMsg);
+    } finally {
+      setShowOptionsFor(null);
+      setAnnouncementToDelete(null);
     }
-    setShowOptionsFor(null);
   };
 
   const handleEdit = (announcement) => {
@@ -212,6 +238,13 @@ const Announcement = () => {
     }
   };
 
+  // Trigger confirmation modal for deletion
+  const initiateDelete = (announcementId) => {
+    setAnnouncementToDelete(announcementId);
+    setIsModalOpen(true);
+    setShowOptionsFor(null);
+  };
+
   const userInitials = userInfo
     ? getInitials(userInfo.FirstName, userInfo.LastName)
     : "";
@@ -228,6 +261,7 @@ const Announcement = () => {
       <Header />
       <Sidebar menuCollapsed={menuCollapsed} toggleMenu={toggleMenu} />
       <Leaderboards />
+      {loading && <Loading message={loadingMessage} />}
 
       <div
         className={`flex flex-col w-full md:mr-[330px] mt-[70px] md:items-center ${
@@ -317,7 +351,7 @@ const Announcement = () => {
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
-                                  handleDelete(announcement.id);
+                                  initiateDelete(announcement.id);
                                 }}
                                 className="block w-full text-left px-4 py-2 hover:bg-gray-200 text-red-600"
                               >
@@ -414,6 +448,15 @@ const Announcement = () => {
           </div>
         </div>
       )}
+
+      {/* Confirmation Modal for Deletion */}
+      <ConfirmDeletion
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleDelete}
+        title={"Delete Announcement?"}
+        message="Once deleted, this announcement will be permanently removed and cannot be recovered."
+      />
     </div>
   );
 };
