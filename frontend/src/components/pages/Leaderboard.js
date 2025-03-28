@@ -136,7 +136,7 @@ const Leaderboard = () => {
           {activeTab === "users" ? (
             <div className="flex justify-center w-full h-full bg-white rounded-lg p-2 md:p-4">
               <div className="w-full md:max-w-lg">
-                <p className="text-[#141E46] mb-4 text-center text-[14px] md:text-[15px] md:px-[16%]">
+                <p className="text-[#141E46] mb-4 text-center text-[13px] md:text-[15px] md:px-[16%]">
                   Check out the top users from across the platform and see how
                   you rank among everyone.
                 </p>
@@ -169,7 +169,7 @@ const Leaderboard = () => {
                       <div className="flex-1 text-[#141E46]">
                         <Link
                           to={`/otherprofile/${user.username}`}
-                          className="font-semibold ml-[15px]"
+                          className="font-semibold ml-[15px] text-[13px] md:text-base]"
                         >
                           {user.first_name} {user.last_name}
                         </Link>
@@ -178,7 +178,7 @@ const Leaderboard = () => {
                           alt="Badge Icon"
                           className="inline-block w-5 h-5 ml-2"
                         />
-                        <p className="text-sm ml-[15px] text-[#141E46]">
+                        <p className="text-[11px] md:text-[14px] ml-[15px] text-[#141E46]">
                           <Link to={`/otherprofile/${user.username}`}>
                             @{user.username}
                           </Link>
@@ -197,7 +197,7 @@ const Leaderboard = () => {
           ) : (
             <div className="flex justify-center w-full min-h-screen bg-white rounded-lg shadow-md p-4">
               <div className="w-full max-w-lg">
-                <p className="text-[#141E46] mb-4 text-center text-[14px] md:text-[15px] md:px-[16%]">
+                <p className="text-[#141E46] mb-4 text-center text-[13px]  md:text-[15px] md:px-[16%]">
                   Track your university's position and see how it competes with
                   others.
                 </p>
@@ -219,14 +219,14 @@ const Leaderboard = () => {
                         key={school._id}
                         className="flex justify-between items-center py-3 px-4"
                       >
-                        <div className="w-12 h-12 rounded-full  border-black border-[1px] flex items-center justify-center text-[16px] text-slate-950 bg-slate-200">
+                        <div className="w-11 h-11 md:w-12 md:h-12 rounded-full  border-black border-[1px] flex items-center justify-center text-[16px] text-slate-950 bg-slate-200">
                           <img
                             src={getSchoolLogo(school.school_name)}
                             alt={`${school.school_name} Logo`}
                             className="w-full h-full object-contain"
                           />
                         </div>
-                        <span className="text-[14px] text-left md:text-center pl-[15px] md:pl-[0px] mr-[35px] md:mr-[0px] md:text-base text-[#141E46] font-semibold">
+                        <span className="text-[13px] md:text-[14px] text-left md:text-center pl-[15px] md:pl-[0px] mr-[35px] md:mr-[0px] md:text-base text-[#141E46] font-semibold">
                           {school.school_name}
                         </span>
                         <div className="text-center bg-white py-1 border-[1px] border-black rounded-md shadow-sm text-sm text-[#141E46] font-semibold w-[50px] md:w-[60px]">
