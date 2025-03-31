@@ -173,12 +173,32 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
       </div>
       <div className="flex items-center mb-[7px]">
         {hasBadge ? (
-          <div className="w-12 h-12 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-200 mr-[10px] border-[1px] border-[#fa6638]">
-            {getInitials(fullname)}
+          <div className="w-12 h-12 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-200 mr-[10px] border-[2px] border-[#fa6638]">
+            {response?.created_by?.profilePicture ? (
+              // Show Profile Picture if available
+              <img
+                src={response.created_by?.profilePicture}
+                alt="Profile"
+                className="w-full h-full object-cover rounded-full"
+              />
+            ) : (
+              // Show Initials if no Profile Picture
+              getInitials(fullname)
+            )}
           </div>
         ) : (
           <div className="w-[42px] h-[42px] md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-200 mr-[10px] border-[1px] border-black">
-            {getInitials(fullname)}
+            {response?.created_by?.profilePicture ? (
+              // Show Profile Picture if available
+              <img
+                src={response.created_by?.profilePicture}
+                alt="Profile"
+                className="w-full h-full object-cover rounded-full"
+              />
+            ) : (
+              // Show Initials if no Profile Picture
+              getInitials(fullname)
+            )}
           </div>
         )}
 

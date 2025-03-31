@@ -1,153 +1,248 @@
+/** @format */
+
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 import Leaderboards from "../Leaderboards";
 import ForumFunctions from "../ForumFunctions";
-
+import { useNavigate, useParams } from "react-router-dom";
 import badgeIcon from "../images/badge icon.png";
+import { getInitials } from "../Utils/Helper";
+import axiosInstance from "../Utils/axiosInstance";
 
 const OtherProfile = () => {
-  const [menuCollapsed, setMenuCollapsed] = useState(false);
-  const [activeTab, setActiveTab] = useState("Created Forums");
-  const [forums, setForums] = useState([]);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const { username } = useParams();
+  const [menuCollapsed, setMenuCollapsed] = useState(true);
+  const [createdForums, setCreatedForums] = useState([]);
+  const [userInfo, setUserInfo] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const hasBadge = userInfo ? userInfo.hasBadge : false;
+
   const navigate = useNavigate();
 
+  const fullname = userInfo ? `${userInfo.FirstName} ${userInfo.LastName}` : "";
+
+  const toggleMenu = () => setMenuCollapsed(!menuCollapsed);
+  const handleForumClick = (forumId) => navigate(`/forum/${forumId}`);
+
   useEffect(() => {
-    const fetchUserProfile = async () => {
+    const fetchData = async () => {
+      setIsLoading(true);
       try {
-        const response = await axios.get(`/api/users/${username}`);
-        setUser(response.data.user);
-        setForums(response.data.forums);
+        await fetchUserInfo();
       } catch (error) {
-        console.error("Error fetching user profile:", error);
-        setError("User not found or an error occurred.");
+        console.error("Error in initial data fetch:", error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
-  
-    fetchUserProfile();
+
+    fetchData();
   }, [username]);
-  
 
-  const handleForumClick = (forumId) => navigate(`/forum/${forumId}`);
-  const toggleMenu = () => setMenuCollapsed(!menuCollapsed);
+  useEffect(() => {
+    if (userInfo?.Username) {
+      fetchUserForums();
+    }
+  }, [userInfo]);
 
-  const handleVote = (forumId, type) => {
-    setForums((prevForums) =>
-      prevForums.map((forum) => {
-        if (forum.id === forumId) {
-          if (type === "like") {
-            return forum.userLiked
-              ? { ...forum, likes: forum.likes - 1, userLiked: false }
-              : { ...forum, likes: forum.likes + 1, userLiked: true, userDisliked: false };
-          } else if (type === "dislike") {
-            return forum.userDisliked
-              ? { ...forum, dislikes: forum.dislikes - 1, userDisliked: false }
-              : { ...forum, dislikes: forum.dislikes + 1, userDisliked: true, userLiked: false };
-          }
-        }
-        return forum;
-      })
-    );
+  const fetchUserInfo = async () => {
+    try {
+      const currentUserResponse = await axiosInstance.get(
+        "/users/get-user-info"
+      );
+      const currentUsername = currentUserResponse.data.user?.Username;
+
+      if (
+        currentUsername &&
+        currentUsername.toLowerCase() === username.toLowerCase()
+      ) {
+        navigate("/profile");
+        return false;
+      }
+
+      const response = await axiosInstance.get(`/users/${username}`);
+      if (response.data.user) {
+        const userData = response.data.user;
+        console.log("Fetched user info:", userData);
+
+        setUserInfo(userData);
+        return true;
+      } else {
+        console.log("User not found.");
+        setUserInfo({});
+        setCreatedForums([]);
+        navigate("*");
+        return false;
+      }
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+      setUserInfo({});
+      setCreatedForums([]);
+      navigate("*");
+      return false;
+    }
   };
 
-  const handleFavoriteClick = (forumId) => {
-    setForums((prevForums) =>
-      prevForums.map((forum) =>
-        forum.id === forumId
-          ? { ...forum, isFavorited: !forum.isFavorited }
-          : forum
-      )
-    );
+  const fetchUserForums = async () => {
+    try {
+      if (!userInfo?.Username) {
+        console.log("No username available");
+        setCreatedForums([]);
+        return;
+      }
+
+      console.log("Fetching forums for username:", userInfo.Username);
+
+      const response = await axiosInstance.get(
+        `/forum/user/${userInfo.Username}`
+      );
+      console.log("Raw API response:", response.data);
+
+      if (!response.data || !Array.isArray(response.data.forums)) {
+        console.error("Failed to fetch forums or invalid data format");
+        setCreatedForums([]);
+        return;
+      }
+
+      const forumIds = response.data.forums.map((forum) => forum._id);
+      console.log("Extracted forum IDs:", forumIds);
+
+      if (forumIds.length === 0) {
+        setCreatedForums([]);
+        return;
+      }
+
+      // Fetch detailed data for each forum
+      const forumDetailsPromises = forumIds.map((id) =>
+        axiosInstance.get(`/forum/${id}`)
+      );
+      const forumResponses = await Promise.all(forumDetailsPromises);
+
+      // Process and map the forum data
+      const mappedForums = forumResponses.map((response) => {
+        const forum = response.data.forum || response.data;
+
+        console.log("Fetched forum details:", forum);
+
+        return {
+          id: forum._id,
+          title: forum.title || "Untitled Forum",
+          content: forum.description || "",
+          public: forum.public ?? true,
+          status: forum.status || "Published",
+          author: forum.created_by?.username || userInfo?.Username || "Unknown",
+          topic: forum.topic_id?.name || "General",
+          tags: Array.isArray(forum.tags) ? forum.tags : [],
+          likes: forum.likes ?? 0,
+          dislikes: forum.dislikes ?? 0,
+          isFavorited: false,
+          userLiked: false,
+          userDisliked: false,
+          date: forum.createdAt
+            ? new Date(forum.createdAt).toLocaleDateString()
+            : "Unknown",
+        };
+      });
+
+      console.log("Final mapped forums:", mappedForums);
+      setCreatedForums(mappedForums);
+    } catch (error) {
+      console.error("Error fetching user forums:", error);
+      setCreatedForums([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="flex min-h-screen text-[#141E46]">
+    <div
+      className="flex min-h-screen text-[#141E46]"
+      style={{ fontFamily: "'Inter', sans-serif" }}
+    >
       <Header />
       <Sidebar menuCollapsed={menuCollapsed} toggleMenu={toggleMenu} />
       <Leaderboards />
       <main
         className="flex-1 p-6 bg-white"
         style={{
-          marginLeft: menuCollapsed ? "100px" : "336px",
-          marginRight: "22rem",
-          marginTop: "116px",
+          marginLeft: menuCollapsed ? "100px" : "300px",
+          marginRight: "260px",
+          marginTop: "85px",
         }}
       >
-        {/* Main Panel */}
-        <div 
+        <div
           className="mx-auto h-full border-black border-t border-l border-r rounded-t-[15px] bg-white p-4"
-          style={{ width: "849px" }}
+          style={{ width: "750px" }}
         >
-
-          {/* Header */}
-          <div className="relative h-28 bg-gradient-to-r from-purple-400 via-pink-500 to-orange-400 rounded-xl w-[684px] h-[146px] mx-auto">
-            {/* Profile Picture */}
-            <div className="absolute bottom-[-70px] left-1/2 transform -translate-x-1/2 w-[140px] h-[140px] rounded-full border-4 border-white bg-orange-400 overflow-hidden">
-              <img
-                src={user.profilePic} 
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
+          <div className="relative bg-gradient-to-r from-purple-400 via-pink-500 to-orange-400 rounded-xl w-[684px] h-[146px] mx-auto">
+            <div className="absolute bottom-[-70px] left-1/2 transform -translate-x-1/2 w-[140px] h-[140px] rounded-full border-4 border-slate-700 overflow-hidden">
+              <div className="w-full h-full flex items-center justify-center rounded-full text-slate-950 bg-slate-200 text-[40px]">
+                {userInfo?.ProfilePicture ? (
+                  // Show Profile Picture if available
+                  <img
+                    src={userInfo.ProfilePicture}
+                    alt="Profile"
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  // Show Initials if no Profile Picture
+                  getInitials(fullname)
+                )}
+              </div>
             </div>
           </div>
-
-          {/* Profile Details */}
           <div className="w-[684px] mx-auto mt-20 text-center">
             <div className="flex justify-between items-center">
-              
-              {/* Left Side */}
               <div className="text-left">
                 <h2 className="text-[30px] font-bold flex items-center">
-                  {user.name}
-                  <img src={badgeIcon} alt="Badge" className="w-6 h-6 ml-2" />
+                  {fullname || "Loading..."}
+                  {hasBadge && (
+                    <img
+                      src={badgeIcon}
+                      alt="Badge"
+                      className="w-[19px] h-auto md:w-6 md:h-6 ml-2"
+                    />
+                  )}
                 </h2>
-                <p className="text-[16px] font-regular">{user.username}</p>
-                <p className="text-[16px] font-regular">{user.univ}</p>
+                <p className="text-[16px] font-regular">@{username}</p>
+                <p className="text-[16px] font-regular">
+                  {userInfo?.School || ""}
+                </p>
               </div>
-
-              {/* Right Side */}
-              <div>
-                <div className="w-[105px] h-[41px] rounded-[10px] border border-orange-400 flex items-center justify-center p-2">
-                  <span className="text-[16px] font-medium">{user.points} points</span>
-                </div>
+              <div className="w-[105px] h-[41px] rounded-[10px] border border-orange-400 flex items-center justify-center p-2">
+                <span className="text-[16px] font-medium">
+                  {userInfo?.Points || 0} points
+                </span>
               </div>
             </div>
           </div>
-          
-        {/* Tabs Container */}
-          <div className="w-[684px] mx-auto">
+          <div className="md:w-[684px] mx-auto">
             <div className="flex justify-between w-full mt-6 border-b-[2px] border-[#141E46]">
-              <span className="text-[16px] font-regular text-[#141E46]">
+              <span className="text-[12px] md:text-[16px] font-semibold text-[#141E46] border-b-4 border-orange-400">
                 Created Forums
               </span>
             </div>
-
-          {/* Tab Content */}
-          <div className="w-full mt-6 transform transition-all duration-500 ease-out opacity-0 translate-y-[-20px] animate-slide-fade">
-            {forums.filter((forum) => forum.author === username).length === 0 ? (
-              <p className=" text-center text-gray-400  text-[14px]">
-                No forums available.
-              </p>
+          </div>
+          <div className="w-[684px] mx-auto mt-6">
+            {isLoading ? (
+              <div className="flex justify-center items-center h-64">
+                <p>Loading...</p>
+              </div>
+            ) : createdForums.length > 0 ? (
+              <div>
+                <ForumFunctions
+                  forums={createdForums}
+                  handleForumClick={handleForumClick}
+                  compact={true}
+                />
+              </div>
             ) : (
-              <ForumFunctions
-                forums={forums.filter((forum) => forum.author === username)}
-                handleForumClick={handleForumClick}
-                handleFavoriteClick={handleFavoriteClick}
-                handleVote={handleVote}
-                compact={true}
-              />
+              <div className="flex justify-center items-center h-64">
+                <p className="font-medium">No created forums yet. </p>
+              </div>
             )}
           </div>
-        </div>
         </div>
       </main>
     </div>

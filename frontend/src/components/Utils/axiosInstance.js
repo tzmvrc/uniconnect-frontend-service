@@ -5,7 +5,7 @@ import { isTokenExpired } from "./Auth";
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     // ✅ Changed "header" to "headers"
     "Content-Type": "application/json",

@@ -1,5 +1,7 @@
+/** @format */
+
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import axiosInstance from "../Utils/axiosInstance";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
@@ -8,8 +10,14 @@ import exit from "../images/exit.png";
 import Toast from "./ToastMessage/ToastMessage";
 import Loading from "./Loading/Loading";
 import ConfirmDeletion from "../Confirmation/confirmation";
+import Pagination from "../Pagination";
+import { MoreVertical } from "lucide-react";
 
 const Announcement = () => {
+  const { announcementId } = useParams();
+  const location = useLocation();
+  const isViewingSpecificAnnouncement = !!announcementId;
+
   const [menuCollapsed, setMenuCollapsed] = useState(true);
   const toggleMenu = () => {
     setMenuCollapsed((prevState) => !prevState);
@@ -17,6 +25,7 @@ const Announcement = () => {
 
   const [userInfo, setUserInfo] = useState(null);
   const [announcements, setAnnouncements] = useState([]);
+  const [singleAnnouncement, setSingleAnnouncement] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
@@ -35,6 +44,11 @@ const Announcement = () => {
   const [loadingMessage, setLoadingMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [announcementToDelete, setAnnouncementToDelete] = useState(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Number of announcements per page
 
   const handleCloseToast = () => {
     setShowToast({ isShown: false, message: "" });
@@ -56,6 +70,27 @@ const Announcement = () => {
     return text.length > limit ? text.substring(0, limit) + "..." : text;
   };
 
+  const fetchSingleAnnouncement = async (id) => {
+    try {
+      setIsLoading(true);
+      const response = await axiosInstance.get(
+        `/announcement/${id}?t=${Date.now()}`
+      );
+      if (response.data.success) {
+        setSingleAnnouncement(response.data.announcement);
+        setIsViewModalOpen(true);
+      } else {
+        console.error("Failed to fetch announcement:", response.data);
+        showToastMessage("error", "Failed to load announcement");
+      }
+    } catch (error) {
+      console.error("Error fetching single announcement:", error);
+      showToastMessage("error", "Failed to load announcement");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const fetchAnnouncements = async () => {
     try {
       setIsLoading(true);
@@ -65,8 +100,7 @@ const Announcement = () => {
       if (response.data.success) {
         const filteredAnnouncements =
           response.data.announcements?.filter(
-            (announcement) =>
-              !announcement.isDeleted
+            (announcement) => !announcement.isDeleted
           ) || [];
 
         // Sort announcements in descending order based on creation date
@@ -109,6 +143,12 @@ const Announcement = () => {
     fetchAnnouncements();
   }, []);
 
+  useEffect(() => {
+    if (announcementId) {
+      fetchSingleAnnouncement(announcementId);
+    }
+  }, [announcementId, location.pathname]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -129,9 +169,11 @@ const Announcement = () => {
     }
 
     try {
-      setLoading(true); 
+      setLoading(true);
       setIsFormVisible(false);
-      setLoadingMessage(isEditing ? "Updating Announcement" : "Creating Announcement");
+      setLoadingMessage(
+        isEditing ? "Updating Announcement" : "Creating Announcement"
+      );
 
       if (isEditing && currentAnnouncementId) {
         // Editing existing announcement
@@ -145,7 +187,7 @@ const Announcement = () => {
         );
 
         if (response.data) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise((resolve) => setTimeout(resolve, 1500));
 
           setTitle("");
           setDescription("");
@@ -154,6 +196,9 @@ const Announcement = () => {
           setCurrentAnnouncementId(null);
           setLoading(false);
           showToastMessage("success", "Announcement updated successfully!");
+          if (isViewModalOpen && singleAnnouncement) {
+            fetchSingleAnnouncement(singleAnnouncement.id);
+          }
           fetchAnnouncements();
         }
       } else {
@@ -165,7 +210,7 @@ const Announcement = () => {
         });
 
         if (response.data) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise((resolve) => setTimeout(resolve, 1500));
 
           setTitle("");
           setDescription("");
@@ -195,20 +240,27 @@ const Announcement = () => {
       setLoading(true);
       setLoadingMessage("Deleting Announcement");
       setIsModalOpen(false);
-      
+
       const response = await axiosInstance.delete(
         `/announcement/${announcementToDelete}`,
         {
-          data: { username: userInfo.Username }
+          data: { username: userInfo.Username },
         }
       );
 
       if (response.data) {
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 1500));
 
         setLoading(false);
         showToastMessage("success", "Announcement deleted successfully!");
-        fetchAnnouncements(); 
+        setIsViewModalOpen(false);
+
+        // If we're viewing a specific announcement and it was deleted, navigate back
+        if (isViewingSpecificAnnouncement) {
+          window.history.pushState({}, "", "/announcement");
+        }
+
+        fetchAnnouncements();
       }
     } catch (error) {
       console.error("Error deleting announcement:", error);
@@ -228,6 +280,11 @@ const Announcement = () => {
     setCurrentAnnouncementId(announcement.id);
     setIsFormVisible(true);
     setShowOptionsFor(null);
+
+    // If in view modal, close it when editing
+    if (isViewModalOpen && !isViewingSpecificAnnouncement) {
+      setIsViewModalOpen(false);
+    }
   };
 
   const toggleOptions = (announcementId) => {
@@ -244,6 +301,39 @@ const Announcement = () => {
     setIsModalOpen(true);
     setShowOptionsFor(null);
   };
+
+  const handleViewAnnouncement = (announcement) => {
+    if (!isViewingSpecificAnnouncement) {
+      setSingleAnnouncement(announcement);
+      setIsViewModalOpen(true);
+
+      // Update URL without full page reload
+      window.history.pushState({}, "", `/announcement/${announcement.id}`);
+    }
+  };
+
+  const closeViewModal = () => {
+    setIsViewModalOpen(false);
+    setSingleAnnouncement(null);
+
+    // Always return to the base announcement URL when closing the modal
+    window.history.pushState({}, "", "/announcement");
+  };
+
+  // Handle page change for pagination
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Scroll to top when changing pages
+    window.scrollTo(0, 0);
+  };
+
+  // Get current announcements for pagination
+  const indexOfLastAnnouncement = currentPage * itemsPerPage;
+  const indexOfFirstAnnouncement = indexOfLastAnnouncement - itemsPerPage;
+  const currentAnnouncements = announcements.slice(
+    indexOfFirstAnnouncement,
+    indexOfLastAnnouncement
+  );
 
   const userInitials = userInfo
     ? getInitials(userInfo.FirstName, userInfo.LastName)
@@ -278,7 +368,17 @@ const Announcement = () => {
         <div className="flex flex-col justify-center mt-[3px] md:mt-[30px] w-full mr-4 md:mr-4  md:ml-4 md:w-[700px] h-[80px] md:border border-gray-500 rounded-[5px]">
           <div className="flex mx-[20px] md:mx-[20px]">
             <div className="w-[38px] h-[38px] md:w-11 md:h-11 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-200 mr-[10px] border border-black aspect-square">
-              {userInitials}
+              {userInfo?.profile_picture ? (
+                // Show Profile Picture if available
+                <img
+                  src={userInfo.profile_picture}
+                  alt="Profile"
+                  className="w-full h-full object-cover rounded-full"
+                />
+              ) : (
+                // Show Initials if no Profile Picture
+                getInitials(fullName)
+              )}
             </div>
             <button
               className="border border-gray-500 p-2 w-full rounded-md text-left text-[14px] md:text-base hover:bg-gray-300"
@@ -305,24 +405,34 @@ const Announcement = () => {
               No announcements found
             </div>
           ) : (
-            announcements.map((announcement) => (
+            currentAnnouncements.map((announcement) => (
               <div key={announcement.id} className="flex w-full">
                 <div className="flex flex-col justify-center w-full mt-[15px] mb-[2px] border border-black p-[15px] rounded-lg relative">
                   <div className="flex items-center mb-2 justify-between">
                     <div className="flex items-center">
                       <div className="w-8 h-8 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-200 mr-[10px] border-[1px] border-black">
-                        {announcement.created_by
-                          ? announcement.created_by.charAt(0).toUpperCase()
-                          : "?"}
+                        {announcement.created_by?.profilePicture ? (
+                          // Show Profile Picture if available
+                          <img
+                            src={announcement.created_by.profilePicture}
+                            alt="Profile"
+                            className="w-full h-full object-cover rounded-full"
+                          />
+                        ) : (
+                          // Show Initials if no Profile Picture
+                          announcement.created_by?.username
+                            .charAt(0)
+                            .toUpperCase()
+                        )}
                       </div>
                       <span className="text-[14px] font-medium">
-                        @{announcement.created_by}
+                        @{announcement.created_by?.username}
                       </span>
                     </div>
 
                     {/* Ellipsis button for user's own announcements */}
                     {userInfo &&
-                      userInfo.Username === announcement.created_by && (
+                      userInfo.Username === announcement.created_by.username && (
                         <div className="relative">
                           <button
                             onClick={(e) => {
@@ -330,30 +440,31 @@ const Announcement = () => {
                               e.stopPropagation();
                               toggleOptions(announcement.id);
                             }}
-                            className="text-xl font-bold px-2 py-1 hover:bg-gray-200 rounded-full"
+                            className="text-xl font-bold p-2 hover:bg-gray-200 rounded-full"
                           >
-                            ...
+                            <MoreVertical size={24} />
                           </button>
 
                           {showOptionsFor === announcement.id && (
-                            <div className="absolute right-0 mt-1 w-36 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                            <div className="absolute right-0 mt-2 w-32 bg-slate-200 border rounded-md shadow-md">
                               <button
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
                                   handleEdit(announcement);
                                 }}
-                                className="block w-full text-left px-4 py-2 hover:bg-gray-200"
+                                className="block w-full px-4 py-2 text-left font-[500] hover:bg-[#141E46] hover:text-white rounded-md"
                               >
                                 Edit
                               </button>
+
                               <button
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
                                   initiateDelete(announcement.id);
                                 }}
-                                className="block w-full text-left px-4 py-2 hover:bg-gray-200 text-red-600"
+                                className="block w-full px-4 py-2 text-left text-red-600 font-[500] hover:bg-[#da4444] hover:text-white rounded-md"
                               >
                                 Delete
                               </button>
@@ -363,9 +474,9 @@ const Announcement = () => {
                       )}
                   </div>
 
-                  <Link
-                    to={`/announcement/${announcement.id}`}
-                    className="w-full"
+                  <div
+                    onClick={() => handleViewAnnouncement(announcement)}
+                    className="w-full cursor-pointer"
                   >
                     <h1 className="text-[25px] font-bold">
                       {announcement.title}
@@ -377,14 +488,27 @@ const Announcement = () => {
                     <p className="text-[14px] font-[450]">
                       {truncateText(announcement.description)}
                     </p>
-                  </Link>
+                  </div>
                 </div>
               </div>
             ))
           )}
+
+          {/* Pagination component */}
+          {!isLoading && announcements.length > 0 && (
+            <div className="w-full mt-6 mb-8">
+              <Pagination
+                totalItems={announcements.length}
+                itemsPerPage={itemsPerPage}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          )}
         </div>
       </div>
 
+      {/* Form Modal for Creating/Editing Announcements */}
       {isFormVisible && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-3 md:px-0">
           <div className="flex flex-col bg-[#FFCDA9] rounded-lg w-full md:w-[550px] shadow-lg">
@@ -413,7 +537,17 @@ const Announcement = () => {
               <div className="flex justify-center items-center mb-[15px]">
                 <div className="flex items-center w-full">
                   <div className="w-[38px] h-[38px] md:w-11 md:h-11 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-200 mr-[10px] border-[1px] border-black">
-                    {userInitials}
+                    {userInfo?.profile_picture ? (
+                      // Show Profile Picture if available
+                      <img
+                        src={userInfo.profile_picture}
+                        alt="Profile"
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    ) : (
+                      // Show Initials if no Profile Picture
+                      { userInitials }
+                    )}
                   </div>
                   <span className="text-[14px] md:text-[16px] font-medium">
                     {username}
@@ -444,6 +578,76 @@ const Announcement = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View Announcement Modal */}
+      {isViewModalOpen && singleAnnouncement && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-3 md:px-0">
+          <div className="flex flex-col bg-[#FFCDA9] rounded-lg w-full md:w-[700px] shadow-lg max-h-[80vh] overflow-auto">
+            <div className="flex px-[15px] pb-[10px] pt-[12px] items-center justify-between sticky top-0 bg-[#FFCDA9] z-10">
+              <div className="flex items-center">
+                <div className="w-8 h-8 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-200 mr-[10px] border-[1px] border-black">
+                  {singleAnnouncement.created_by?.profilePicture ? (
+                    // Show Profile Picture if available
+                    <img
+                      src={singleAnnouncement.created_by?.profilePicture}
+                      alt="Profile"
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    // Show Initials if no Profile Picture
+                    singleAnnouncement.created_by?.username
+                      .charAt(0)
+                      .toUpperCase()
+                  )}
+                </div>
+                <span className="text-[14px] font-medium">
+                  @{singleAnnouncement.created_by?.username}
+                </span>
+              </div>
+
+              <div className="flex items-center">
+                {userInfo &&
+                  userInfo.Username === singleAnnouncement.created_by.username && (
+                    <div className="flex mr-4">
+                      <button
+                        onClick={() => handleEdit(singleAnnouncement)}
+                        className="border border-gray-600 mr-3 px-3 py-1 rounded-md hover:bg-gray-200 text-sm"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => initiateDelete(singleAnnouncement.id)}
+                        className="border border-red-600 px-3 py-1 rounded-md hover:bg-red-100 text-sm"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                <img
+                  src={exit}
+                  alt="exit icon"
+                  className="h-auto w-[25px] md:w-[30px] cursor-pointer"
+                  onClick={closeViewModal}
+                />
+              </div>
+            </div>
+            <div className="w-full border border-gray-600"></div>
+
+            <div className="px-[15px] pb-[20px] pt-[15px]">
+              <h1 className="text-[25px] md:text-[30px] font-bold mb-2">
+                {singleAnnouncement.title}
+              </h1>
+              <p className="text-[13px] font-[500] mb-[15px]">
+                Posted on{" "}
+                {new Date(singleAnnouncement.createdAt).toLocaleDateString()}
+              </p>
+              <p className="text-[14px] md:text-[16px] font-[450] whitespace-pre-wrap">
+                {singleAnnouncement.description}
+              </p>
             </div>
           </div>
         </div>

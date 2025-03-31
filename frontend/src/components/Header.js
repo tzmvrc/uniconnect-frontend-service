@@ -10,6 +10,7 @@ import SortButton from "./pages/SortButton";
 import helpIcon from "./images/help-icon.png";
 import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
+import { MessageCircleQuestion } from "lucide-react";
 
 const Header = ({
   searchQuery,
@@ -85,9 +86,9 @@ const Header = ({
         </div>
 
         {/* Help Button (Desktop only) */}
-        <div className="hidden md:flex justify-end items-center w-full">
-          <button onClick={() => navigate("/Faqs")} className="mr-4">
-            <img src={helpIcon} alt="Help" className="w-[45px]" />
+        <div className="hidden md:flex items-center z-20 absolute right-4 top-1/2 transform -translate-y-1/2">
+          <button onClick={() => navigate("/Faqs")} className="p-2">
+            <MessageCircleQuestion className="w-9 h-9 text-white" />
           </button>
         </div>
       </header>

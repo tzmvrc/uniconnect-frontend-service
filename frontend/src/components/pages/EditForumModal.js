@@ -151,7 +151,17 @@ const EditForumModal = ({ onClose, forum_id }) => {
               <div className="flex justify-between items-center mb-4 px-[10px]">
                 <div className="flex items-center px-4">
                   <div className="w-[38px] h-[38px] md:w-11 md:h-11 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-200 mr-[10px] border-[1px] border-black">
-                    {getInitials(fullName)}
+                    {userInfo?.profile_picture ? (
+                      // Show Profile Picture if available
+                      <img
+                        src={userInfo.profile_picture}
+                        alt="Profile"
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    ) : (
+                      // Show Initials if no Profile Picture
+                      getInitials(fullName)
+                    )}
                   </div>
                   <span className="text-[14px] md:text-[16px] font-medium">
                     {username}

@@ -98,12 +98,26 @@ const Faqs = () => {
     >
       <div class="flex justify-center items-center flex-col text-white">
         <img
-          class="h-auto w-[290px] md:w-[400px] mb-[20px] md:mb-[40px] cursor-pointer"
+          class="h-auto w-[290px] md:w-[400px] mb-[20px] md:mb-[0px] cursor-pointer"
           src={logo}
           alt="logo"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/login")}
         />
-        <h2 class="text-[25px] md:text-[40px] font-semibold md:font-bold mb-[20px] md:mb-[0px]">
+       
+
+        <p className="mx-[470px] text-[14px] mt-[10px] text-center">
+          Is your concern already covered? Browse more forums now, engage in
+          discussions, and compete on the leaderboards. Let’s study, share
+          knowledge, and grow together with our peers!
+        </p>
+        <button
+          class="w-[170px] p-[7px] px-[18px] text-[15px] font-medium text-white bg-[#eb6e5b] border-2 border-transparent rounded-[8px] cursor-pointer transition-all duration-300 ease-in-out mt-[15px] mb-[40px] hover:bg-[#d25441] hover:scale-102"
+          onClick={() => navigate("/login")}
+        >
+          Browse Forums
+        </button>
+
+        <h2 class="text-[25px] md:text-[40px] font-semibold md:font-bold mb-[20px] md:mb-[25px]">
           How can we Help?
         </h2>
       </div>

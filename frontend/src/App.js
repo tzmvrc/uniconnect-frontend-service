@@ -1,5 +1,3 @@
-/** @format */
-
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
@@ -12,6 +10,7 @@ import Login from "./components/pages/Login";
 import SignupVerif from "./components/pages/SignupVerif";
 import Dashboard from "./components/pages/Dashboard";
 import OwnProfile from "./components/pages/OwnProfile";
+import OtherProfile from "./components/pages/OtherProfile";
 import ForgotNewPass from "./components/pages/ForgotNewPass";
 import ForgotSuccess from "./components/pages/ForgotSuccess";
 import SignUpSuccess from "./components/pages/SignUpSuccess";
@@ -27,11 +26,9 @@ import ForumDetails from "./components/pages/ForumDetails";
 import Settings from "./components/pages/Settings";
 import { isTokenExpired } from "./components/Utils/Auth";
 
-
-
 function App() {
   useEffect(() => {
-    const socket = new WebSocket("wss://https://uniconnect-service-api.onrender.com"); // Change URL if deployed
+    const socket = new WebSocket("wss://https://uniconnect-service-api.onrender.com");
 
     socket.onopen = () => {
       console.log("✅ WebSocket connected!");
@@ -51,7 +48,7 @@ function App() {
     };
 
     return () => {
-      socket.close(); // Close the socket when the component unmounts
+      socket.close();
     };
   }, []);
 
@@ -59,9 +56,9 @@ function App() {
     const token = localStorage.getItem("token");
 
     if (token && isTokenExpired(token)) {
-      alert("Session expired, please log in again."); // You can use toast instead
+      alert("Session expired, please log in again.");
       localStorage.removeItem("token");
-      window.location.href = "/login"; // Redirect to login page
+      window.location.href = "/login";
     }
   }, []);
 
@@ -77,7 +74,8 @@ function App() {
           <Route path="/FAQs" element={<FAQs />} />
           <Route path="/signupverif" element={<SignupVerif />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/@imjuan" element={<OwnProfile />} />
+          <Route path="/profile" element={<OwnProfile />} />
+          <Route path="/:username" element={<OtherProfile />} />
           <Route path="/login-forgot-password" element={<ForgotPass />} />
           <Route path="/account-verify" element={<SignupVerif />} />
           <Route path="/verify-success" element={<SignUpSuccess />} />
@@ -88,7 +86,7 @@ function App() {
           <Route path="/topics/all" element={<AllTopics />} />
           <Route path="/topics/networking" element={<TopicNetworking />} />
           <Route path="/announcement" element={<Announcement />} />
-          <Route path="/announcement/:id" element={<PostDetails />} />
+          <Route path="/announcement/:announcementId" element={<Announcement />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/forum/:forum_id" element={<ForumDetails />} />
           <Route

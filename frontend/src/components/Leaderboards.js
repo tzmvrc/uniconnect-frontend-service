@@ -83,9 +83,12 @@ const Leaderboards = () => {
   return (
     <aside className="w-[290px] fixed top-[85px] right-0 h-[calc(100vh-96px)] bg-white p-2 hidden md:block z-10">
       <div className="p-4 rounded-2xl border-[1px] border-black bg-[#FFCDA9] h-full">
-        <h3 className="text-[30px] font-semibold mb-2 text-[#141E46]">
+        <h3 className="text-[30px] font-semibold  text-[#141E46]">
           Leaderboards
         </h3>
+        <p className="text-[13px] mb-4">
+          Top users and schools ranked by activity and points this month.
+        </p>
 
         {/* Top Users Section */}
         <h4 className="font-medium mb-2 text-[17px] text-[#141E46]">
@@ -107,7 +110,17 @@ const Leaderboards = () => {
                     className="w-10 h-10 rounded-full block bg-white border-black border-[1px]"
                   >
                     <div className="w-[95px] h-[95px] md:w-full md:h-full flex items-center justify-center rounded-full text-slate-950 bg-slate-200 text-[16px]">
-                      {getInitials(`${user.first_name} ${user.last_name}`)}
+                      {user?.profilePicture ? (
+                        // Show Profile Picture if available
+                        <img
+                          src={user.profilePicture}
+                          alt="Profile"
+                          className="w-full h-full object-cover rounded-full"
+                        />
+                      ) : (
+                        // Show Initials if no Profile Picture
+                        getInitials(`${user.first_name} ${user.last_name}`)
+                      )}
                     </div>
                   </Link>
 

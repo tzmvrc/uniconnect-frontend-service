@@ -232,7 +232,7 @@ const AccountManagementModal = () => {
 
         {/* Password Change Confirmation Modal */}
         {isModalVisible && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
             <div className="flex flex-col justify-center items-center">
               <div className="flex flex-col items-center text-center bg-[#FFCDA9] rounded-lg w-[300px] md:w-[350px] shadow-lg p-4 md:p-6">
                 <p className="text-[22px] md:text-[25px] font-bold w-full">

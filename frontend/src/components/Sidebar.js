@@ -15,7 +15,17 @@ import points from "./images/points.png";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import axiosInstance from "../components/Utils/axiosInstance";
 import { getInitials } from "../components/Utils/Helper";
-import Loading from "../components/pages/Loading/Loading"
+import Loading from "../components/pages/Loading/Loading";
+
+import {
+  User,
+  MessageSquare,
+  Bell,
+  BookOpen,
+  Megaphone,
+  Trophy,
+  Settings,
+} from "lucide-react";
 
 const Sidebar = ({ menuCollapsed, toggleMenu }) => {
   const [userInfo, setUserInfo] = useState(null);
@@ -34,13 +44,13 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
   const location = useLocation();
 
   const menuItems = [
-    { name: "View Profile", icon: iconViewProfile, path: "/@imjuan" },
-    { name: "Dashboard", icon: iconDashboard, path: "/dashboard" },
-    { name: "Notification", icon: iconNotification, path: "/notification" },
-    { name: "Topic", icon: iconTopic, path: "/topics/all" },
-    { name: "Announcement", icon: iconAnnouncement, path: "/announcement" },
-    { name: "Leaderboard", icon: iconLeaderboard, path: "/leaderboard" },
-    { name: "Settings", icon: iconSettings, path: "/settings" },
+    { name: "View Profile", icon: <User />, path: "/profile" },
+    { name: "Dashboard", icon: <MessageSquare />, path: "/dashboard" },
+    { name: "Notification", icon: <Bell />, path: "/notification" },
+    { name: "Topic", icon: <BookOpen />, path: "/topics/all" },
+    { name: "Announcement", icon: <Megaphone />, path: "/announcement" },
+    { name: "Leaderboard", icon: <Trophy />, path: "/leaderboard" },
+    { name: "Settings", icon: <Settings />, path: "/settings" },
   ];
 
   useEffect(() => {
@@ -158,20 +168,30 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
             className="w-14 h-14 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-200 mr-[10px] border-[1px] border-black cursor-pointer"
             onClick={toggleMenu}
           >
-            {getInitials(fullName)}
+            {userInfo?.profile_picture ? (
+              // Show Profile Picture if available
+              <img
+                src={userInfo.profile_picture}
+                alt="Profile"
+                className="w-full h-full object-cover rounded-full"
+              />
+            ) : (
+              // Show Initials if no Profile Picture
+              getInitials(fullName)
+            )}
           </div>
 
           {!menuCollapsed && (
             <div className="leading-tight">
               <Link
-                to="/@imjuan"
+                to={`/profile`}
                 className="font-semibold text-[20px] md:text-[25px]"
               >
                 {fullName}
               </Link>
               <p>
                 <Link
-                  to="/@imjuan"
+                  to={`/profile`}
                   className="text-[14px] md:text-[16px] font-normal"
                 >
                   {username}
@@ -231,13 +251,14 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
                       location.pathname === item.path ? "#D75F4D" : "#141E46",
                   }}
                 >
-                  <img
-                    src={item.icon}
-                    alt={`${item.name} icon`}
+                  <span
                     className={`w-5 h-5 md:w-6 md:h-6 ${
                       menuCollapsed ? "" : "mr-2"
                     }`}
-                  />
+                  >
+                    {item.icon}
+                  </span>
+
                   {!menuCollapsed && <span>{item.name}</span>}
                 </Link>
               ) : (

@@ -76,6 +76,7 @@ const ForumDetails = () => {
           status: forumData.status,
           author: forumData.created_by?.username || "Unknown",
           fullname: `${forumData.created_by?.first_name} ${forumData.created_by?.last_name}`,
+          profilePicture: forumData.created_by?.profilePicture,
           topic: forumData.topic_id?.name || "General",
           tags: forumData.tags || [],
           likes: forumData.likes || 0,
@@ -338,9 +339,20 @@ const ForumDetails = () => {
                 className="h-auto w-[25px] mr-[10px] md:hidden cursor-pointer"
                 onClick={() => navigate(-1)}
               />
-              <div className="w-[42px] h-[42px] md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-200 mr-[10px] border-[1px] border-black">
-                {getInitials(forum?.fullname)}
+              <div className="w-[42px] h-[42px] md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-200 mr-[10px] border-[1px] border-black overflow-hidden">
+                {forum?.profilePicture ? (
+                  // Show Profile Picture if available
+                  <img
+                    src={forum.profilePicture}
+                    alt="Profile"
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  // Show Initials if no Profile Picture
+                  getInitials(forum?.fullname)
+                )}
               </div>
+
               <p className="text-[13px] md:text-[16px] mr-4 font-[650] md:font-[600]">
                 @{forum?.author} · {forum?.date}
               </p>

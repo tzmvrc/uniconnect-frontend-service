@@ -38,8 +38,12 @@ const Settings = () => {
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isEditingSchool, setIsEditingSchool] = useState(false);
   const [confirmSchool, setConfirmSchool] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
+
   const [otpModalOpen, setOtpModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(tabs[0].id);
+  const [updatePicture, setUpdatePicture] = useState(false);
   const [aactiveTab, setAactiveTab] = useState("public");
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState({
@@ -56,7 +60,93 @@ const Settings = () => {
     setShowToast({ isShown: true, type: type, message: message });
   };
 
-  const staticPassword = "delete0";
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    if (!allowedTypes.includes(file.type)) {
+      alert("Only JPG, PNG, and GIF files are allowed.");
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > maxSize) {
+      alert("File size should not exceed 5MB.");
+      return;
+    }
+
+    // Read file and preview (optional)
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setPreviewImage(e.target.result); // Assuming you have a state for previewing the image
+    };
+    reader.readAsDataURL(file);
+
+    // Store the file for upload
+    setSelectedFile(file); // Assuming you have a state for handling file upload
+  };
+
+const handleProfilePictureUpdate = async () => {
+  if (!selectedFile) {
+    showToastMessage("error", "Please select an image before uploading.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("profile-picture", selectedFile);
+
+  try {
+    setLoading(true);
+    const response = await axiosInstance.put(
+      "/users/upload-profile-picture", // Match backend endpoint
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure auth
+        },
+      }
+    );
+
+    if (response.data?.profilePicture) {
+      // Update state
+      setUserData((prev) => ({
+        ...prev,
+        profilePicture: response.data.profilePicture, // Match backend key
+      }));
+
+      // Reset UI
+      setPreviewImage(null);
+      setSelectedFile(null);
+      setUpdatePicture(false);
+
+      showToastMessage(
+        "success",
+        response.data.message || "Profile picture updated successfully!"
+      );
+      setTimeout(() => {
+        window.location.reload(); // Refresh the page
+      }, 700);
+    } else {
+      throw new Error("Invalid response format");
+    }
+  } catch (error) {
+    console.error("Upload Error:", error);
+    showToastMessage(
+      "error",
+      error.response?.data?.message || "Failed to update profile picture"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
 
   // Fetch user data from backend
   useEffect(() => {
@@ -154,20 +244,18 @@ const Settings = () => {
   };
 
   const handleSendOTPEmail = async () => {
-
     setLoading(true);
-  
 
     try {
-        const emailLower = tempEmail.toLowerCase();
+      const emailLower = tempEmail.toLowerCase();
 
-        // ✅ Basic format check
-        if (!email.includes("@")) {
-          showToastMessage("error", "Please enter a valid email address");
-          setLoading(false);
-          return;
-        }
-        
+      // ✅ Basic format check
+      if (!email.includes("@")) {
+        showToastMessage("error", "Please enter a valid email address");
+        setLoading(false);
+        return;
+      }
+
       // ✅ Updated to the new OTP API route
       const response = await axiosInstance.post("/otp/send-otp", {
         email: email,
@@ -299,7 +387,7 @@ const Settings = () => {
             <div className="w-full flex flex-col justify-center items-center">
               <div className="flex flex-col items-center w-full md:w-[700px] md:h-[520px]">
                 <div className="w-full flex flex-col justify-center items-center">
-                  <div className=" relative">
+                  <div className="relative">
                     {/* Background Image */}
                     <img
                       src={setbg}
@@ -307,30 +395,49 @@ const Settings = () => {
                       className="h-auto w-full md:w-[550px]"
                     />
 
-                    {/* Profile Image */}
-                    <div className="absolute bottom-[-60px] left-[60px] md:left-[75px] transform -translate-x-1/2 w-[100px] h-[100px] md:w-[110px] md:h-[110px] rounded-full border-4 border-slate-700 overflow-hidden">
-                      <div className="w-[95px] h-[95px] md:w-full md:h-full flex items-center justify-center rounded-full text-slate-950  bg-slate-200 text-[40px]">
-                        {getInitials(fullname)}
+                    {/* Profile Image with External Edit Icon */}
+                    <div className="absolute bottom-[-60px] left-[60px] md:left-[75px] transform -translate-x-1/2 w-[100px] h-[100px] md:w-[110px] md:h-[110px] rounded-full border-4 border-[#1D274D] overflow-visible">
+                      {/* Profile Image/Initials */}
+                      <div className="w-[95px] h-[95px] md:w-full md:h-full flex items-center justify-center rounded-full text-slate-950 bg-slate-200 text-[40px] overflow-hidden">
+                        {userData?.profile_picture ? (
+                          <img
+                            src={userData.profile_picture}
+                            alt="Profile"
+                            className="w-full h-full object-cover rounded-full"
+                          />
+                        ) : (
+                          getInitials(fullname)
+                        )}
+                      </div>
+
+                      {/* Edit Icon - Floating Outside */}
+                      <div
+                        className="absolute -bottom-2 -right-2 bg-[#1D274D] p-2 rounded-full cursor-pointer hover:bg-slate-600 transition z-10"
+                        onClick={() => setUpdatePicture(true)}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 text-white"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                          />
+                        </svg>
                       </div>
                     </div>
                   </div>
 
                   {/* Profile Info and Button */}
                   <div className="flex justify-between w-[550px] mt-[8px]">
-                    <h1 className="ml-[220px] md:ml-[145px] text-[23px] md:text-[30px] pb-[5px] font-[700]">
+                    <h1 className="ml-[220px] md:ml-[160px] text-[23px] md:text-[30px] pb-[5px] font-[700]">
                       {fullname}
                     </h1>
-
-                    {/* <button
-                      onClick={() => {
-                        handleEditClick("FirstName", "Name");
-                        setIsEditingFullName(true);
-                        setLastName(userData?.LastName || "");
-                      }}
-                      className="px-[20px] mr-[45px] my-[8px] font-[500] rounded-[5px] bg-[#1D274D] text-white text-[14px]"
-                    >
-                      Edit
-                    </button> */}
                   </div>
                 </div>
                 {/* Editing tab */}
@@ -832,6 +939,87 @@ const Settings = () => {
               >
                 Continue
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {updatePicture && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
+          <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-col items-center text-center bg-[#FFCDA9] rounded-lg w-[300px] md:w-[400px] shadow-lg p-6">
+              <p className="text-[22px] md:text-[25px] font-bold w-full">
+                Upload Profile Picture
+              </p>
+              <p className="text-[13px] md:text-[14px] font-[500] mx-[10px] md:mx-[20px]">
+                Select an image to personalize your profile.
+              </p>
+
+              <div className="flex flex-col items-center w-[90%] mt-[10px]">
+                {/* Image Upload Box */}
+                <label
+                  htmlFor="fileInput"
+                  className="w-full cursor-pointer flex flex-col items-center justify-center border-2 border-dashed border-gray-400 bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition"
+                >
+                  {previewImage ? (
+                    <img
+                      src={previewImage}
+                      alt="Preview"
+                      className="w-full h-[170px] object-cover rounded-lg"
+                    />
+                  ) : (
+                    <>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-9 w-9 text-gray-500 mb-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 4v16m8-8H4"
+                        />
+                      </svg>
+                      <p className="text-gray-600 font-medium">
+                        Click to upload a photo
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        JPG or PNG (Max 5MB)
+                      </p>
+                    </>
+                  )}
+                </label>
+
+                {/* Hidden File Input */}
+                <input
+                  id="fileInput"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                />
+              </div>
+
+              <div className="flex justify-center space-x-[20px] md:space-x-[40px] w-[80%] text-[14px] md:text-base mt-[20px]">
+                <button
+                  className="border-2 border-[#1D274D] font-semibold py-[5px] px-[25px] rounded-md text-[#1D274D]"
+                  onClick={() => {
+                    setUpdatePicture(false);
+                    setPreviewImage(null);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="bg-[#1D274D] text-white font-[500] py-[5px] px-[30px] rounded-md"
+                  onClick={handleProfilePictureUpdate}
+                >
+                  Upload
+                </button>
+              </div>
             </div>
           </div>
         </div>

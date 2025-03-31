@@ -18,17 +18,13 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const handleCreateForumClick = () => navigate("/createforum");
   const [forums, setForums] = useState([]);
-  const [searchQuery, setSearchQuery] = useState([]);
-  const [filteredForums, setFilteredForums] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredForums, setFilteredForums] = useState([]);
   const [showSortOptions, setShowSortOptions] = useState(false);
   const [sortCriterion, setSortCriterion] = useState("recent");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [userInfo, setUserInfo] = useState(null);
-  const totalItems = forums.length;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = forums.slice(indexOfFirstItem, indexOfLastItem);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -38,61 +34,60 @@ const Dashboard = () => {
     }
   }, [userInfo]);
 
- const getForums = async () => {
-   try {
-     const response = await axiosInstance.get("/forum/all");
-     if (!response.data.success) throw new Error("Failed to fetch forums");
+  const getForums = async () => {
+    try {
+      const response = await axiosInstance.get("/forum/all");
+      if (!response.data.success) throw new Error("Failed to fetch forums");
 
-     const mappedForums = response.data.forums.map((forum) => ({
-       id: forum._id,
-       title: forum.title,
-       content: forum.description,
-       public: forum.public,
-       status: forum.status,
-       author: forum.created_by?.username || "Unknown",
-       topic: forum.topic_id?.name || "General",
-       topicId: forum.topic_id?._id, // 🔥 Save topicId too!
-       tags: forum.tags || [],
-       likes: forum.likes || 0,
-       dislikes: forum.dislikes || 0,
-       isFavorited: forum.isFavorited || false,
-       userLiked: false,
-       userDisliked: false,
-       date: new Date(forum.createdAt).toLocaleDateString(),
-       rawDate: new Date(forum.createdAt),
-     }));
+      const mappedForums = response.data.forums.map((forum) => ({
+        id: forum._id,
+        title: forum.title,
+        content: forum.description,
+        public: forum.public,
+        status: forum.status,
+        author: forum.created_by?.username || "Unknown",
+        topic: forum.topic_id?.name || "General",
+        topicId: forum.topic_id?._id,
+        tags: forum.tags || [],
+        likes: forum.likes || 0,
+        dislikes: forum.dislikes || 0,
+        isFavorited: forum.isFavorited || false,
+        userLiked: false,
+        userDisliked: false,
+        date: new Date(forum.createdAt).toLocaleDateString(),
+        rawDate: new Date(forum.createdAt),
+      }));
 
-     const visibleForums = mappedForums.filter(
-       (forum) =>
-         forum.public ||
-         forum.author.toLowerCase() === userInfo?.Username.toLowerCase()
-     );
+      const visibleForums = mappedForums.filter(
+        (forum) =>
+          forum.public ||
+          forum.author.toLowerCase() === userInfo?.Username.toLowerCase()
+      );
 
-     // 🔥 Match user's topic **IDs** with forum.topicId
-     const userTopicIds = userInfo?.Topics || [];
+      // Match user's topic IDs with forum.topicId
+      const userTopicIds = userInfo?.Topics || [];
 
-     const matchingForums = [];
-     const nonMatchingForums = [];
+      const matchingForums = [];
+      const nonMatchingForums = [];
 
-     visibleForums.forEach((forum) => {
-       if (userTopicIds.includes(forum.topicId)) {
-         matchingForums.push(forum);
-       } else {
-         nonMatchingForums.push(forum);
-       }
-     });
+      visibleForums.forEach((forum) => {
+        if (userTopicIds.includes(forum.topicId)) {
+          matchingForums.push(forum);
+        } else {
+          nonMatchingForums.push(forum);
+        }
+      });
 
-     const reorderedForums = [...matchingForums, ...nonMatchingForums];
+      const reorderedForums = [...matchingForums, ...nonMatchingForums];
 
-     setForums(reorderedForums);
-     setFilteredForums(reorderedForums);
-   } catch (err) {
-     console.error("Error fetching forums:", err);
-   } finally {
-     setLoading(false);
-   }
- };
-
+      setForums(reorderedForums);
+      setFilteredForums(reorderedForums);
+    } catch (err) {
+      console.error("Error fetching forums:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchUserInfo();
@@ -102,7 +97,7 @@ const Dashboard = () => {
     try {
       const response = await axiosInstance.get("/users/get-user-info");
       setUserInfo(response.data.user || {});
-      console.log("User Info Fetched:", response.data.user); // ✅ Log user info here
+      console.log("User Info Fetched:", response.data.user);
     } catch (error) {
       console.error("Error fetching user info:", error);
       setUserInfo({});
@@ -120,6 +115,7 @@ const Dashboard = () => {
           forum.title.toLowerCase().includes(searchQuery.toLowerCase())
         )
       );
+      setCurrentPage(1); // Reset to first page on new search
     }
   };
 
@@ -137,26 +133,36 @@ const Dashboard = () => {
     setFilteredForums(updatedForums);
   };
 
-const handleSort = (criterion) => {
-  setSortCriterion(criterion);
-  setFilteredForums(
-    [...forums].sort((a, b) => {
-      if (criterion === "mostLiked") {
-        return b.likes - a.likes;
-      } else  {
-        return b.rawDate.getTime() - a.rawDate.getTime(); // 🕒 Sort by raw date
-      }
-    })
-  );
-  setShowSortOptions(false);
-};
-
-
+  const handleSort = (criterion) => {
+    setSortCriterion(criterion);
+    setFilteredForums(
+      [...forums].sort((a, b) => {
+        if (criterion === "mostLiked") {
+          return b.likes - a.likes;
+        } else {
+          return b.rawDate.getTime() - a.rawDate.getTime();
+        }
+      })
+    );
+    setShowSortOptions(false);
+    setCurrentPage(1); // Reset to first page on sort
+  };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
     console.log("Current Page:", page);
+    // Scroll to top of forum list
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
+
+  // Calculate pagination
+  const totalItems = filteredForums.length;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredForums.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div
@@ -168,7 +174,7 @@ const handleSort = (criterion) => {
         handleSearchChange={handleSearchChange}
         handleKeyPress={handleKeyPress}
         handleSort={handleSort}
-        handleForumClick={handleForumClick} // Passing handleForumClick to Header
+        handleForumClick={handleForumClick}
       />
       <Sidebar menuCollapsed={menuCollapsed} toggleMenu={toggleMenu} />
       <Leaderboards />
@@ -197,7 +203,7 @@ const handleSort = (criterion) => {
         {/* Forum List */}
         {filteredForums.length > 0 ? (
           <ForumFunctions
-            forums={filteredForums}
+            forums={currentItems} // Use currentItems instead of filteredForums
             userInfo={userInfo}
             handleVote={handleVote}
             handleForumClick={handleForumClick}
@@ -210,12 +216,14 @@ const handleSort = (criterion) => {
         )}
 
         {/* Pagination */}
-
-        <Pagination
-          totalItems={totalItems}
-          itemsPerPage={itemsPerPage}
-          onPageChange={handlePageChange}
-        />
+        {filteredForums.length > 0 && (
+          <Pagination
+            totalItems={totalItems}
+            itemsPerPage={itemsPerPage}
+            currentPage={currentPage} // Pass current page to component
+            onPageChange={handlePageChange}
+          />
+        )}
       </main>
     </div>
   );

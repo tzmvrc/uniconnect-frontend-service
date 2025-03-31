@@ -131,146 +131,145 @@ const OwnProfile = () => {
     }
   };
 
- const fetchSavedForums = async () => {
-   try {
-     console.log("Fetching saved forums...");
+  const fetchSavedForums = async () => {
+    try {
+      console.log("Fetching saved forums...");
 
-     const response = await axiosInstance.get(`/users/saved-forums`);
-     console.log("Raw response from API (saved forums):", response.data);
+      const response = await axiosInstance.get(`/users/saved-forums`);
+      console.log("Raw response from API (saved forums):", response.data);
 
-     const savedForumIds = response.data.savedForums;
-     console.log("Extracted saved forum IDs:", savedForumIds);
+      const savedForumIds = response.data.savedForums;
+      console.log("Extracted saved forum IDs:", savedForumIds);
 
-     if (!savedForumIds || savedForumIds.length === 0) {
-       console.log("No saved forums found");
-       setSavedForums([]);
-       return;
-     }
+      if (!savedForumIds || savedForumIds.length === 0) {
+        console.log("No saved forums found");
+        setSavedForums([]);
+        return;
+      }
 
-     // Fetch details of each saved forum
-     const forumDetailsPromises = savedForumIds.map((id) =>
-       axiosInstance.get(`/forum/${id}`)
-     );
+      // Fetch details of each saved forum
+      const forumDetailsPromises = savedForumIds.map((id) =>
+        axiosInstance.get(`/forum/${id}`)
+      );
 
-     const forumResponses = await Promise.all(forumDetailsPromises);
+      const forumResponses = await Promise.all(forumDetailsPromises);
 
-     const forumsData = forumResponses
-       .map((response) => {
-         const forum = response.data.forum || response.data;
+      const forumsData = forumResponses
+        .map((response) => {
+          const forum = response.data.forum || response.data;
 
-         // Skip private forums not created by current user
-         if (
-           !forum.public &&
-           forum.created_by?.username !== userInfo?.Username
-         ) {
-           return null; // Exclude from results
-         }
+          // Skip private forums not created by current user
+          if (
+            !forum.public &&
+            forum.created_by?.username !== userInfo?.Username
+          ) {
+            return null; // Exclude from results
+          }
 
-         return {
-           id: forum._id,
-           title: forum.title,
-           content: forum.description,
-           public: forum.public,
-           status: forum.status,
-           author: forum.created_by?.username || "Unknown",
-           topic: forum.topic_id?.name || "General",
-           tags: forum.tags || [],
-           likes: forum.likes || 0,
-           dislikes: forum.dislikes || 0,
-           isSaved: true,
-           userLiked: false,
-           userDisliked: false,
-           date: new Date(forum.createdAt).toLocaleDateString(),
-         };
-       })
-       .filter((forum) => forum !== null); // Clean null (excluded private forums)
+          return {
+            id: forum._id,
+            title: forum.title,
+            content: forum.description,
+            public: forum.public,
+            status: forum.status,
+            author: forum.created_by?.username || "Unknown",
+            topic: forum.topic_id?.name || "General",
+            tags: forum.tags || [],
+            likes: forum.likes || 0,
+            dislikes: forum.dislikes || 0,
+            isSaved: true,
+            userLiked: false,
+            userDisliked: false,
+            date: new Date(forum.createdAt).toLocaleDateString(),
+          };
+        })
+        .filter((forum) => forum !== null); // Clean null (excluded private forums)
 
-     console.log(
-       "Processed saved forums data (excluding private ones):",
-       forumsData
-     );
+      console.log(
+        "Processed saved forums data (excluding private ones):",
+        forumsData
+      );
 
-     setSavedForums(forumsData);
-   } catch (error) {
-     console.error("Error fetching saved forums:", error);
-     setSavedForums([]);
-   }
- };
-
-
-const fetchResponseHistory = async () => {
-  try {
-    console.log("Fetching response history...");
-
-    const response = await axiosInstance.get("/response/owner/history");
-    console.log("Raw response from API (response history):", response.data);
-
-    if (!response.data || !Array.isArray(response.data.forums)) {
-      console.log("No response history found.");
-      setResponseHistory([]);
-      return;
+      setSavedForums(forumsData);
+    } catch (error) {
+      console.error("Error fetching saved forums:", error);
+      setSavedForums([]);
     }
+  };
 
-    const forumIds = response.data.forums.map((forum) => forum._id);
-    console.log("Extracted response forum IDs:", forumIds);
+  const fetchResponseHistory = async () => {
+    try {
+      console.log("Fetching response history...");
 
-    if (forumIds.length === 0) {
+      const response = await axiosInstance.get("/response/owner/history");
+      console.log("Raw response from API (response history):", response.data);
+
+      if (!response.data || !Array.isArray(response.data.forums)) {
+        console.log("No response history found.");
+        setResponseHistory([]);
+        return;
+      }
+
+      const forumIds = response.data.forums.map((forum) => forum._id);
+      console.log("Extracted response forum IDs:", forumIds);
+
+      if (forumIds.length === 0) {
+        setResponseHistory([]);
+        return;
+      }
+
+      // Fetch details of each forum the user has responded to
+      const forumDetailsPromises = forumIds.map((id) =>
+        axiosInstance.get(`/forum/${id}`)
+      );
+
+      const forumResponses = await Promise.all(forumDetailsPromises);
+
+      // Process the forum data
+      const mappedForums = forumResponses
+        .map((response) => {
+          const forum = response.data.forum || response.data;
+
+          // Skip forums that are private and not created by the current user
+          if (
+            !forum.public &&
+            forum.created_by?.username !== userInfo?.Username
+          ) {
+            return null; // Filter out this forum
+          }
+
+          return {
+            id: forum._id,
+            title: forum.title || "Untitled Forum",
+            content: forum.description || "",
+            public: forum.public || false,
+            status: forum.status || "Draft",
+            author:
+              forum.created_by?.username || userInfo?.Username || "Unknown",
+            topic: forum.topic_id?.name || "General",
+            tags: Array.isArray(forum.tags) ? forum.tags : [],
+            likes: forum.likes || 0,
+            dislikes: forum.dislikes || 0,
+            isSaved: false,
+            userLiked: false,
+            userDisliked: false,
+            date: forum.createdAt
+              ? new Date(forum.createdAt).toLocaleDateString()
+              : "Unknown",
+          };
+        })
+        .filter((forum) => forum !== null); // Remove null values (i.e., skipped forums)
+
+      console.log(
+        "Processed response forum data (excluding private forums):",
+        mappedForums
+      );
+      setResponseHistory(mappedForums);
+    } catch (error) {
+      console.error("Error fetching response history:", error);
       setResponseHistory([]);
-      return;
     }
-
-    // Fetch details of each forum the user has responded to
-    const forumDetailsPromises = forumIds.map((id) =>
-      axiosInstance.get(`/forum/${id}`)
-    );
-
-    const forumResponses = await Promise.all(forumDetailsPromises);
-
-    // Process the forum data
-    const mappedForums = forumResponses
-      .map((response) => {
-        const forum = response.data.forum || response.data;
-
-        // Skip forums that are private and not created by the current user
-        if (
-          !forum.public &&
-          forum.created_by?.username !== userInfo?.Username
-        ) {
-          return null; // Filter out this forum
-        }
-
-        return {
-          id: forum._id,
-          title: forum.title || "Untitled Forum",
-          content: forum.description || "",
-          public: forum.public || false,
-          status: forum.status || "Draft",
-          author: forum.created_by?.username || userInfo?.Username || "Unknown",
-          topic: forum.topic_id?.name || "General",
-          tags: Array.isArray(forum.tags) ? forum.tags : [],
-          likes: forum.likes || 0,
-          dislikes: forum.dislikes || 0,
-          isSaved: false,
-          userLiked: false,
-          userDisliked: false,
-          date: forum.createdAt
-            ? new Date(forum.createdAt).toLocaleDateString()
-            : "Unknown",
-        };
-      })
-      .filter((forum) => forum !== null); // Remove null values (i.e., skipped forums)
-
-    console.log(
-      "Processed response forum data (excluding private forums):",
-      mappedForums
-    );
-    setResponseHistory(mappedForums);
-  } catch (error) {
-    console.error("Error fetching response history:", error);
-    setResponseHistory([]);
-  }
-};
-
+  };
 
   const toggleMenu = () => setMenuCollapsed(!menuCollapsed);
 
@@ -318,7 +317,17 @@ const fetchResponseHistory = async () => {
             {/* Profile Picture */}
             <div className="absolute bottom-[-50px] md:bottom-[-70px] left-1/2 transform -translate-x-1/2 w-[100px] h-[100px] md:w-[140px] md:h-[140px] rounded-full border-4 border-slate-700 overflow-hidden">
               <div className="w-[95px] h-[95px] md:w-full md:h-full flex items-center justify-center rounded-full text-slate-950 bg-slate-200 text-[35px] md:text-[40px]">
-                {getInitials(fullname)}
+                {userInfo?.profile_picture ? (
+                  // Show Profile Picture if available
+                  <img
+                    src={userInfo.profile_picture}
+                    alt="Profile"
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  // Show Initials if no Profile Picture
+                  getInitials(fullname)
+                )}
               </div>
             </div>
           </div>
