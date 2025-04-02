@@ -151,9 +151,7 @@ const handleLogin = async (e) => {
 
       if (response.data.valid) {
         navigate("/dashboard"); // Valid token → redirect
-      } else {
-        Cookies.remove("token"); // Invalid token → clear cookie
-      }
+      } 
     } catch (error) {
       console.error("Token validation failed:", error);
       Cookies.remove("token"); // Clear cookie on error
