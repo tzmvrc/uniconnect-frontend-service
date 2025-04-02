@@ -64,9 +64,6 @@ const handleLogin = async (e) => {
       // Manually check if token exists before setting it
       if (response.data.token) {
         console.log("Setting token in cookies:", response.data.token);
-        Cookies.set("token", response.data.token, {
-          expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-        });
       }
 
       if (!isVerified) {

@@ -9,7 +9,7 @@ import axiosInstance from "../Utils/axiosInstance";
 import Toast from "./ToastMessage/ToastMessage";
 import Loading from "./Loading/Loading";
 import { useLocation } from "react-router-dom";
-import Cookies from "js-cookie";
+
 
 const SignupVerif = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]); // State for OTP input
@@ -99,12 +99,6 @@ const SignupVerif = () => {
         // ✅ Match API response structure
         setLoadingMessage("Verifying your Account");
         setLoading(true);
-        Cookies.set("token", response.data.token, {
-          expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-          secure: true,
-          sameSite: "strict",
-          path: "/",
-        });
 
         setTimeout(() => {
           setLoading(false);
