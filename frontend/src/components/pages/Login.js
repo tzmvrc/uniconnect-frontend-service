@@ -133,22 +133,24 @@ const handleLogin = async (e) => {
   useEffect(() => {
     const token = Cookies.get("token");
 
-    // If token exists, validate it before redirecting
+    // If token exists, validate it
     if (token) {
-      verifyToken(token);
+      verifyToken(); // No need to pass token (it's in cookies)
     }
   }, []);
 
-  // Verify token validity with backend
-  const verifyToken = async (token) => {
+  // Verify token validity with backend (cookie-only)
+  const verifyToken = async () => {
     try {
-      const response = await axiosInstance.get("/users/validate-user", {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true, // Send cookies if needed
-      });
+      const response = await axios.get(
+        "/users/validate-user", 
+        { 
+          withCredentials: true, // Automatically sends cookies
+        }
+      );
 
       if (response.data.valid) {
-        navigate("/dashboard"); // Token is valid → redirect
+        navigate("/dashboard"); // Valid token → redirect
       } else {
         Cookies.remove("token"); // Invalid token → clear cookie
       }
@@ -157,6 +159,7 @@ const handleLogin = async (e) => {
       Cookies.remove("token"); // Clear cookie on error
     }
   };
+
 
   return (
     <div
