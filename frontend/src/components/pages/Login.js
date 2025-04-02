@@ -82,7 +82,8 @@ const handleLogin = async (e) => {
         navigate("/dashboard");
       }, 2000);
     } else {
-      showToastMessage("error", "Login successful, but something went wrong.");
+      errormsg = response.data.message;
+      showToastMessage("error", errormsg);
     }
   } catch (err) {
     setLoading(false);
