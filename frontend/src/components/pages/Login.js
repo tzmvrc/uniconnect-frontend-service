@@ -64,7 +64,6 @@ const handleLogin = async (e) => {
       // Manually check if token exists before setting it
       if (response.data.token) {
         console.log("Setting token in cookies:", response.data.token);
-        Cookies.set("token", response.data.token, { expires: 7 }); // Store the token for 7 days
       }
 
       if (!isVerified) {
