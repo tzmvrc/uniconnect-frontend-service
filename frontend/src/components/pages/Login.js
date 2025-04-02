@@ -130,15 +130,33 @@ const handleLogin = async (e) => {
     }
   };
 
- useEffect(() => {
-   // Check if the token is available in cookies
-   const token = Cookies.get("token");
+  useEffect(() => {
+    const token = Cookies.get("token");
 
-   if (token) {
-     // If the token exists, navigate to the dashboard
-     navigate("/dashboard");
-   }
- }, []); 
+    // If token exists, validate it before redirecting
+    if (token) {
+      verifyToken(token);
+    }
+  }, []);
+
+  // Verify token validity with backend
+  const verifyToken = async (token) => {
+    try {
+      const response = await axiosInstance.get("/users/validate-user", {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true, // Send cookies if needed
+      });
+
+      if (response.data.valid) {
+        navigate("/dashboard"); // Token is valid → redirect
+      } else {
+        Cookies.remove("token"); // Invalid token → clear cookie
+      }
+    } catch (error) {
+      console.error("Token validation failed:", error);
+      Cookies.remove("token"); // Clear cookie on error
+    }
+  };
 
   return (
     <div
