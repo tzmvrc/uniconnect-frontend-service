@@ -82,7 +82,7 @@ const handleLogin = async (e) => {
         navigate("/dashboard");
       }, 2000);
     } else {
-      errormsg = response.data.message;
+      const errormsg = response.data.message;
       showToastMessage("error", errormsg);
     }
   } catch (err) {
