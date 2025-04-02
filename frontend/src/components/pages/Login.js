@@ -66,7 +66,7 @@ const handleLogin = async (e) => {
         console.log("Setting token in cookies:", response.data.token);
         Cookies.set("token", response.data.token, {
           expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-          secure: true,
+          secure: false,
           sameSite: "strict",
           path: "/",
         });
