@@ -142,7 +142,7 @@ const handleLogin = async (e) => {
   // Verify token validity with backend (cookie-only)
   const verifyToken = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         "/users/validate-user", 
         { 
           withCredentials: true, // Automatically sends cookies
