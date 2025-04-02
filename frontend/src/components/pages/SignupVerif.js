@@ -94,10 +94,16 @@ const SignupVerif = () => {
         otp: otpValue,
       });
 
-      if (!response.data.error) {
+      if (!response.data.error && response.data.token) {
         // ✅ Match API response structure
         setLoadingMessage("Verifying your Account");
         setLoading(true);
+        Cookies.set("token", response.data.token, {
+          expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+          secure: true,
+          sameSite: "strict",
+          path: "/",
+        });
 
         setTimeout(() => {
           setLoading(false);
