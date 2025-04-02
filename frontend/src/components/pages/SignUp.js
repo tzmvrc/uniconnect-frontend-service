@@ -95,14 +95,6 @@ const SignUp = () => {
       return false;
     }
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-    if (!passwordRegex.test(newPassword)) {
-      showToastMessage(
-        "error",
-        "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a digit, and a special character."
-      );
-      return false;
-    }
 
     setPasswordValidation(true);
     setPassword(confirmPassword);
@@ -127,7 +119,7 @@ const SignUp = () => {
 
     if (!trimmedSearchTerm) {
       showToastMessage("error", "Please enter your university");
-      return;
+      return false;
     }
 
     // Check if the input matches any school
@@ -137,8 +129,10 @@ const SignUp = () => {
 
     if (!universityExists) {
       showToastMessage("error", "Please select a valid university");
+      setSchoolValidation(false);
+      return false;
     } else {
-      setSchoolValidation(true);
+      return true;
     }
   };
 
@@ -202,12 +196,12 @@ const SignUp = () => {
     const passwordValid = handlePassword(); // Now returns true/false
     const schoolValid = handleFormSubmit(e); // Already validates school
 
-    if(!firstName || !lastName || !username) {
+    if (!firstName || !lastName || !username) {
       showToastMessage("error", "Please fill out all fields");
       return;
     }
 
-    if (!emailValid || !passwordValid || !schoolValidation) {
+    if (!emailValid || !passwordValid || !schoolValid) {
       console.log("Validation failed, stopping signup.");
       return;
     }
@@ -216,44 +210,32 @@ const SignUp = () => {
   };
 
   const handleSignUp = async () => {
-    
     try {
+      setLoadingMessage("Creating your Account");
       setLoading(true);
       const response = await axiosInstance.post("/users/signup", {
         school_name: selectedUniversity,
         first_name: firstName,
         last_name: lastName,
         username,
-        email,
+        email: email.trim(),
         password,
       });
 
-      if (response.data && response.data.token) {
-        setLoadingMessage("Creating your Account");
-        setTimeout(() => {
-          setLoading(false);
-          navigate("/account-verify", {
-            state: { email: email, token: response.data.token, from: "signup" },
-          });
-        }, 2000);
+      if (response.data.successful) {
+        setLoading(false);
+        navigate("/account-verify", {
+          state: { email: email.trim(), from: "signup" },
+        });
       }
     } catch (err) {
+      setLoading(false);
       console.error("Signup Error:", err.response?.data || err.message);
-
       const errorMessage =
         err.response?.data?.message || "Signup failed. Please try again.";
       showToastMessage("error", errorMessage);
-    } finally {
-      setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/dashboard");
-    }
-  }, [navigate]);
 
   //Main div
   return (

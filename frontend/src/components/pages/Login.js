@@ -13,6 +13,7 @@ import axiosInstance from "../Utils/axiosInstance";
 import { validateEmail } from "../Utils/Helper";
 import Toast from "./ToastMessage/ToastMessage";
 import Loading from "./Loading/Loading";
+import Cookies from "js-cookie";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -35,71 +36,63 @@ const Login = () => {
     setShowToast({ isShown: true, type: type, message: message });
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+const handleLogin = async (e) => {
+  e.preventDefault();
 
-    if (!email && !password) {
-      showToastMessage("error", "Please enter your email and password");
-      return;
-    }
+  if (!email || !password) {
+    showToastMessage("error", "Please enter your email and password");
+    return;
+  }
 
-    if (!validateEmail(email)) {
-      showToastMessage("error", "Please enter a valid email address.");
-      return;
-    }
+  if (!validateEmail(email)) {
+    showToastMessage("error", "Please enter a valid email address.");
+    return;
+  }
 
-    if (!password) {
-      showToastMessage("error", "Please enter your password.");
-      return;
-    }
+  setLoading(true);
 
-    setLoading(true);
+  const isVerified = await handleCheckIfVerified();
 
-    const isVerified = await handleCheckIfVerified();
+  try {
+    const response = await axiosInstance.post(
+      "/users/login",
+      { email, password },
+      { withCredentials: true } // ✅ Ensures cookies are included in requests
+    );
 
-    try {
-      const response = await axiosInstance.post("/users/login", {
-        email,
-        password,
-      });
-
-      if (response.data?.token) {
-        if (!isVerified) {
-          setLoadingMessage("Let's verify your account first");
-          setLoading(true);
-          setTimeout(() => {
-            setLoading(false);
-            SendOtp();
-            navigate("/account-verify", {
-              state: {
-                email: email,
-                token: response.data.token,
-                from: "login",
-              },
-            });
-          }, 2000);
-          return;
-        }
-        setLoadingMessage("Logging in...");
-        setLoading(true);
-        setTimeout(() => {
-          localStorage.setItem("token", response.data.token);
-          setLoading(false);
-          navigate("/dashboard");
-        }, 2000);
-      } else {
-        showToastMessage("error", "Login successful, but no token received.");
+    if (response.data.successful) {
+      // Manually check if token exists before setting it
+      if (response.data.token) {
+        console.log("Setting token in cookies:", response.data.token);
+        Cookies.set("token", response.data.token, { expires: 7 }); // Store the token for 7 days
       }
-    } catch (err) {
-      // Extract message from backend response
-      setLoading(false);
-      const errorMessage =
-        err.response?.data?.message ||
-        "Something went wrong. Please try again.";
 
-      showToastMessage("error", errorMessage);
+      if (!isVerified) {
+        setLoadingMessage("Let's verify your account first");
+        setTimeout(() => {
+          setLoading(false);
+          SendOtp();
+          navigate("/account-verify", { state: { email, from: "login" } });
+        }, 2000);
+        return;
+      }
+
+      setLoadingMessage("Logging in...");
+      setTimeout(() => {
+        setLoading(false);
+        navigate("/dashboard");
+      }, 2000);
+    } else {
+      showToastMessage("error", "Login successful, but something went wrong.");
     }
-  };
+  } catch (err) {
+    setLoading(false);
+    const errorMessage =
+      err.response?.data?.message || "Something went wrong. Please try again.";
+    showToastMessage("error", errorMessage);
+  }
+};
+
 
   const SendOtp = async () => {
     setLoadingMessage("Sending your Code");
@@ -137,12 +130,15 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/dashboard");
-    }
-  }, [navigate]);
+ useEffect(() => {
+   // Check if the token is available in cookies
+   const token = Cookies.get("token");
+
+   if (token) {
+     // If the token exists, navigate to the dashboard
+     navigate("/dashboard");
+   }
+ }, []); 
 
   return (
     <div

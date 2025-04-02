@@ -16,6 +16,7 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import axiosInstance from "../components/Utils/axiosInstance";
 import { getInitials } from "../components/Utils/Helper";
 import Loading from "../components/pages/Loading/Loading";
+import Cookies from "js-cookie";
 
 import {
   User,
@@ -49,7 +50,7 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
     { name: "Notification", icon: <Bell />, path: "/notification" },
     { name: "Topic", icon: <BookOpen />, path: "/topics/all" },
     { name: "Announcement", icon: <Megaphone />, path: "/announcement" },
-    { name: "Leaderboard", icon: <Trophy />, path: "/leaderboard" },
+    { name: "Leaderboard", icon: <Trophy size={20} />, path: "/leaderboard" },
     { name: "Settings", icon: <Settings />, path: "/settings" },
   ];
 
@@ -67,8 +68,10 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
       } catch (error) {
         console.error("Error fetching user info:", error);
         setUserInfo({});
-        localStorage.clear();
-        navigate("/login");
+
+        setTimeout(() => {
+          navigate("/login");
+        });
       } finally {
         setLoading(false);
       }
@@ -85,17 +88,16 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
     setShowLogoutDialog(false);
   };
 
-  const handleDropdownClick = () => {
-    if (menuCollapsed) {
-      toggleMenu(); // Automatically expand the sidebar if collapsed.
+  const handleConfirmLogout = async () => {
+    try {
+      setShowLogoutDialog(false);
+      await axiosInstance.post("/users/logout");
+      Cookies.remove("token");
+      localStorage.clear();
+      navigate("/");
+    } catch (error) {
+      console.error("Error during logout:", error);
     }
-    setDropdownOpen(!dropdownOpen); // Toggle the dropdown.
-  };
-
-  const handleConfirmLogout = () => {
-    setShowLogoutDialog(false);
-    localStorage.clear();
-    navigate("/");
   };
 
   return (
@@ -141,7 +143,7 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
       )}
 
       <aside
-        className={`fixed top-[75px] h-[calc(100dvh-75px)] md:h-[calc(100vh-75px)] border-r-[1px] overflow-hidden border-black p-4 flex-shrink-0 transition-all duration-300 z-10 flex flex-col bg-[#FFCDA9]
+        className={`fixed top-[75px] h-[calc(100dvh-75px)] md:h-[calc(100vh-75px)] border-r-[1px] overflow-hidden border-black p-4 flex-shrink-0 transition-all duration-300 z-20 md:z-10 flex flex-col bg-[#FFCDA9]
     ${
       menuCollapsed
         ? "translate-x-[-100%] md:translate-x-0 md:w-[100px]"
@@ -226,13 +228,13 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
                         location.pathname === item.path ? "#D75F4D" : "#141E46",
                     }}
                   >
-                    <img
-                      src={item.icon}
-                      alt={`${item.name} icon`}
+                    <span
                       className={`w-5 h-5 md:w-6 md:h-6 ${
                         menuCollapsed ? "" : "mr-2"
                       }`}
-                    />
+                    >
+                      {item.icon}
+                    </span>
                     {!menuCollapsed && <span>{item.name}</span>}
                   </Link>
                 </div>
@@ -299,19 +301,6 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
             All rights reserved.
           </div>
         )}
-
-        {/* {!menuCollapsed && (
-          <div className="hidden md:flex flex-col items-start">
-            <button className="px-4 py-2 flex items-center transition duration-200 font-semibold">
-              <img
-                src={iconSettings}
-                alt="Settings icon"
-                className="w-auto h-[33px] mr-[30px]"
-                onClick={() => navigate("/settings")}
-              />
-            </button>
-          </div>
-        )} */}
       </aside>
     </>
   );

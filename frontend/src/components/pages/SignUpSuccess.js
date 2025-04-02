@@ -30,12 +30,6 @@ const SignUpSuccess = () => {
     visible: { opacity: 1, y: 0 },
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-    } 
-  }, [navigate]);
 
   return (
     <div

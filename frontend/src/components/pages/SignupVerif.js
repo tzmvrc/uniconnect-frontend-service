@@ -19,7 +19,6 @@ const SignupVerif = () => {
   const [loadingmessage, setLoadingMessage] = useState("");
   const location = useLocation();
   const email = location.state?.email || "No email provided";
-  const token = location.state?.token || "No token provided";
   const [showToast, setShowToast] = useState({
     isShown: false,
     type: "",
@@ -69,13 +68,15 @@ const SignupVerif = () => {
   };
 
   const handleNextPage = () => {
-      if (location.state.from === "signup") {
-        navigate("/verify-success");
-      } else  if (location.state.from === "login") {
-        navigate("/dashboard");
-      } else if (location.state.from === "forgot") {
-        navigate("/login-set-new-password", { state: { email: email } });
-      }
+    console.log("Navigating from:", location.state.from);
+
+    if (location.state.from === "signup") {
+      navigate("/verify-success");
+    } else if (location.state.from === "login") {
+      navigate("/dashboard");
+    } else if (location.state.from === "forgot") {
+      navigate("/login-set-new-password", { state: { email: email } });
+    }
   };
 
   // Handle OTP verification
@@ -89,22 +90,21 @@ const SignupVerif = () => {
 
     try {
       const response = await axiosInstance.post("/otp/verify-otp", {
-        email: email,
+        email,
         otp: otpValue,
       });
 
-      if (response.data.success) {
-        
+      if (!response.data.error) {
+        // ✅ Match API response structure
         setLoadingMessage("Verifying your Account");
         setLoading(true);
+
         setTimeout(() => {
           setLoading(false);
           setLoadingMessage("");
-          localStorage.setItem("token", token);
           handleNextPage();
         }, 2000);
       }
-
     } catch (err) {
       console.error("Verification Error:", err.response?.data || err.message);
       showToastMessage("error", "Incorrect Code. Please try again");

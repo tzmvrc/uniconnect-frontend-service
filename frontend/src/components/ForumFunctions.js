@@ -132,7 +132,7 @@ const ForumFunctions = ({ forums, userInfo, handleForumClick, compact }) => {
   };
 
   return (
-    <div className="space-y-3 md:space-y-4">
+    <div className="space-y-3 md:space-y-4 z-5">
       {forumData.map((forum) => (
         <div
           key={forum.id}

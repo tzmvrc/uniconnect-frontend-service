@@ -146,8 +146,6 @@ const handleProfilePictureUpdate = async () => {
 };
 
 
-
-
   // Fetch user data from backend
   useEffect(() => {
     fetchUserInfo();
@@ -191,9 +189,9 @@ const handleProfilePictureUpdate = async () => {
     if (activeTab === "profile") {
       return "w-[95px] left-[17px] md:left-0 md:w-[105px]";
     } else if (activeTab === "account") {
-      return "w-[117px] left-[137px] md:w-[135px] md:left-[139px]";
+      return "w-[117px] left-[152px] md:w-[135px] md:left-[139px]";
     } else if (activeTab === "help") {
-      return "w-[60px] left-[278px] md:left-[317px]";
+      return "w-[60px] left-[306px] md:left-[317px]";
     }
     return "";
   };
@@ -335,6 +333,7 @@ const handleProfilePictureUpdate = async () => {
         message={showToast.message}
         onClose={handleCloseToast}
       />
+      
       {loading && <Loading message={""} />}
 
       {/**border div */}

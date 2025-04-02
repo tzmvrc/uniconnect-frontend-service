@@ -9,6 +9,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import badgeIcon from "../images/badge icon.png";
 import { getInitials } from "../Utils/Helper";
 import axiosInstance from "../Utils/axiosInstance";
+import Loading from "./Loading/Loading";
+import setbg from "../images/setbg.png";
 
 const OtherProfile = () => {
   const { username } = useParams();
@@ -163,21 +165,25 @@ const OtherProfile = () => {
       <Header />
       <Sidebar menuCollapsed={menuCollapsed} toggleMenu={toggleMenu} />
       <Leaderboards />
+      {isLoading && <Loading message={""} />}
       <main
-        className="flex-1 p-6 bg-white"
-        style={{
-          marginLeft: menuCollapsed ? "100px" : "300px",
-          marginRight: "260px",
-          marginTop: "85px",
-        }}
+        className={`flex-1 w-full p-0 md:p-6 bg-white mt-[75px] md:mt-[75px] md:mr-[260px] ${
+          menuCollapsed ? "md:ml-[100px]" : "md:ml-[300px]"
+        }`}
       >
-        <div
-          className="mx-auto h-full border-black border-t border-l border-r rounded-t-[15px] bg-white p-4"
-          style={{ width: "750px" }}
-        >
-          <div className="relative bg-gradient-to-r from-purple-400 via-pink-500 to-orange-400 rounded-xl w-[684px] h-[146px] mx-auto">
-            <div className="absolute bottom-[-70px] left-1/2 transform -translate-x-1/2 w-[140px] h-[140px] rounded-full border-4 border-slate-700 overflow-hidden">
-              <div className="w-full h-full flex items-center justify-center rounded-full text-slate-950 bg-slate-200 text-[40px]">
+        {/* Main Panel */}
+        <div className="h-full w-full md:max-w-[750px] mx-auto md:border-black md:border-t md:border-l md:border-r rounded-t-[15px] bg-white p-4">
+          {/* Header */}
+          <div className="relative bg-gradient-to-r from-purple-400 via-pink-500 to-orange-400 rounded-xl h-[80px] w-full md:w-[684px] md:h-[146px] mx-auto">
+            {/* Background Image */}
+            <img
+              src={setbg}
+              alt="bg settings"
+              className="h-[90px] w-full md:h-[146px] md:w-[684px]"
+            />
+            {/* Profile Picture */}
+            <div className="absolute bottom-[-50px] md:bottom-[-70px] left-1/2 transform -translate-x-1/2 w-[100px] h-[100px] md:w-[140px] md:h-[140px] rounded-full border-4 border-slate-700 overflow-hidden">
+              <div className="w-[95px] h-[95px] md:w-full md:h-full flex items-center justify-center rounded-full text-slate-950 bg-slate-200 text-[35px] md:text-[40px]">
                 {userInfo?.ProfilePicture ? (
                   // Show Profile Picture if available
                   <img
@@ -192,10 +198,11 @@ const OtherProfile = () => {
               </div>
             </div>
           </div>
-          <div className="w-[684px] mx-auto mt-20 text-center">
+
+          <div className="md:w-[684px] mx-auto mt-20 text-center">
             <div className="flex justify-between items-center">
               <div className="text-left">
-                <h2 className="text-[30px] font-bold flex items-center">
+                <h2 className="text-[22px] md:text-[30px] font-bold flex items-center">
                   {fullname || "Loading..."}
                   {hasBadge && (
                     <img
@@ -205,18 +212,24 @@ const OtherProfile = () => {
                     />
                   )}
                 </h2>
-                <p className="text-[16px] font-regular">@{username}</p>
-                <p className="text-[16px] font-regular">
+                <p className="text-[14px] md:text-[16px] font-regular">
+                  @{username}
+                </p>
+                <p className="text-[14px] md:text-[16px] font-regular">
                   {userInfo?.School || ""}
                 </p>
               </div>
-              <div className="w-[105px] h-[41px] rounded-[10px] border border-orange-400 flex items-center justify-center p-2">
-                <span className="text-[16px] font-medium">
-                  {userInfo?.Points || 0} points
-                </span>
+
+              <div>
+                <div className="w-[94px] h-[31px] md:w-[105px] md:h-[41px] rounded-[10px] border border-orange-400 flex items-center justify-center p-2">
+                  <span className="text-[14px] md:text-[16px] font-medium">
+                    {userInfo?.Points || 0} points
+                  </span>
+                </div>
               </div>
             </div>
           </div>
+
           <div className="md:w-[684px] mx-auto">
             <div className="flex justify-between w-full mt-6 border-b-[2px] border-[#141E46]">
               <span className="text-[12px] md:text-[16px] font-semibold text-[#141E46] border-b-4 border-orange-400">
@@ -224,7 +237,7 @@ const OtherProfile = () => {
               </span>
             </div>
           </div>
-          <div className="w-[684px] mx-auto mt-6">
+          <div className="w-full mt-6 transform transition-all duration-500 ease-out opacity-0 translate-y-[-20px] animate-slide-fade">
             {isLoading ? (
               <div className="flex justify-center items-center h-64">
                 <p>Loading...</p>
