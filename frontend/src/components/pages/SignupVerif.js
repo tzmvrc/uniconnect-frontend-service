@@ -9,6 +9,7 @@ import axiosInstance from "../Utils/axiosInstance";
 import Toast from "./ToastMessage/ToastMessage";
 import Loading from "./Loading/Loading";
 import { useLocation } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const SignupVerif = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]); // State for OTP input
