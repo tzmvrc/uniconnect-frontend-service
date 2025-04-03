@@ -10,7 +10,6 @@ import Toast from "./ToastMessage/ToastMessage";
 import Loading from "./Loading/Loading";
 import { useLocation } from "react-router-dom";
 
-
 const SignupVerif = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]); // State for OTP input
   const [countdown, setCountdown] = useState(0); // Countdown for resend button
@@ -95,7 +94,7 @@ const SignupVerif = () => {
         otp: otpValue,
       });
 
-      if (!response.data.error && response.data.token) {
+      if (!response.data.error) {
         // ✅ Match API response structure
         setLoadingMessage("Verifying your Account");
         setLoading(true);

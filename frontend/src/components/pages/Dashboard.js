@@ -189,7 +189,7 @@ const Dashboard = () => {
         <div className="flex right-0">
           <button
             onClick={() => setIsFormVisible(true)}
-            className="fixed bottom-6 right-6 md:bottom-11 md:right-96 w-16 h-16 bg-[#EB6E5B] hover:bg-[#b43e2c] text-white rounded-full shadow-lg flex items-center justify-center z-20 duration-300 overflow-hidden"
+            className="fixed bottom-6 right-6 md:bottom-11 md:right-96  lg:right-96 w-16 h-16 bg-[#EB6E5B] hover:bg-[#b43e2c] text-white rounded-full shadow-lg flex items-center justify-center z-20 duration-300 overflow-hidden"
           >
             <span className="text-[32px] leading-none">+</span>
           </button>

@@ -81,7 +81,7 @@ const Leaderboards = () => {
   }, []);
 
   return (
-    <aside className="w-[290px] fixed top-[85px] right-0 h-[calc(100vh-96px)] bg-white p-2 hidden md:block z-10">
+    <aside className="w-[290px] fixed top-[85px] right-0 h-[calc(100vh-96px)] bg-white p-2 hidden md:hidden lg:block z-10">
       <div className="p-4 rounded-2xl border-[1px] border-black bg-[#FFCDA9] h-full">
         <h3 className="text-[30px] font-semibold  text-[#141E46]">
           Leaderboards

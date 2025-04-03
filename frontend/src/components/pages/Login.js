@@ -64,6 +64,12 @@ const handleLogin = async (e) => {
       // Manually check if token exists before setting it
       if (response.data.token) {
         console.log("Setting token in cookies:", response.data.token);
+        Cookies.set("token", response.data.token, {
+          expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+          secure: true,
+          sameSite: "strict",
+          path: "/",
+        });
       }
 
       if (!isVerified) {
@@ -82,8 +88,7 @@ const handleLogin = async (e) => {
         navigate("/dashboard");
       }, 2000);
     } else {
-      const errormsg = response.data.message;
-      showToastMessage("error", errormsg);
+      showToastMessage("error", "Login successful, but something went wrong.");
     }
   } catch (err) {
     setLoading(false);
@@ -130,27 +135,15 @@ const handleLogin = async (e) => {
     }
   };
 
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const response = await axiosInstance.get("/users/check-auth", {
-          withCredentials: true
-        });
-        
-        if (response.data.authenticated) {
-          navigate("/dashboard");
-        }
-      } catch (error) {
-        // Not authenticated - stay on current page
-        console.log("Not authenticated:", error);
-      }
-    };
-  
-    checkAuthStatus();
-  }, [navigate]);
+ useEffect(() => {
+   // Check if the token is available in cookies
+   const token = Cookies.get("token");
 
-
-
+   if (token) {
+     // If the token exists, navigate to the dashboard
+     navigate("/dashboard");
+   }
+ }, []); 
 
   return (
     <div

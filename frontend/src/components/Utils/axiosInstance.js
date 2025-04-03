@@ -1,4 +1,5 @@
 /** @format */
+
 import axios from "axios";
 
 const axiosInstance = axios.create({
@@ -6,23 +7,9 @@ const axiosInstance = axios.create({
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
-    "Accept": "application/json",
   },
-  withCredentials: true, // ✅ Critical for cookies
-  xsrfCookieName: "token", // Optional security
-  xsrfHeaderName: "X-XSRF-TOKEN" // Optional security
+  withCredentials: true, // Ensures cookies (token) are included in every request
 });
 
-// Add response interceptor for token errors
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // Handle expired/invalid tokens (redirect to login)
-      window.location.href = "/login?session_expired=1";
-    }
-    return Promise.reject(error);
-  }
-);
 
 export default axiosInstance;
