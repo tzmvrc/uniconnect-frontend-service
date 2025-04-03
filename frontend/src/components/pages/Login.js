@@ -131,11 +131,23 @@ const handleLogin = async (e) => {
   };
 
   useEffect(() => {
-    // Check for token cookie (exists = logged in)
-    if (Cookies.get("token")) {
-      navigate("/dashboard"); // Immediate redirect
-    }
-  }, []); // Empty dependency array = runs once on mount
+    const checkAuthStatus = async () => {
+      try {
+        const response = await axiosInstance.get('/users/check-auth', {
+          withCredentials: true
+        });
+        
+        if (response.data.authenticated) {
+          navigate("/dashboard");
+        }
+      } catch (error) {
+        // Not authenticated - stay on current page
+        console.log("Not authenticated:", error);
+      }
+    };
+  
+    checkAuthStatus();
+  }, [navigate]);
 
 
 
