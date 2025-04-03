@@ -133,7 +133,7 @@ const handleLogin = async (e) => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const response = await axiosInstance.get('/users/check-auth', {
+        const response = await axiosInstance.get("/users/check-auth", {
           withCredentials: true
         });
         
