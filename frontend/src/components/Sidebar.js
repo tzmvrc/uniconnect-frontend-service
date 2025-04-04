@@ -92,9 +92,7 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
     try {
       setShowLogoutDialog(false);
       await axiosInstance.post("/users/logout");
-      Cookies.remove("token");
-      localStorage.clear();
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       console.error("Error during logout:", error);
     }
