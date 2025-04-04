@@ -135,15 +135,15 @@ const handleLogin = async (e) => {
     }
   };
 
- useEffect(() => {
-   // Check if the token is available in cookies
-   const token = Cookies.get("token");
+//  useEffect(() => {
+//    // Check if the token is available in cookies
+//    const token = Cookies.get("token");
 
-   if (token) {
-     // If the token exists, navigate to the dashboard
-     navigate("/dashboard");
-   }
- }, []); 
+//    if (token) {
+//      // If the token exists, navigate to the dashboard
+//      navigate("/dashboard");
+//    }
+//  }, []); 
 
   return (
     <div
