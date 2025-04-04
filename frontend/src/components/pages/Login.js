@@ -135,15 +135,20 @@ const handleLogin = async (e) => {
     }
   };
 
-//  useEffect(() => {
-//    // Check if the token is available in cookies
-//    const token = Cookies.get("token");
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await axiosInstance.get("/users/check-auth"); // Backend API to check token
+        if (res.data.loggedIn) {
+          navigate("/dashboard"); // Redirect to dashboard if already logged in
+        }
+      } catch (error) {
+        console.log("User is not logged in.");
+      }
+    };
 
-//    if (token) {
-//      // If the token exists, navigate to the dashboard
-//      navigate("/dashboard");
-//    }
-//  }, []); 
+    checkAuth();
+  }, []);
 
   return (
     <div
