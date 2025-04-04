@@ -91,10 +91,13 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
   const handleConfirmLogout = async () => {
     try {
       setShowLogoutDialog(false);
+      setLoading(true);
       await axiosInstance.post("/users/logout");
       navigate("/login");
     } catch (error) {
       console.error("Error during logout:", error);
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -61,17 +61,6 @@ const handleLogin = async (e) => {
     );
 
     if (response.data.successful) {
-      // Manually check if token exists before setting it
-      if (response.data.token) {
-        console.log("Setting token in cookies:", response.data.token);
-        Cookies.set("token", response.data.token, {
-          expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-          secure: true,
-          sameSite: "strict",
-          path: "/",
-        });
-      }
-
       if (!isVerified) {
         setLoadingMessage("Let's verify your account first");
         setTimeout(() => {
@@ -135,20 +124,22 @@ const handleLogin = async (e) => {
     }
   };
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await axiosInstance.get("/users/check-auth"); // Backend API to check token
-        if (res.data.loggedIn) {
-          navigate("/dashboard"); // Redirect to dashboard if already logged in
-        }
-      } catch (error) {
-        console.log("User is not logged in.");
-      }
-    };
-
-    checkAuth();
-  }, []);
+ useEffect(() => {
+   const checkAuth = async () => {
+     try {
+      setLoading(true);
+       const res = await axiosInstance.get("/users/check-auth");
+       if (res.data.loggedIn) {
+         navigate("/dashboard");
+       }
+     } catch (err) {
+       console.log("User is not logged in");
+     } finally {
+       setLoading(false);
+     }
+   };
+   checkAuth();
+ }, []); 
 
   return (
     <div
