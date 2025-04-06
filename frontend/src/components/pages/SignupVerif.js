@@ -1,5 +1,3 @@
-/** @format */
-
 import React, { useState, useRef, useEffect } from "react";
 import bg from "../images/longbg.png"; // Background image import
 import logo from "../images/NLogo.png"; // Import logo image
@@ -31,6 +29,15 @@ const SignupVerif = () => {
 
   const showToastMessage = (type, message) => {
     setShowToast({ isShown: true, type: type, message: message });
+  };
+
+  // Clear all input fields
+  const clearInputFields = () => {
+    setCode(["", "", "", "", "", ""]);
+    // Focus on first input after clearing
+    setTimeout(() => {
+      inputs.current[0]?.focus();
+    }, 10);
   };
 
   // Countdown effect
@@ -108,6 +115,9 @@ const SignupVerif = () => {
     } catch (err) {
       console.error("Verification Error:", err.response?.data || err.message);
       showToastMessage("error", "Incorrect Code. Please try again");
+      
+      // Clear input fields when verification fails
+      clearInputFields();
     }
   };
 
@@ -122,6 +132,9 @@ const SignupVerif = () => {
     setTimeout(() => {
       setCountdown(120);
     }, 1600);
+    
+    // Clear input fields when resending code
+    clearInputFields();
   };
 
   const handleResendOtp = async () => {

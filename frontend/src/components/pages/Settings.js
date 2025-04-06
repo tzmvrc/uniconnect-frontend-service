@@ -33,14 +33,14 @@ const Settings = () => {
   const [otp, setOtp] = useState("");
   const [tempUsername, setTempusername] = useState(username);
   const [tempEmail, setTempEmail] = useState(email); // for editing
-  const [isEditingFullName, setIsEditingFullName] = useState(false);
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isEditingSchool, setIsEditingSchool] = useState(false);
   const [confirmSchool, setConfirmSchool] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
-
+  const [isEditingFullname, setIsEditingFullname] = useState(false);
+  const [setIsEditingFullName] = useState(false);
   const [otpModalOpen, setOtpModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(tabs[0].id);
   const [updatePicture, setUpdatePicture] = useState(false);
@@ -333,7 +333,7 @@ const handleProfilePictureUpdate = async () => {
         message={showToast.message}
         onClose={handleCloseToast}
       />
-      
+
       {loading && <Loading message={""} />}
 
       {/**border div */}
@@ -433,50 +433,74 @@ const handleProfilePictureUpdate = async () => {
                   </div>
 
                   {/* Profile Info and Button */}
-                  <div className="flex justify-between w-[550px] mt-[8px]">
-                    <h1 className="ml-[220px] md:ml-[160px] text-[23px] md:text-[30px] pb-[5px] font-[700]">
-                      {fullname}
-                    </h1>
+                  <div className="flex justify-between w-[550px] mt-[15px]">
+                    {isEditingFullname ? (
+                      <div className="ml-[160px] md:ml-[160px] flex gap-2">
+                        <div className="flex flex-col md:flex-row ml-[50px] md:ml-[0px] gap-2">
+                          <input
+                            className="rounded-[5px] border border-black w-[120px] md:w-[120px] placeholder:font-[400] placeholder:text-[14px] pl-[10px] pb-1"
+                            value={firstName}
+                            placeholder="First Name"
+                            onChange={(e) => setFirstName(e.target.value)}
+                          />
+                          <input
+                            className="rounded-[5px] border border-black w-[120px] md:w-[120px] placeholder:font-[400] placeholder:text-[14px] pl-[10px] pb-1"
+                            value={lastName}
+                            placeholder="Last Name"
+                            onChange={(e) => setLastName(e.target.value)}
+                          />
+                        </div>
+                        <div className="flex gap-2 justify-center items-center md:justify-end ml-[15px] md:ml-[10px]">
+                          {/* Save icon */}
+                          <button
+                            onClick={() => {
+                              handleUpdateUserProfile();
+                            }}
+                            className="border border-black rounded-[5px] bg-green-700 px-[10px] py-[5px] text-white hover:bg-green-800"
+                            title="Save"
+                          >
+                            <Check size={16} />
+                          </button>
+
+                          {/* Cancel icon */}
+                          <button
+                            onClick={() => {
+                              setIsEditingFullname(false);
+                            }}
+                            className="border border-black rounded-[5px] bg-red-700 px-[10px] py-[5px] text-white hover:bg-red-800"
+                            title="Cancel"
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center">
+                        <h1 className="ml-[220px] md:ml-[160px] text-[23px] md:text-[30px] pb-[5px] font-[700]">
+                          {fullname}
+                        </h1>
+                        <button
+                          onClick={() => {
+                            // Split fullname into first and last name
+                            const nameParts = fullname.split(" ");
+                            setFirstName(nameParts[0] || "");
+                            setLastName(nameParts.slice(1).join(" ") || "");
+                            setIsEditingFullname(true);
+                          }}
+                          className="border ml-[40px] md:ml-[127px] border-black rounded-[5px] bg-[#1D274D] px-[17px] py-[6px] text-white hover:text-[#ff9889]"
+                          title="Edit Name"
+                        >
+                          <Pencil size={16} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
                 {/* Editing tab */}
                 <div className="flex flex-col items-center justify-center w-full md:w-[520px] h-[230px] md:h-[270px] md:border border-[2px] border-black mt-[40px] md:mt-[30px] rounded-[10px] bg-[#FFEBDD]">
                   <div className="w-full flex flex-col justify-center items-center mb-[7px]">
-                    {/* school div */}
-                    <div className="w-full md:w-[470px] ml-[5px] ">
-                      <p className="text-[12px] md:text-[14px] font-[600] mb-[0px] md:mb-[5px] mx-[20px] md:mx-[0px]">
-                        SCHOOL
-                      </p>
-                      <div className="flex justify-between items-center mx-[20px] md:mx-[0px] ">
-                        <input
-                          className="rounded-[5px] border border-black w-[190px] md:w-[300px] placeholder:font-[400] placeholder:text-[14px] pl-[10px] pb-1"
-                          value={isEditingSchool ? school : ""}
-                          placeholder={isEditingSchool ? "" : school}
-                          disabled={true}
-                        />
-
-                        <div className="flex items-center gap-1 relative group">
-                          <p className="font-[500] text-[13px] md:text-[15px] mr-[0px] md:mr-[2px]">
-                            Email Based
-                          </p>
-
-                          {/* Icon with custom tooltip */}
-                          <HelpCircle
-                            size={16}
-                            className="text-gray-600 hover:text-black cursor-pointer"
-                          />
-
-                          {/* Tooltip on hover */}
-                          <div className="absolute bottom-full mb-1 left-[20px] md:left-1/2 -translate-x-1/2 w-[220px] bg-black text-white text-xs text-center px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-none">
-                            School will be automatically updated as you update
-                            your email
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
                     {/* username div */}
-                    <div className="w-full md:w-[470px] mt-[20px] ml-[5px]">
+                    <div className="w-full md:w-[470px]  ml-[5px]">
                       <p className="text-[12px] md:text-[14px] font-[600] mb-[0px] md:mb-[5px] mx-[20px] md:mx-[0px]">
                         USERNAME
                       </p>
@@ -529,6 +553,34 @@ const handleProfilePictureUpdate = async () => {
                       </div>
                     </div>
 
+                    {/* school div */}
+                    <div className="w-full md:w-[470px] mt-[20px] ml-[5px] ">
+                      <p className="text-[12px] md:text-[14px] font-[600] mb-[0px] md:mb-[5px] mx-[20px] md:mx-[0px]">
+                        SCHOOL
+                      </p>
+                      <div className="flex justify-between items-center mx-[20px] md:mx-[0px] ">
+                        <input
+                          className="rounded-[5px] border border-black w-[190px] md:w-[300px] placeholder:font-[400] placeholder:text-[14px] pl-[10px] pb-1"
+                          value={isEditingSchool ? school : ""}
+                          placeholder={isEditingSchool ? "" : school}
+                          disabled={true}
+                        />
+
+                        <div className="flex items-center mr-[30px]  relative group">
+                          {/* Icon with custom tooltip */}
+                          <HelpCircle
+                            size={20}
+                            className="text-gray-600 hover:text-black cursor-pointer"
+                          />
+
+                          {/* Tooltip on hover */}
+                          <div className="absolute bottom-full mb-1 right-0 md:left-1/2 md:-translate-x-1/2 w-[200px] bg-black text-white text-xs text-center px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-none">
+                            Create new account for new school
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                     {/* email div */}
                     <div className="w-full md:w-[470px] mt-[20px] ml-[5px]">
                       <p className="text-[12px] md:text-[14px] font-[600] mb-[0px] md:mb-[5px] mx-[20px] md:mx-[0px]">
@@ -544,52 +596,19 @@ const handleProfilePictureUpdate = async () => {
                           onChange={(e) => setEmail(e.target.value)}
                           disabled={!isEditingEmail}
                         />
-                        <div className="flex gap-2 mr-[10px]">
-                          {isEditingEmail ? (
-                            <>
-                              {/* Save icon */}
-                              <button
-                                onClick={() => {
-                                  if (!email.trim()) {
-                                    showToastMessage(
-                                      "error",
-                                      "Email cannot be empty."
-                                    );
-                                    return;
-                                  }
 
-                                  setConfirmSchool(true);
-                                }}
-                                className="border border-black rounded-[5px] bg-green-700 px-[10px] py-[5px] text-white hover:bg-green-800"
-                                title="Save"
-                              >
-                                <Check size={16} />
-                              </button>
+                        <div className="flex items-center mr-[30px] relative group">
+                          {/* Icon with custom tooltip */}
+                          <HelpCircle
+                            size={20}
+                            className="text-gray-600 hover:text-black cursor-pointer"
+                          />
 
-                              {/* Cancel icon */}
-                              <button
-                                onClick={() => {
-                                  setEmail(tempEmail); // Reset back to original
-                                  setIsEditingEmail(false);
-                                }}
-                                className="border border-black rounded-[5px] bg-red-700 px-[10px] py-[5px] text-white hover:bg-red-800"
-                                title="Cancel"
-                              >
-                                <X size={16} />
-                              </button>
-                            </>
-                          ) : (
-                            <button
-                              onClick={() => {
-                                setTempEmail(email); // Set temp for editing
-                                setIsEditingEmail(true);
-                              }}
-                              className="border border-black rounded-[5px] bg-[#1D274D] px-[18px] py-[7px] text-white hover:text-[#ff9889]"
-                              title="Edit Email"
-                            >
-                              <Pencil size={16} />
-                            </button>
-                          )}
+                          {/* Tooltip on hover */}
+                          <div className="absolute bottom-full mb-1 right-0 md:left-1/2 md:-translate-x-1/2 w-[200px] bg-black text-white text-xs text-center px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-none">
+                            Email Cannot be changed. Create a new account for
+                            new one
+                          </div>
                         </div>
                       </div>
                     </div>

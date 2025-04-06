@@ -1,5 +1,3 @@
-/** @format */
-
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import axiosInstance from "../Utils/axiosInstance";
@@ -63,6 +61,13 @@ const Announcement = () => {
     if (firstName) initials += firstName.charAt(0);
     if (lastName) initials += lastName.charAt(0);
     return initials.toUpperCase() || "U";
+  };
+
+  // NEW FUNCTION: Format username to handle deleted users
+  const formatUsername = (username) => {
+    // Check if the username starts with "deleted_user_"
+    const isDeletedUser = username?.startsWith("deleted_user_");
+    return isDeletedUser ? username : `@${username}`;
   };
 
   const truncateText = (text, limit = 150) => {
@@ -426,7 +431,8 @@ const Announcement = () => {
                         )}
                       </div>
                       <span className="text-[14px] font-medium">
-                        @{announcement.created_by?.username}
+                        {/* MODIFIED: Check if username starts with "deleted_user_" */}
+                        {formatUsername(announcement.created_by?.username)}
                       </span>
                     </div>
 
@@ -546,7 +552,7 @@ const Announcement = () => {
                       />
                     ) : (
                       // Show Initials if no Profile Picture
-                      { userInitials }
+                      userInitials
                     )}
                   </div>
                   <span className="text-[14px] md:text-[16px] font-medium">
@@ -605,7 +611,8 @@ const Announcement = () => {
                   )}
                 </div>
                 <span className="text-[14px] font-medium">
-                  @{singleAnnouncement.created_by?.username}
+                  {/* MODIFIED: Check if username starts with "deleted_user_" */}
+                  {formatUsername(singleAnnouncement.created_by?.username)}
                 </span>
               </div>
 

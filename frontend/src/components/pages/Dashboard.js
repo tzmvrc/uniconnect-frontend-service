@@ -135,15 +135,34 @@ const Dashboard = () => {
 
   const handleSort = (criterion) => {
     setSortCriterion(criterion);
-    setFilteredForums(
-      [...forums].sort((a, b) => {
-        if (criterion === "mostLiked") {
-          return b.likes - a.likes;
-        } else {
-          return b.rawDate.getTime() - a.rawDate.getTime();
-        }
-      })
-    );
+    
+    const userTopicIds = userInfo?.Topics || [];
+    const matchingForums = [];
+    const nonMatchingForums = [];
+  
+    forums.forEach((forum) => {
+      if (userTopicIds.includes(forum.topicId)) {
+        matchingForums.push(forum);
+      } else {
+        nonMatchingForums.push(forum);
+      }
+    });
+  
+    // Apply sorting to each group separately
+    const sortFn = (a, b) => {
+      if (criterion === "mostLiked") {
+        return b.likes - a.likes;
+      } else { // default to "recent"
+        return b.rawDate.getTime() - a.rawDate.getTime();
+      }
+    };
+  
+    const sortedMatchingForums = [...matchingForums].sort(sortFn);
+    const sortedNonMatchingForums = [...nonMatchingForums].sort(sortFn);
+  
+    const sortedForums = [...sortedMatchingForums, ...sortedNonMatchingForums];
+  
+    setFilteredForums(sortedForums);
     setShowSortOptions(false);
     setCurrentPage(1); // Reset to first page on sort
   };

@@ -1,5 +1,3 @@
-/** @format */
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../Header";
@@ -67,6 +65,12 @@ const ForumDetails = () => {
 
         const forumData = forumResponse.data.forum;
         const userId = userData._id;
+        
+        // Check if the username starts with "deleted_user_" to determine display format
+        const isDeletedUser = forumData.created_by?.username?.startsWith("deleted_user_");
+        const formattedUsername = isDeletedUser
+          ? forumData.created_by?.username
+          : forumData.created_by?.username || "Unknown";
 
         setForum({
           id: forumData._id,
@@ -74,7 +78,8 @@ const ForumDetails = () => {
           content: forumData.description,
           public: forumData.public,
           status: forumData.status,
-          author: forumData.created_by?.username || "Unknown",
+          author: formattedUsername,
+          isDeletedUser: isDeletedUser,
           fullname: `${forumData.created_by?.first_name} ${forumData.created_by?.last_name}`,
           profilePicture: forumData.created_by?.profilePicture,
           topic: forumData.topic_id?.name || "General",
@@ -354,7 +359,7 @@ const ForumDetails = () => {
               </div>
 
               <p className="text-[13px] md:text-[16px] mr-4 font-[650] md:font-[600]">
-                @{forum?.author} · {forum?.date}
+                {forum?.isDeletedUser ? forum?.author : `@${forum?.author}`} · {forum?.date}
               </p>
               {forum?.status === "closed" && (
                 <div className="bg-[#fdb0a4] rounded-md px-4 py-1 text-sm font-bold mr-[20px]">
