@@ -93,7 +93,7 @@ const LandingPage = () => {
 
       {/* Feature section */}
       <div className="p-[40px_20px] text-white mt-[0px] md:mt-[80px] flex justify-around md:flex-wrap text-center">
-        <div class="flex flex-col md:flex-row w-[1600px] items-center">
+        <div class="flex flex-col md:flex-row w-[1600px] items-center justify-center">
           <div class="m-[20px] flex-1 min-w-[300px] max-w-[400px] flex flex-col items-center text-center">
             <img
               src={feature1}
