@@ -60,7 +60,7 @@ const handleLogin = async (e) => {
       { withCredentials: true } // ✅ Ensures cookies are included in requests
     );
 
-    if (response.data.successful) {
+    if (response.data.successful && response.data.token) {
       if (!isVerified) {
         setLoadingMessage("Let's verify your account first");
         setTimeout(() => {
@@ -71,13 +71,14 @@ const handleLogin = async (e) => {
         return;
       }
 
+      localStorage.setItem("token", response.data.token);
       setLoadingMessage("Logging in...");
       setTimeout(() => {
         setLoading(false);
         navigate("/dashboard");
       }, 2000);
     } else {
-      showToastMessage("error", "Login successful, but something went wrong.");
+      showToastMessage("error", "Something went wrong. Try again");
     }
   } catch (err) {
     setLoading(false);
@@ -125,21 +126,13 @@ const handleLogin = async (e) => {
   };
 
  useEffect(() => {
-   const checkAuth = async () => {
-     try {
-      setLoading(true);
-       const res = await axiosInstance.get("/users/check-auth");
-       if (res.data.loggedIn) {
-         navigate("/dashboard");
-       }
-     } catch (err) {
-       console.log("User is not logged in");
-     } finally {
-       setLoading(false);
-     }
-   };
-   checkAuth();
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    navigate("/dashboard");
+  }
  }, []); 
+ 
 
   return (
     <div

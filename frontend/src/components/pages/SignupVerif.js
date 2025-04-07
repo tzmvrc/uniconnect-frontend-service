@@ -101,8 +101,9 @@ const SignupVerif = () => {
         otp: otpValue,
       });
 
-      if (!response.data.error) {
+      if (!response.data.error && response.data.token) {
         // ✅ Match API response structure
+        localStorage.setItem("token", response.data.token);
         setLoadingMessage("Verifying your Account");
         setLoading(true);
 
