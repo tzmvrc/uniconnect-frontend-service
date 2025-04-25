@@ -198,8 +198,14 @@ const EditForumModal = ({ onClose, forum_id }) => {
                   value={searchTerm}
                   onKeyDown={(e) => e.key === "Enter" && handleFormSubmit(e)}
                   onChange={(e) => {
-                    setSearchTerm(e.target.value);
+                    const value = e.target.value;
+                    setSearchTerm(value);
                     setIsOpen(true);
+
+                    // If input is cleared, also clear selected topic
+                    if (value.trim() === "") {
+                      setSelectedTopic("");
+                    }
                   }}
                   className="w-full p-[5px] text-[14px] md:text-[17px] bg-[#FFEBDD] border border-black rounded-[5px] placeholder:text-[14px] md:placeholder:text-[15px] placeholder-gray-600"
                 />
