@@ -16,15 +16,15 @@ const formatDate = (isoDate) => {
   const now = new Date();
   const date = new Date(isoDate);
   const diffInSeconds = Math.floor((now - date) / 1000);
+  const diffInDays = Math.floor(diffInSeconds / 86400);
 
   if (diffInSeconds < 60) return `now`;
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} min ago`;
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
-  if (diffInSeconds < 2592000)
-    return `${Math.floor(diffInSeconds / 86400)}d ago`;
-  if (diffInSeconds < 31536000)
-    return `${Math.floor(diffInSeconds / 2592000)}mo ago`;
-  return `${Math.floor(diffInSeconds / 31536000)}y ago`;
+  if (diffInDays <= 3) return `${diffInDays}d ago`;
+
+  // Show actual date for responses older than 3 days
+  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 };
 
 const ResponseItem = ({ response, userInfo, setResponseCount }) => {
@@ -32,7 +32,9 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
   console.log("🚀 Response received in ResponseItem:", response);
   const author = response.created_by?.username || "";
   const username = userInfo?.Username;
-  const timestamp = formatDate(response.createdAt);
+ const timestamp = formatDate(response.updatedAt);
+  const isModified = response.createdAt !== response.updatedAt; // Check if it's been modified
+
   const fullname = `${response.created_by?.first_name} ${response.created_by?.last_name}`;
 
   const [likes, setLikes] = useState(response.likes);
@@ -134,15 +136,23 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
     setUpdatedContent(response.comment);
   };
 
-  const handleSaveEdit = async () => {
+ const handleSaveEdit = async () => {
     try {
-      await axiosInstance.put(`/response/update/${response._id}`, {
+      const res = await axiosInstance.put(`/response/update/${response._id}`, {
         comment: updatedContent,
       });
-      setIsEditing(false);
-      showToastMessage("success", "Response Updated");
+
+      const { updated, message } = res.data;
+
+      if (updated) {
+        showToastMessage("success", message || "Response updated successfully");
+        setIsEditing(false);
+      } else {
+        showToastMessage("info", message || "No changes were made.");
+      }
     } catch (error) {
       console.error("Error updating response:", error);
+      showToastMessage("error", "Failed to update response");
     }
   };
 
@@ -233,7 +243,9 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
           </div>
         )}
         <h3 className="text-[13px] md:text-[14px] font-semibold">
-          {timestamp}
+          {isModified
+            ? `Edited: ${timestamp}`
+            : `${timestamp}`}
         </h3>
 
         {author === username && (
