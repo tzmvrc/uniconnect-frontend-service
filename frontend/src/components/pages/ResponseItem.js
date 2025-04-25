@@ -11,6 +11,8 @@ import { getInitials } from "../Utils/Helper";
 import { MoreVertical } from "lucide-react";
 import Toast from "./ToastMessage/ToastMessage";
 import badgeIcon from "../images/badge icon.png";
+import { Pencil } from "lucide-react";
+
 
 const formatDate = (isoDate) => {
   const now = new Date();
@@ -243,9 +245,8 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
           </div>
         )}
         <h3 className="text-[13px] md:text-[14px] font-semibold">
-          {isModified
-            ? `Edited: ${timestamp}`
-            : `${timestamp}`}
+          {isModified && <Pencil className="w-3.5 h-3.5" />}
+  {timestamp}
         </h3>
 
         {author === username && (
