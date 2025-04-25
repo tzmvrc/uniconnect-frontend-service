@@ -244,7 +244,7 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
             </h3>
           </div>
         )}
-       <h3 className="flex items-center gap-1 text-gray-500 text-[13px] md:text-[14px] font-semibold">
+       <h3 className="flex items-center gap-1 text-[13px] md:text-[14px] font-semibold">
   {isModified && <Pencil className="w-4 h-4" />}
   {timestamp}
 </h3>
