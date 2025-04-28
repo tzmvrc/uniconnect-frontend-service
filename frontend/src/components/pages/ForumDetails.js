@@ -18,6 +18,8 @@ import Toast from "./ToastMessage/ToastMessage";
 import { MoreVertical } from "lucide-react";
 import ConfirmDeletion from "../Confirmation/confirmation";
 import EditForum from "./EditForumModal";
+import { Pencil, Trash2, Lock, Unlock } from "lucide-react";
+
 
 const ForumDetails = () => {
   const { forum_id } = useParams();
@@ -359,7 +361,8 @@ const ForumDetails = () => {
               </div>
 
               <p className="text-[13px] md:text-[16px] mr-4 font-[650] md:font-[600]">
-                {forum?.isDeletedUser ? forum?.author : `@${forum?.author}`} · {forum?.date}
+                {forum?.isDeletedUser ? forum?.author : `@${forum?.author}`} ·{" "}
+                {forum?.date}
               </p>
               {forum?.status === "closed" && (
                 <div className="bg-[#fdb0a4] rounded-md px-4 py-1 text-sm font-bold mr-[20px]">
@@ -386,30 +389,35 @@ const ForumDetails = () => {
                     <div className="absolute right-0 mt-2 w-40 bg-slate-200 border rounded-md shadow-md">
                       <button
                         onClick={() => setIsFormVisible(true)}
-                        className="block w-full px-4 py-2 text-left font-[500] hover:bg-[#141E46] hover:text-white rounded-md"
+                        className="flex items-center gap-2 w-full px-4 py-2 text-left font-[500] hover:bg-[#141E46] hover:text-white rounded-md"
                       >
+                        <Pencil size={16} />
                         Edit Forum
                       </button>
 
                       {forum?.status === "closed" ? (
                         <button
                           onClick={handleOpen}
-                          className="block w-full px-4 py-2 text-left font-[500] hover:bg-[#141E46] hover:text-white rounded-md"
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left font-[500] hover:bg-[#141E46] hover:text-white rounded-md"
                         >
+                          <Unlock size={17} />
                           Open Forum
                         </button>
                       ) : (
                         <button
                           onClick={handleClose}
-                          className="block w-full px-4 py-2 text-left font-[500] hover:bg-[#141E46] hover:text-white rounded-md"
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left font-[500] hover:bg-[#141E46] hover:text-white rounded-md"
                         >
+                          <Lock size={17} />
                           Close Forum
                         </button>
                       )}
+
                       <button
                         onClick={() => setIsModalOpen(true)}
-                        className="block w-full px-4 py-2 text-left text-red-600 font-[500] hover:bg-[#da4444] hover:text-white rounded-md"
+                        className="flex items-center gap-2 w-full px-4 py-2 text-left text-red-600 font-[500] hover:bg-[#da4444] hover:text-white rounded-md"
                       >
+                        <Trash2 size={16} />
                         Delete Forum
                       </button>
 
@@ -418,7 +426,7 @@ const ForumDetails = () => {
                         onClose={() => setIsModalOpen(false)}
                         onConfirm={handleDelete}
                         title={"Delete Forum?"}
-                        message="Once deleted, the forum and all of its content will be permanently removed and cannot be  recovered."
+                        message="Once deleted, the forum and all of its content will be permanently removed and cannot be recovered."
                       />
                     </div>
                   )}
