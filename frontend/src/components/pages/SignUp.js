@@ -56,7 +56,7 @@ const SignUp = () => {
 
   useEffect(() => {
     const fetchSchools = async () => {
-      setLoading(true);
+      
       try {
         const res = await axiosInstance.get("/school/get-all-schools");
         console.log("Fetched Schools:", res.data); // ✅ Debug: Ensure data is an array
@@ -64,8 +64,6 @@ const SignUp = () => {
       } catch (error) {
         console.error("Error fetching schools:", error);
         showToastMessage("error", "Failed to fetch schools.");
-      } finally {
-        setLoading(false);
       }
     };
 
