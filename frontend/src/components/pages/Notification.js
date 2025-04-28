@@ -140,6 +140,12 @@ const Notification = () => {
     setShowMore((prev) => ({ ...prev, [section]: !prev[section] }));
   };
 
+    const truncateText = (text, wordLimit) => {
+    const words = text.split(" ");
+    if (words.length <= wordLimit) return text;
+    return words.slice(0, wordLimit).join(" ") + "...";
+  };
+
   const renderNotifications = (section, data) => {
     const visibleNotifications = showMore[section] ? data : data.slice(0, 3);
 
@@ -190,13 +196,20 @@ const Notification = () => {
                     {["forum_like", "forum_dislike", "forum_response"].includes(
                       notification.type
                     )
-                      ? `📢 Forum: ${notification.forumTitle || "Untitled"}`
+ ? `📢 Forum: ${truncateText(
+                          notification.forumTitle || "Untitled",
+                          10
+                        )}`
                       : ["response_like", "response_dislike"].includes(
                           notification.type
                         )
                       ? `💬 Response: ${
                           notification.responseComment || "No comment"
                         }`
+                      ? `💬 Response: ${truncateText(
+                          notification.responseComment || "No comment",
+                          10
+                        )}`
                       : ""}
                   </p>
                 </div>
