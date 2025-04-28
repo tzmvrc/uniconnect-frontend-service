@@ -194,7 +194,7 @@ const EditForumModal = ({ onClose, forum_id }) => {
               <div className=" w-full relative mb-[10px] px-[20px]">
                 <input
                   type="text"
-                  placeholder="Enter your Topics"
+                  placeholder="Enter your Topic"
                   value={searchTerm}
                   onKeyDown={(e) => e.key === "Enter" && handleFormSubmit(e)}
                   onChange={(e) => {
