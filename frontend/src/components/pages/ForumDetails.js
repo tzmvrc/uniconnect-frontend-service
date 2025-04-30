@@ -111,7 +111,7 @@ useEffect(() => {
         });
       } else {
         // Other errors (e.g., server error)  
-        navigate("/error");
+        navigate("*");
       }
     }
   };
