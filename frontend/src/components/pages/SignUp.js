@@ -64,7 +64,7 @@ const SignUp = () => {
       } catch (error) {
         console.error("Error fetching schools:", error);
         showToastMessage("error", "Failed to fetch schools.");
-      }
+      } 
     };
 
     fetchSchools();
