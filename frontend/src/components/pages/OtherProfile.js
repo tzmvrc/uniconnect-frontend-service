@@ -74,14 +74,18 @@ const OtherProfile = () => {
         console.log("User not found.");
         setUserInfo({});
         setCreatedForums([]);
-        navigate("*");
+        navigate("*", {
+          state: { title: "Oops! User not found" },
+        });
         return false;
       }
     } catch (error) {
       console.error("Error fetching user info:", error);
       setUserInfo({});
       setCreatedForums([]);
-      navigate("*");
+      navigate("*", {
+        state: { title: "Oops! User not found" },
+      });
       return false;
     }
   };
