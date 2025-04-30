@@ -54,56 +54,70 @@ const ForumDetails = () => {
     }, 1500);
   };
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const userResponse = await axiosInstance.get("/users/get-user-info");
-        const userData = userResponse.data.user || {};
-        setUserInfo(userData);
+useEffect(() => {
+  const loadData = async () => {
+    try {
+      // Get logged-in user
+      const userResponse = await axiosInstance.get("/users/get-user-info");
+      const userData = userResponse.data.user || {};
+      setUserInfo(userData);
 
-        const forumResponse = await axiosInstance.get(`/forum/${forum_id}`);
-        if (!forumResponse.data.success)
-          throw new Error("Failed to fetch forum");
+      // Get the forum
+      const forumResponse = await axiosInstance.get(`/forum/${forum_id}`);
+      const forumData = forumResponse.data.forum;
+      const userId = userData._id;
 
-        const forumData = forumResponse.data.forum;
-        const userId = userData._id;
-        
-        // Check if the username starts with "deleted_user_" to determine display format
-        const isDeletedUser = forumData.created_by?.username?.startsWith("deleted_user_");
-        const formattedUsername = isDeletedUser
-          ? forumData.created_by?.username
-          : forumData.created_by?.username || "Unknown";
+      // Proceed if response is successful
+      const isDeletedUser =
+        forumData.created_by?.username?.startsWith("deleted_user_");
+      const formattedUsername = isDeletedUser
+        ? forumData.created_by?.username
+        : forumData.created_by?.username || "Unknown";
 
-        setForum({
-          id: forumData._id,
-          title: forumData.title,
-          content: forumData.description,
-          public: forumData.public,
-          status: forumData.status,
-          author: formattedUsername,
-          isDeletedUser: isDeletedUser,
-          fullname: `${forumData.created_by?.first_name} ${forumData.created_by?.last_name}`,
-          profilePicture: forumData.created_by?.profilePicture,
-          topic: forumData.topic_id?.name || "General",
-          tags: forumData.tags || [],
-          likes: forumData.likes || 0,
-          dislikes: forumData.dislikes || 0,
-          isSaved: forumData.isFavorited || false,
-          isLiked: forumData.liked_by.includes(userId),
-          isDisliked: forumData.disliked_by.includes(userId),
-          date: new Date(forumData.createdAt).toLocaleDateString(),
+      setForum({
+        id: forumData._id,
+        title: forumData.title,
+        content: forumData.description,
+        public: forumData.public,
+        status: forumData.status,
+        author: formattedUsername,
+        isDeletedUser: isDeletedUser,
+        fullname: `${forumData.created_by?.first_name} ${forumData.created_by?.last_name}`,
+        profilePicture: forumData.created_by?.profilePicture,
+        topic: forumData.topic_id?.name || "General",
+        tags: forumData.tags || [],
+        likes: forumData.likes || 0,
+        dislikes: forumData.dislikes || 0,
+        isSaved: forumData.isFavorited || false,
+        isLiked: forumData.liked_by.includes(userId),
+        isDisliked: forumData.disliked_by.includes(userId),
+        date: new Date(forumData.createdAt).toLocaleDateString(),
+      });
+
+      setLoadingForum(false);
+      fetchResponseCount();
+      fetchUserForumStates(forumData._id);
+    } catch (error) {
+      console.error("Error loading forum:", error);
+
+      // ✅ Navigate based on error status
+      if (error.response?.status === 403) {
+       navigate("*", {
+         state: { title: "Oops! Forum not found" },
+       });
+      } else if (error.response?.status === 404) {
+        navigate("*", {
+          state: { title: "Oops! Forum not found" },
         });
-
-        setLoadingForum(false);
-        fetchResponseCount();
-        fetchUserForumStates(forumData._id);
-      } catch (error) {
-        console.error("Error loading data:", error);
+      } else {
+        // Other errors (e.g., server error)  
+        navigate("/error");
       }
-    };
+    }
+  };
 
-    loadData();
-  }, [forum_id, refreshKey]);
+  loadData();
+}, [forum_id, refreshKey]);
 
   const refreshForum = () => {
     setRefreshKey((prevKey) => prevKey + 1);
