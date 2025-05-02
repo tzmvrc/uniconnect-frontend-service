@@ -197,79 +197,76 @@ const OwnProfile = () => {
     }
   };
 
-  const fetchResponseHistory = async () => {
-    try {
-      console.log("Fetching response history...");
+const fetchResponseHistory = async () => {
+  try {
+    console.log("Fetching response history...");
 
-      const response = await axiosInstance.get("/response/owner/history");
-      console.log("Raw response from API (response history):", response.data);
+    const response = await axiosInstance.get("/response/owner/history");
+    console.log("Raw response from API (response history):", response.data);
 
-      if (!response.data || !Array.isArray(response.data.forums)) {
-        console.log("No response history found.");
-        setResponseHistory([]);
-        return;
-      }
-
-      const forumIds = response.data.forums.map((forum) => forum._id);
-      console.log("Extracted response forum IDs:", forumIds);
-
-      if (forumIds.length === 0) {
-        setResponseHistory([]);
-        return;
-      }
-
-      // Fetch details of each forum the user has responded to
-      const forumDetailsPromises = forumIds.map((id) =>
-        axiosInstance.get(`/forum/${id}`)
-      );
-
-      const forumResponses = await Promise.all(forumDetailsPromises);
-
-      // Process the forum data
-      const mappedForums = forumResponses
-        .map((response) => {
-          const forum = response.data.forum || response.data;
-
-          // Skip forums that are private and not created by the current user
-          if (
-            !forum.public &&
-            forum.created_by?.username !== userInfo?.Username
-          ) {
-            return null; // Filter out this forum
-          }
-
-          return {
-            id: forum._id,
-            title: forum.title || "Untitled Forum",
-            content: forum.description || "",
-            public: forum.public || false,
-            status: forum.status || "Draft",
-            author:
-              forum.created_by?.username || userInfo?.Username || "Unknown",
-            topic: forum.topic_id?.name || "General",
-            tags: Array.isArray(forum.tags) ? forum.tags : [],
-            likes: forum.likes || 0,
-            dislikes: forum.dislikes || 0,
-            isSaved: false,
-            userLiked: false,
-            userDisliked: false,
-            date: forum.createdAt
-              ? new Date(forum.createdAt).toLocaleDateString()
-              : "Unknown",
-          };
-        })
-        .filter((forum) => forum !== null); // Remove null values (i.e., skipped forums)
-
-      console.log(
-        "Processed response forum data (excluding private forums):",
-        mappedForums
-      );
-      setResponseHistory(mappedForums);
-    } catch (error) {
-      console.error("Error fetching response history:", error);
+    if (!response.data || !Array.isArray(response.data.forums)) {
+      console.log("No response history found.");
       setResponseHistory([]);
+      return;
     }
-  };
+
+    const forumIds = response.data.forums.map((forum) => forum._id);
+    console.log("Extracted response forum IDs:", forumIds);
+
+    if (forumIds.length === 0) {
+      setResponseHistory([]);
+      return;
+    }
+
+    // Use Promise.allSettled instead of Promise.all
+    const forumDetailsResults = await Promise.allSettled(
+      forumIds.map((id) => axiosInstance.get(`/forum/${id}`))
+    );
+
+    const mappedForums = forumDetailsResults
+      .filter((result) => result.status === "fulfilled")
+      .map((result) => {
+        const forum = result.value.data.forum || result.value.data;
+
+        if (
+          !forum.public &&
+          forum.created_by?.username !== userInfo?.Username
+        ) {
+          return null;
+        }
+
+        return {
+          id: forum._id,
+          title: forum.title || "Untitled Forum",
+          content: forum.description || "",
+          public: forum.public || false,
+          status: forum.status || "Draft",
+          author: forum.created_by?.username || userInfo?.Username || "Unknown",
+          topic: forum.topic_id?.name || "General",
+          tags: Array.isArray(forum.tags) ? forum.tags : [],
+          likes: forum.likes || 0,
+          dislikes: forum.dislikes || 0,
+          isSaved: false,
+          userLiked: false,
+          userDisliked: false,
+          date: forum.createdAt
+            ? new Date(forum.createdAt).toLocaleDateString()
+            : "Unknown",
+        };
+      })
+      .filter((forum) => forum !== null);
+
+    console.log(
+      "Processed response forum data (excluding private forums):",
+      mappedForums
+    );
+    setResponseHistory(mappedForums);
+  } catch (error) {
+    console.error("Error fetching response history:", error);
+    setResponseHistory([]);
+  }
+};
+
 
   const toggleMenu = () => setMenuCollapsed(!menuCollapsed);
 
