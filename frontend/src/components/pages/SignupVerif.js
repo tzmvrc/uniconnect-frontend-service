@@ -87,40 +87,47 @@ const SignupVerif = () => {
   };
 
   // Handle OTP verification
-  const handleVerify = async () => {
-    const otpValue = code.join("");
+ const handleVerify = async () => {
+  const otpValue = code.join("");
 
-    if (otpValue.length !== 6) {
-      showToastMessage("error", "Please enter a 6-digit code");
-      return;
-    }
+  if (otpValue.length !== 6) {
+    showToastMessage("error", "Please enter a 6-digit code");
+    return;
+  }
 
-    try {
-      const response = await axiosInstance.post("/otp/verify-otp", {
-        email,
-        otp: otpValue,
-      });
+  try {
+    const response = await axiosInstance.post("/otp/verify-otp", {
+      email,
+      otp: otpValue,
+    });
 
-      if (!response.data.error && response.data.token) {
-        // ✅ Match API response structure
-        localStorage.setItem("token", response.data.token);
-        setLoadingMessage("Verifying your Account");
-        setLoading(true);
+    const token = response.data?.token;
+    const source = location.state?.from;
 
-        setTimeout(() => {
-          setLoading(false);
-          setLoadingMessage("");
-          handleNextPage();
-        }, 2000);
+    if (!response.data.error) {
+      // ✅ Only set token in localStorage for signup or login
+      if ((source === "signup" || source === "login") && token) {
+        localStorage.setItem("token", token);
       }
-    } catch (err) {
-      console.error("Verification Error:", err.response?.data || err.message);
-      showToastMessage("error", "Incorrect Code. Please try again");
-      
-      // Clear input fields when verification fails
-      clearInputFields();
+
+      setLoadingMessage("Verifying your Account");
+      setLoading(true);
+
+      setTimeout(() => {
+        setLoading(false);
+        setLoadingMessage("");
+        handleNextPage();
+      }, 2000);
     }
-  };
+  } catch (err) {
+    console.error("Verification Error:", err.response?.data || err.message);
+    showToastMessage("error", "Incorrect Code. Please try again");
+
+    // Clear input fields when verification fails
+    clearInputFields();
+  }
+};
+
 
   // Handle resend code click
   const handleResendClick = async (e) => {
