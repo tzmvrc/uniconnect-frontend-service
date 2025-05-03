@@ -97,6 +97,8 @@ const SignupVerif = () => {
       return;
     }
 
+    setLoading(true);
+
     try {
       const response = await axiosInstance.post("/otp/verify-otp", {
         email,
@@ -113,7 +115,7 @@ const SignupVerif = () => {
         }
 
         setLoadingMessage("Verifying your Account");
-        setLoading(true);
+       
 
         setTimeout(() => {
           setLoading(false);
@@ -124,6 +126,7 @@ const SignupVerif = () => {
     } catch (err) {
       console.error("Verification Error:", err.response?.data || err.message);
       showToastMessage("error", "Incorrect Code. Please try again");
+      setLoading(false);
 
       // Clear input fields when verification fails
       clearInputFields();
