@@ -1,3 +1,5 @@
+/** @format */
+
 import React, { useState, useRef, useEffect } from "react";
 import bg from "../images/longbg.png"; // Background image import
 import logo from "../images/NLogo.png"; // Import logo image
@@ -87,47 +89,46 @@ const SignupVerif = () => {
   };
 
   // Handle OTP verification
- const handleVerify = async () => {
-  const otpValue = code.join("");
+  const handleVerify = async () => {
+    const otpValue = code.join("");
 
-  if (otpValue.length !== 6) {
-    showToastMessage("error", "Please enter a 6-digit code");
-    return;
-  }
-
-  try {
-    const response = await axiosInstance.post("/otp/verify-otp", {
-      email,
-      otp: otpValue,
-    });
-
-    const token = response.data?.token;
-    const source = location.state?.from;
-
-    if (!response.data.error) {
-      // ✅ Only set token in localStorage for signup or login
-      if ((source === "signup" || source === "login") && token) {
-        localStorage.setItem("token", token);
-      }
-
-      setLoadingMessage("Verifying your Account");
-      setLoading(true);
-
-      setTimeout(() => {
-        setLoading(false);
-        setLoadingMessage("");
-        handleNextPage();
-      }, 2000);
+    if (otpValue.length !== 6) {
+      showToastMessage("error", "Please enter a 6-digit code");
+      return;
     }
-  } catch (err) {
-    console.error("Verification Error:", err.response?.data || err.message);
-    showToastMessage("error", "Incorrect Code. Please try again");
 
-    // Clear input fields when verification fails
-    clearInputFields();
-  }
-};
+    try {
+      const response = await axiosInstance.post("/otp/verify-otp", {
+        email,
+        otp: otpValue,
+      });
 
+      const token = response.data?.token;
+      const source = location.state?.from;
+
+      if (!response.data.error) {
+        // ✅ Only set token in localStorage for signup or login
+        if ((source === "signup" || source === "login") && token) {
+          localStorage.setItem("token", token);
+        }
+
+        setLoadingMessage("Verifying your Account");
+        setLoading(true);
+
+        setTimeout(() => {
+          setLoading(false);
+          setLoadingMessage("");
+          handleNextPage();
+        }, 2000);
+      }
+    } catch (err) {
+      console.error("Verification Error:", err.response?.data || err.message);
+      showToastMessage("error", "Incorrect Code. Please try again");
+
+      // Clear input fields when verification fails
+      clearInputFields();
+    }
+  };
 
   // Handle resend code click
   const handleResendClick = async (e) => {
@@ -140,7 +141,7 @@ const SignupVerif = () => {
     setTimeout(() => {
       setCountdown(120);
     }, 1600);
-    
+
     // Clear input fields when resending code
     clearInputFields();
   };
