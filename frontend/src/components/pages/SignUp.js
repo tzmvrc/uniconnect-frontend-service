@@ -92,10 +92,6 @@ const SignUp = () => {
       showToastMessage("error", "The passwords do not match.");
       return false;
     }
-
-
-    setPasswordValidation(true);
-    setPassword(confirmPassword);
     return true;
   };
 
@@ -190,34 +186,31 @@ const SignUp = () => {
   const handleValidation = async (e) => {
     e.preventDefault();
 
-    const emailValid = await handleCheckEmail();
-    const passwordValid = handlePassword(); // Now returns true/false
-    const schoolValid = handleFormSubmit(e); // Already validates school
-
     if (!firstName || !lastName || !username) {
       showToastMessage("error", "Please fill out all fields");
       return;
     }
+
+    const emailValid = await handleCheckEmail();
+    const passwordValid = handlePassword();
+    const schoolValid = handleFormSubmit(e);
 
     if (!emailValid || !passwordValid || !schoolValid) {
       console.log("Validation failed, stopping signup.");
       return;
     }
 
-    await handleSignUp();
-  };
-
-  const handleSignUp = async () => {
     try {
       setLoadingMessage("Creating your Account");
       setLoading(true);
+      
       const response = await axiosInstance.post("/users/signup", {
         school_name: selectedUniversity,
         first_name: firstName,
         last_name: lastName,
         username,
         email: email.trim(),
-        password,
+        password: newPassword, 
       });
 
       if (response.data.successful) {
@@ -234,6 +227,7 @@ const SignUp = () => {
       showToastMessage("error", errorMessage);
     }
   };
+
 
   //Main div
   return (
