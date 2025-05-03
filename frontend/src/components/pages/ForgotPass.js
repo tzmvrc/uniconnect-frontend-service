@@ -35,12 +35,12 @@ const ForgotPass = () => {
       showToastMessage("error", "Please enter a valid school email.");
       return;
     }
+    setLoading(true);
 
     const sendOtpResult = await handleSendOtp();
 
     if (sendOtpResult?.successful) {
       setLoadingMessage("Sending your code");
-      setLoading(true);
       setTimeout(() => {
         setLoading(false);
         navigate("/account-verify", {
@@ -49,6 +49,7 @@ const ForgotPass = () => {
             from: "forgot",
           },
         });
+
       }, 2000); // Optional delay for smooth transition
     } else {
       setLoading(false); // Stop loading immediately on failure
