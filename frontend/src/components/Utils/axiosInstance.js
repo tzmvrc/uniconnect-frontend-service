@@ -10,7 +10,6 @@ const axiosInstance = axios.create({
     // ✅ Changed "header" to "headers"
     "Content-Type": "application/json",
   },
-
 });
 
 axiosInstance.interceptors.request.use(
