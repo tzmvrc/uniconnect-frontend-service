@@ -77,7 +77,7 @@ function ForgotNewPass() {
 
   const updatePassword = async (password) => {
     try {
-      const response = await axiosInstance.put("/users/update-user-pass", {
+      const response = await axiosInstance.put("/users/reset-password", {
         email, // Ensure this is passed correctly
         password,
       });
