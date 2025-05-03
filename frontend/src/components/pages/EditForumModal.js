@@ -18,9 +18,10 @@ const EditForumModal = ({ onClose, forum_id }) => {
   const [forumDescription, setForumDescription] = useState("");
   const [tags, setTags] = useState("");
   const [visibility, setVisibility] = useState("public");
-
   const [topics, setTopics] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
+  const [dataLoaded, setDataLoaded] = useState(false);
+  
   const username = userInfo ? `@${userInfo.Username}` : "";
   const fullName = userInfo ? `${userInfo.FirstName} ${userInfo.LastName}` : "";
 
@@ -40,6 +41,7 @@ const EditForumModal = ({ onClose, forum_id }) => {
     setShowToast({ isShown: true, type: type, message: message });
   };
 
+  // First, fetch all available topics
   useEffect(() => {
     const fetchTopics = async () => {
       try {
@@ -49,22 +51,66 @@ const EditForumModal = ({ onClose, forum_id }) => {
         }
       } catch (error) {
         console.error("Error fetching topics:", error);
+        showToastMessage("error", "Failed to load topics");
       }
     };
-    fetchForumDetails();
+    
     fetchTopics();
+  }, []);
+
+  // Then fetch user info
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get("/users/get-user-info");
+        setUserInfo(response.data.user || {});
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    };
+    
     fetchUserInfo();
   }, []);
 
-  const fetchUserInfo = async () => {
-    try {
-      const response = await axios.get("/users/get-user-info");
-      setUserInfo(response.data.user || {});
-    } catch (error) {
-      console.error("Error fetching user info:", error);
-      setUserInfo({});
+  // Finally fetch forum details - after topics are loaded
+  useEffect(() => {
+    const fetchForumDetails = async () => {
+      try {
+        // First get the forum details
+        const response = await axios.get(`/forum/${forum_id}`);
+        const forum = response.data.forum;
+        
+        // Set basic forum data
+        setForumTitle(forum.title);
+        setForumDescription(forum.description);
+        setTags(forum.tags.join(", ")); // Convert array to string
+        setVisibility(forum.public ? "public" : "private");
+        
+        // Handle topic - check for both possible properties
+        const topicName = forum.topicName || 
+                         (forum.topic_id && forum.topic_id.name) || 
+                         forum.topic ||
+                         "";
+                         
+        console.log("Forum topic data:", { 
+          topicName: forum.topicName,
+          topic_id: forum.topic_id,
+          directTopic: forum.topic
+        });
+        
+        setSelectedTopic(topicName);
+        setSearchTerm(topicName);
+        setDataLoaded(true);
+      } catch (error) {
+        console.error("Error fetching forum details:", error);
+        showToastMessage("error", "Failed to load forum details");
+      }
+    };
+    
+    if (topics.length > 0) {
+      fetchForumDetails();
     }
-  };
+  }, [forum_id, topics]);
 
   const handleSelect = (topic) => {
     setSelectedTopic(topic);
@@ -72,29 +118,39 @@ const EditForumModal = ({ onClose, forum_id }) => {
     setIsOpen(false);
   };
 
-  const fetchForumDetails = async () => {
-    try {
-      const response = await axios.get(`/forum/${forum_id}`);
-      const forum = response.data.forum;
-      setForumTitle(forum.title);
-      setForumDescription(forum.description);
-      setTags(forum.tags.join(", ")); // Convert array to string
-      setVisibility(forum.public ? "public" : "private");
-      setSelectedTopic(forum.topicName);
-      setSearchTerm(forum.topicName); // Prefill the topic input
-    } catch (error) {
-      console.error("Error fetching forum details:", error);
+  // Validate if the topic exists in the available topics
+  const validateTopic = () => {
+    // Check if the entered topic exists in the topics list
+    const topicExists = topics.some(topic => 
+      topic.name.toLowerCase() === searchTerm.toLowerCase()
+    );
+    
+    if (!topicExists) {
+      return false;
     }
+    
+    return true;
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (!forumTitle || !forumDescription || !tags || !selectedTopic) {
+    
+    // Validate all required fields including topic
+    if (!forumTitle || !forumDescription || !tags) {
       showToastMessage("error", "All fields are required.");
+      return;
+    }
+    
+    // Validate topic separately
+    if (!searchTerm || !validateTopic()) {
+      showToastMessage("error", "Please select a valid topic from the list");
       return;
     }
 
     try {
+      setLoadingMessage("Updating forum...");
+      setLoading(true);
+      
       const response = await axios.put(`/forum/update/${forum_id}`, {
         title: forumTitle,
         description: forumDescription,
@@ -104,15 +160,13 @@ const EditForumModal = ({ onClose, forum_id }) => {
       });
 
       if (response.status === 200) {
-        setLoadingMessage("Updating forum...");
-        setLoading(true);
-
         setTimeout(() => {
           setLoading(false);
           window.location.reload();
         }, 1500);
       }
     } catch (error) {
+      setLoading(false);
       console.error("Error updating forum:", error);
       showToastMessage(
         "error",
@@ -191,41 +245,47 @@ const EditForumModal = ({ onClose, forum_id }) => {
                 </div>
               </div>
 
-              <div className=" w-full relative mb-[10px] px-[20px]">
-                <input
-                  type="text"
-                  placeholder="Enter your Topic"
-                  value={searchTerm}
-                  onKeyDown={(e) => e.key === "Enter" && handleFormSubmit(e)}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setSearchTerm(value);
-                    setIsOpen(true);
+              <div className="w-full relative mb-[10px] px-[20px]">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Enter your Topic"
+                    value={searchTerm}
+                    onKeyDown={(e) => e.key === "Enter" && handleFormSubmit(e)}
+                    onClick={() => setIsOpen(true)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setSearchTerm(value);
+                      setIsOpen(true);
 
-                    // If input is cleared, also clear selected topic
-                    if (value.trim() === "") {
-                      setSelectedTopic("");
-                    }
-                  }}
-                  className="w-full p-[5px] text-[14px] md:text-[17px] bg-[#FFEBDD] border border-black rounded-[5px] placeholder:text-[14px] md:placeholder:text-[15px] placeholder-gray-600"
-                />
-                {isOpen && searchTerm && (
-                  <ul className="absolute top-[100%] left-5 w-[88%] md:w-[95%] text-[14px] md:text-[15px] mt-2 max-h-60 overflow-y-hidden bg-[#FFEBDD] border border-black rounded-[10px] z-10 shadow-lg">
+                      // If input is cleared, also clear selected topic
+                      if (value.trim() === "") {
+                        setSelectedTopic("");
+                      }
+                    }}
+                    className="w-full p-[5px] text-[14px] md:text-[17px] bg-[#FFEBDD] border border-black rounded-[5px] placeholder:text-[14px] md:placeholder:text-[15px] placeholder-gray-600"
+                  />
+                </div>
+                
+                {isOpen && (
+                  <ul className="absolute top-[100%] left-5 w-[88%] md:w-[95%] text-[14px] md:text-[15px] mt-2 max-h-60 overflow-y-auto bg-[#FFEBDD] border border-black rounded-[10px] z-10 shadow-lg">
                     {topics.filter((topic) =>
-                      topic.name
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
+                      searchTerm 
+                        ? topic.name.toLowerCase().includes(searchTerm.toLowerCase())
+                        : true
                     ).length > 0 ? (
                       topics
                         .filter((topic) =>
-                          topic.name
-                            .toLowerCase()
-                            .includes(searchTerm.toLowerCase())
+                          searchTerm
+                            ? topic.name.toLowerCase().includes(searchTerm.toLowerCase())
+                            : true
                         )
                         .map((topic) => (
                           <li
                             key={topic._id}
-                            className="p-2 cursor-pointer hover:bg-[#fbcaa4]"
+                            className={`p-2 cursor-pointer hover:bg-[#fbcaa4] ${
+                              selectedTopic === topic.name ? "bg-[#f9a16c] font-medium" : ""
+                            }`}
                             onClick={() => handleSelect(topic.name)}
                           >
                             {topic.name}
@@ -249,7 +309,7 @@ const EditForumModal = ({ onClose, forum_id }) => {
                 />
                 <textarea
                   placeholder="Forum Description"
-                  className="w-full h-[100px]  md:h-36 mt-3 p-[10px] bg-[#FFEBDD] text-[14px] md:text-[15px] border border-black rounded-[5px] mb-[5px] placeholder:text-[14px] md:placeholder:text-[15px] placeholder-gray-600"
+                  className="w-full h-[100px] md:h-36 mt-3 p-[10px] bg-[#FFEBDD] text-[14px] md:text-[15px] border border-black rounded-[5px] mb-[5px] placeholder:text-[14px] md:placeholder:text-[15px] placeholder-gray-600"
                   value={forumDescription}
                   onChange={(e) => setForumDescription(e.target.value)}
                 />
