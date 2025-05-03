@@ -68,7 +68,7 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
       } catch (error) {
         console.error("Error fetching user info:", error);
         setUserInfo({});
-
+        localStorage.removeItem("token");
         setTimeout(() => {
           navigate("/login");
         });
@@ -91,7 +91,12 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
   const handleConfirmLogout = async () => {
     localStorage.removeItem("token");
     setShowLogoutDialog(false);
-    navigate("/login");
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      navigate("/login");
+    }, 500);
+    
   };
 
   return (
