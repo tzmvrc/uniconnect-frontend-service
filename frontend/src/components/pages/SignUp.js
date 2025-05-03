@@ -363,7 +363,16 @@ const SignUp = () => {
                     type="text"
                     placeholder="Username"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+
+                      // Allow only alphanumeric characters and underscores, no whitespace
+                      const validUsername = /^[a-zA-Z0-9_]*$/;
+
+                      if (validUsername.test(value)) {
+                        setUsername(value);
+                      }
+                    }}
                     className="w-full p-[10px] pl-[11px] text-base border-none outline-none text-black rounded-[10px]"
                     required
                   />
