@@ -36,58 +36,58 @@ const Login = () => {
     setShowToast({ isShown: true, type: type, message: message });
   };
 
-const handleLogin = async (e) => {
-  e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-  if (!email || !password) {
-    showToastMessage("error", "Please enter your email and password");
-    return;
-  }
+    if (!email || !password) {
+      showToastMessage("error", "Please enter your email and password");
+      return;
+    }
 
-  if (!validateEmail(email)) {
-    showToastMessage("error", "Please enter a valid email address.");
-    return;
-  }
+    if (!validateEmail(email)) {
+      showToastMessage("error", "Please enter a valid email address.");
+      return;
+    }
 
-  setLoading(true);
+    setLoading(true);
 
-  const isVerified = await handleCheckIfVerified();
+    const isVerified = await handleCheckIfVerified();
 
-  try {
-    const response = await axiosInstance.post(
-      "/users/login",
-      { email, password },
-      { withCredentials: true } // ✅ Ensures cookies are included in requests
-    );
+    try {
+      const response = await axiosInstance.post(
+        "/users/login",
+        { email, password },
+        { withCredentials: true } // ✅ Ensures cookies are included in requests
+      );
 
-    if (response.data.successful && response.data.token) {
-      if (!isVerified) {
-        setLoadingMessage("Let's verify your account first");
+      if (response.data.successful && response.data.token) {
+        if (!isVerified) {
+          setLoadingMessage("Let's verify your account first");
+          setTimeout(() => {
+            setLoading(false);
+            SendOtp();
+            navigate("/account-verify", { state: { email, from: "login" } });
+          }, 2000);
+          return;
+        }
+
+        localStorage.setItem("token", response.data.token);
+        setLoadingMessage("Logging in...");
         setTimeout(() => {
           setLoading(false);
-          SendOtp();
-          navigate("/account-verify", { state: { email, from: "login" } });
+          navigate("/dashboard");
         }, 2000);
-        return;
+      } else {
+        showToastMessage("error", "Something went wrong. Try again");
       }
-
-      localStorage.setItem("token", response.data.token);
-      setLoadingMessage("Logging in...");
-      setTimeout(() => {
-        setLoading(false);
-        navigate("/dashboard");
-      }, 2000);
-    } else {
-      showToastMessage("error", "Something went wrong. Try again");
+    } catch (err) {
+      setLoading(false);
+      const errorMessage =
+        err.response?.data?.message ||
+        "Something went wrong. Please try again.";
+      showToastMessage("error", errorMessage);
     }
-  } catch (err) {
-    setLoading(false);
-    const errorMessage =
-      err.response?.data?.message || "Something went wrong. Please try again.";
-    showToastMessage("error", errorMessage);
-  }
-};
-
+  };
 
   const SendOtp = async () => {
     setLoadingMessage("Sending your Code");
@@ -125,14 +125,13 @@ const handleLogin = async (e) => {
     }
   };
 
- useEffect(() => {
-  const token = localStorage.getItem("token");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-  if (token) {
-    navigate("/dashboard");
-  }
- }, []); 
- 
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, []);
 
   return (
     <div
