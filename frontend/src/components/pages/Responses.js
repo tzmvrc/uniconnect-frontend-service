@@ -13,7 +13,6 @@ const Responses = ({ forum_id, userInfo, setResponseCount }) => {
     const fetchResponses = async () => {
       try {
         const response = await axiosInstance.get(`/response/${forum_id}`);
-        console.log("📥 Full API Response:", response.data);
 
         if (!Array.isArray(response.data)) {
           console.error("❌ Invalid response format:", response.data);
@@ -46,10 +45,10 @@ const Responses = ({ forum_id, userInfo, setResponseCount }) => {
     };
 
     socket.onmessage = (event) => {
-      console.log("🟢 WebSocket Message:", event.data);
+      // console.log("🟢 WebSocket Message:", event.data);
       try {
         const parsedData = JSON.parse(event.data);
-        console.log("🟢 Parsed WebSocket Data:", parsedData);
+        // console.log("🟢 Parsed WebSocket Data:", parsedData);
 
         if (!parsedData || !parsedData.data) {
           console.error("⚠️ Invalid WebSocket message format:", parsedData);
@@ -72,7 +71,7 @@ const Responses = ({ forum_id, userInfo, setResponseCount }) => {
   }, [forum_id]);
 
   const handleRealTimeUpdate = (change) => {
-    console.log("🔄 Real-time update received:", change);
+    // console.log("🔄 Real-time update received:", change);
 
     if (!change || !change.operationType) {
       console.error("⚠️ Invalid change event format:", change);
@@ -91,11 +90,13 @@ const Responses = ({ forum_id, userInfo, setResponseCount }) => {
     setResponses((prevResponses) => {
       switch (change.operationType) {
         case "insert":
-          console.log("✅ New Response Inserted:", change.fullDocument);
+          // console.log("✅ New Response Inserted:", change.fullDocument);
+          console.log("✅ New Response Inserted");
           return [change.fullDocument, ...prevResponses];
 
         case "update":
-          console.log("✏️ Response Updated:", change.updateDescription);
+          // console.log("✏️ Response Updated:", change.updateDescription);
+          console.log("✏️ Response Updated");
           return prevResponses.map((response) =>
             response._id === responseId
               ? { ...response, ...change.updateDescription.updatedFields }
@@ -103,7 +104,8 @@ const Responses = ({ forum_id, userInfo, setResponseCount }) => {
           );
 
         case "delete":
-          console.log("🗑️ Response Deleted:", responseId);
+          // console.log("🗑️ Response Deleted:", responseId);
+          console.log("🗑️ Response Deleted");
           return prevResponses.filter(
             (response) => response._id !== responseId
           );

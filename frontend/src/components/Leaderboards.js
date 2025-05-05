@@ -101,7 +101,7 @@ const Leaderboards = () => {
               .slice(0, 3) // Get top 3 users
               .map((user) => (
                 <li
-                  key={user._id}
+                  key={user._id || user.username}
                   className="text-[#141E46] flex items-center space-x-3"
                 >
                   {/* Clickable Profile Picture */}
@@ -166,7 +166,7 @@ const Leaderboards = () => {
               .slice(0, 3)
               .map((school) => (
                 <li
-                  key={school._id} // ✅ FIXED: Use `school._id`
+                  key={school._id || school.school_name} // ✅ FIXED: Use `school._id`
                   className="text-[#141E46] flex items-center space-x-3"
                 >
                   {/* School Icon Placeholder */}

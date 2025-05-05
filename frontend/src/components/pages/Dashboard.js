@@ -97,7 +97,6 @@ const Dashboard = () => {
     try {
       const response = await axiosInstance.get("/users/get-user-info");
       setUserInfo(response.data.user || {});
-      console.log("User Info Fetched:", response.data.user);
     } catch (error) {
       console.error("Error fetching user info:", error);
       setUserInfo({});
@@ -169,7 +168,6 @@ const Dashboard = () => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    console.log("Current Page:", page);
     // Scroll to top of forum list
     window.scrollTo({
       top: 0,
@@ -201,14 +199,16 @@ const Dashboard = () => {
 
       <main
         className={`flex-1 p-4 md:p-6 bg-white w-[20%] ${
-          menuCollapsed ? "md:ml-[190px] md:mr-[350px]" : "md:ml-[330px]"
-        } mt-[70px] md:mt-[75px] md:mr-[290px]`}
+          menuCollapsed
+            ? "md:ml-[120px] lg:ml-[160px]  md:mr-[20px] lg:mr-[353px]"
+            : "md:ml-[305px] lg:mr-[150px]"
+        } mt-[70px] md:mt-[75px] lg:mr-[290px]`}
       >
         {/* Create Forum Button */}
         <div className="flex right-0">
           <button
             onClick={() => setIsFormVisible(true)}
-            className="fixed bottom-6 right-6 md:bottom-11 md:right-96  lg:right-96 w-16 h-16 bg-[#EB6E5B] hover:bg-[#b43e2c] text-white rounded-full shadow-lg flex items-center justify-center z-20 duration-300 overflow-hidden"
+            className="fixed bottom-6 right-6 md:bottom-11 md:right-31  lg:right-96 w-16 h-16 bg-[#EB6E5B] hover:bg-[#b43e2c] text-white rounded-full shadow-lg flex items-center justify-center z-20 duration-300 overflow-hidden"
           >
             <span className="text-[32px] leading-none">+</span>
           </button>

@@ -1,3 +1,5 @@
+/** @format */
+
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
@@ -25,75 +27,84 @@ import PostDetails from "./components/pages/PostDetails";
 import ForumDetails from "./components/pages/ForumDetails";
 import Settings from "./components/pages/Settings";
 import { isTokenExpired } from "./components/Utils/Auth";
+import ProtectedRoute from "./components/Utils/protectedRoute";
+import axios from "./components/Utils/axiosInstance";
 
 function App() {
-  useEffect(() => {
-    const socket = new WebSocket("wss://https://uniconnect-service-api.onrender.com");
-
-    socket.onopen = () => {
-      console.log("✅ WebSocket connected!");
-    };
-
-    socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log("🔔 Received update:", data);
-    };
-
-    socket.onerror = (error) => {
-      console.error("❌ WebSocket error:", error);
-    };
-
-    socket.onclose = () => {
-      console.log("❌ WebSocket closed!");
-    };
-
-    return () => {
-      socket.close();
-    };
-  }, []);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token && isTokenExpired(token)) {
-      alert("Session expired, please log in again.");
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-    }
-  }, []);
-
+ 
   return (
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path="*" element={<Notfound />} />
+          {/* Public Routes */}
           <Route index element={<LandingPage />} />
           <Route path="/home" element={<LandingPage />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/FAQs" element={<FAQs />} />
           <Route path="/signupverif" element={<SignupVerif />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<OwnProfile />} />
-          <Route path="/:username" element={<OtherProfile />} />
           <Route path="/login-forgot-password" element={<ForgotPass />} />
           <Route path="/account-verify" element={<SignupVerif />} />
           <Route path="/verify-success" element={<SignUpSuccess />} />
           <Route path="/login-set-new-password" element={<ForgotNewPass />} />
-          <Route path="/notification" element={<Notification />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/topics/added" element={<AddedTopics />} />
-          <Route path="/topics/all" element={<AllTopics />} />
-          <Route path="/topics/networking" element={<TopicNetworking />} />
-          <Route path="/announcement" element={<Announcement />} />
-          <Route path="/announcement/:announcementId" element={<Announcement />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/forum/:forum_id" element={<ForumDetails />} />
           <Route
             path="/login-set-new-password-success"
             element={<ForgotSuccess />}
           />
+
+          {/* Protected Routes */}
+          <Route
+            path="/dashboard"
+            element={<ProtectedRoute component={Dashboard} />}
+          />
+          <Route
+            path="/profile"
+            element={<ProtectedRoute component={OwnProfile} />}
+          />
+          <Route
+            path="/:username"
+            element={<ProtectedRoute component={OtherProfile} />}
+          />
+          <Route
+            path="/notification"
+            element={<ProtectedRoute component={Notification} />}
+          />
+          <Route
+            path="/leaderboard"
+            element={<ProtectedRoute component={Leaderboard} />}
+          />
+          <Route
+            path="/topics/added"
+            element={<ProtectedRoute component={AddedTopics} />}
+          />
+          <Route
+            path="/topics/all"
+            element={<ProtectedRoute component={AllTopics} />}
+          />
+          <Route
+            path="/topics/networking"
+            element={<ProtectedRoute component={TopicNetworking} />}
+          />
+          <Route
+            path="/announcement"
+            element={<ProtectedRoute component={Announcement} />}
+          />
+          <Route
+            path="/announcement/:announcementId"
+            element={<ProtectedRoute component={Announcement} />}
+          />
+          <Route
+            path="/settings"
+            element={<ProtectedRoute component={Settings} />}
+          />
+          <Route
+            path="/forum/:forum_id"
+            element={<ProtectedRoute component={ForumDetails} />}
+          />
           <Route path="/signup-add-topics" element={<AddTopics />} />
+
+          {/* Catch-All Route for 404 */}
+          <Route path="*" element={<Notfound />} />
         </Routes>
       </BrowserRouter>
     </div>

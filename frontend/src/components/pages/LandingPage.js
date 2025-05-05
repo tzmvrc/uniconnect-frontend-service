@@ -93,47 +93,47 @@ const LandingPage = () => {
 
       {/* Feature section */}
       <div className="p-[40px_20px] text-white mt-[0px] md:mt-[80px] flex justify-around md:flex-wrap text-center">
-        <div class="flex flex-col md:flex-row w-[1600px] items-center justify-center">
-          <div class="m-[20px] flex-1 min-w-[300px] max-w-[400px] flex flex-col items-center text-center">
+        <div className="flex flex-col md:flex-row md:justify-center w-[1600px] items-center">
+          <div className="m-[20px] flex-1 min-w-[300px] max-w-[400px] flex flex-col items-center text-center">
             <img
               src={feature1}
               alt="Community Powered Q&A"
-              class="h-[150px] w-auto mt-[23px]"
+              className="h-[150px] w-auto mt-[23px]"
             />
-            <h3 class="text-[20px] mb-[10px] font-bold">
+            <h3 className="text-[20px] mb-[10px] font-bold">
               Community Powered Q&A
             </h3>
-            <p class="text-[14px] font-light mx-[15px] md:mx-[30px]">
+            <p className="text-[14px] font-light mx-[15px] md:mx-[30px]">
               Ask questions and get support from fellow students in Computer
               Science and IT. Together, you'll solve problems and learn new
               skills.
             </p>
           </div>
-          <div class="m-[20px] mt-[21px] flex-1 min-w-[300px] max-w-[400px] flex flex-col items-center text-center">
+          <div className="m-[20px] mt-[21px] flex-1 min-w-[300px] max-w-[400px] flex flex-col items-center text-center">
             <img
               src={feature2}
               alt="Badgerank"
-              class="mt-[43px] h-[130px] w-auto"
+              className="mt-[43px] h-[130px] w-auto"
             />
-            <h3 class="text-[20px] mb-[10px] font-bold">
+            <h3 className="text-[20px] mb-[10px] font-bold">
               Earn Points and Top the Leaderboards
             </h3>
-            <p class="text-[14px] font-light mx-[15px] md:mx-[15px]">
+            <p className="text-[14px] font-light mx-[15px] md:mx-[15px]">
               Contribute by helping others and earn medals for your efforts.
               Rise through the ranks, not just in the forum, but also within
               your school's community.
             </p>
           </div>
-          <div class="m-[20px] mt-[14px] flex-1 min-w-[300px] max-w-[400px] flex flex-col items-center text-center">
+          <div className="m-[20px] mt-[14px] flex-1 min-w-[300px] max-w-[400px] flex flex-col items-center text-center">
             <img
               src={feature3}
               alt="AI Assistance"
-              class="mt-[25px] h-[150px] w-auto mb-[5px]"
+              className="mt-[25px] h-[150px] w-auto mb-[5px]"
             />
-            <h3 class="text-[20px] mb-[10px] font-bold">
+            <h3 className="text-[20px] mb-[10px] font-bold">
               AI Powered Assistance
             </h3>
-            <p class="text-[14px] font-light mx-[15px] md:mx-[45px]">
+            <p className="text-[14px] font-light mx-[15px] md:mx-[45px]">
               Need extra help? Our AI assistant provides quick access to
               relevant links and resources, giving you a head start in your
               research.
@@ -142,19 +142,19 @@ const LandingPage = () => {
         </div>
       </div>
 
-      <div class="flex flex-col items-center mt-[80px] text-white">
-        <div class="flex flex-col items-center md:flex-row md:items-start mb-[40px] max-w-[1300px] w-60%">
+      <div className="flex flex-col items-center mt-[80px] text-white">
+        <div className="flex flex-col items-center md:flex-row md:items-start mb-[40px] max-w-[1300px] w-60%">
           <img
             src={feature4}
             alt="feature4"
-            class="w-[320px] md:w-[500px] h-auto"
+            className="w-[320px] md:w-[500px] h-auto"
           />
-          <div class="flex-1 mb-[30px] ml-[0px] md:ml-[85px] mt-[16px]">
-            <h1 class="text-[20px] md:text-[30px] mb-[10px] text-center md:text-left font-bold leading-[30px] md:leading-[45px]">
+          <div className="flex-1 mb-[30px] ml-[0px] md:ml-[85px] mt-[16px]">
+            <h1 className="text-[20px] md:text-[30px] mb-[10px] text-center md:text-left font-bold leading-[30px] md:leading-[45px]">
               Explore Topics in Computer Science
               <br />& Information Technology
             </h1>
-            <p class="text-[14px] font-light text-center md:text-left mx-[30px] md:mx-[0px]">
+            <p className="text-[14px] font-light text-center md:text-left mx-[30px] md:mx-[0px]">
               Our forum covers a variety of Computer Science and IT subjects,
               making it
               <br />
@@ -175,12 +175,12 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <div class="flex flex-col items-center md:flex-row md:items-start mb-[40px] mt-[0px] md:mt-[25px] md:max-w-[1300px] md:w-[1080px]">
-          <div class="flex-1 mb-[30px] mt-[10px] md:mt-[110px]">
-            <h1 class="text-[20px] md:text-[30px] mb-[10px] font-bold text-center md:text-left leading-[30px] md:leading-[45px]">
+        <div className="flex flex-col items-center md:flex-row md:items-start mb-[40px] mt-[0px] md:mt-[25px] md:max-w-[1300px] md:w-[1080px]">
+          <div className="flex-1 mb-[30px] mt-[10px] md:mt-[110px]">
+            <h1 className="text-[20px] md:text-[30px] mb-[10px] font-bold text-center md:text-left leading-[30px] md:leading-[45px]">
               AI-Assisted Search for Instant Help
             </h1>
-            <p class="text-[14px] font-light text-center md:text-left mx-[40px] md:mx-[0px]">
+            <p className="text-[14px] font-light text-center md:text-left mx-[40px] md:mx-[0px]">
               Our forum features a smart AI assistant that makes finding answers
               easier.
               <br />
@@ -199,23 +199,23 @@ const LandingPage = () => {
           <img
             src={feature5}
             alt="feature5"
-            class="w-[300px] md:w-[495px] h-auto"
+            className="w-[300px] md:w-[495px] h-auto"
           />
         </div>
       </div>
 
       {/* Join Us section */}
       <div>
-        <div class="items-center text-center mt-[80px] md:mt-[100px] mb-[100px] flex flex-col">
-          <h1 class="text-white text-[30px] md:text-[45px] font-bold mx-[20px] md:mx-[0px]">
-            Join the <span class="text-[#eb6e5b]">Community</span> today
+        <div className="items-center text-center mt-[80px] md:mt-[100px] mb-[100px] flex flex-col">
+          <h1 className="text-white text-[30px] md:text-[45px] font-bold mx-[20px] md:mx-[0px]">
+            Join the <span className="text-[#eb6e5b]">Community</span> today
           </h1>
           <img
             src={image2}
             alt="image2"
-            class="h-auto w-[300px] md:w-[450px] ml-[23px] md:ml-[35px] mb-[1px]"
+            className="h-auto w-[300px] md:w-[450px] ml-[23px] md:ml-[35px] mb-[1px]"
           />
-          <p class="text-white text-[14px] font-light mx-[50px] md:mx-[0px]">
+          <p className="text-white text-[14px] font-light mx-[50px] md:mx-[0px]">
             Whether you're solving coding problems, sharing knowledge, or just
             starting your Computer Science and IT journey,
             <br />
@@ -226,7 +226,7 @@ const LandingPage = () => {
             and learning today!
           </p>
           <button
-            class="w-[130px] p-[7px] px-[18px] text-[15px] font-medium text-white bg-[#eb6e5b] border-2 border-transparent rounded-[8px] cursor-pointer transition-all duration-300 ease-in-out mt-[30px] hover:bg-[#d25441] hover:scale-102"
+            className="w-[130px] p-[7px] px-[18px] text-[15px] font-medium text-white bg-[#eb6e5b] border-2 border-transparent rounded-[8px] cursor-pointer transition-all duration-300 ease-in-out mt-[30px] hover:bg-[#d25441] hover:scale-102"
             onClick={() => navigate("/SignUp")}
           >
             Join Us
@@ -237,8 +237,8 @@ const LandingPage = () => {
       {/* Contact Us */}
       <div className="mt-[120px] mb-[80px] text-white">
         <div className="text-center mb-[50px]">
-          <h1 class="text-[30px] md:text-[45px] font-bold">Contact Us</h1>
-          <p class="text-[14px] font-[300] mx-[50px] md:mx-[0px]">
+          <h1 className="text-[30px] md:text-[45px] font-bold">Contact Us</h1>
+          <p className="text-[14px] font-[300] mx-[50px] md:mx-[0px]">
             We're here to help! Whether you have questions, feedback, or need
             assistance, our
             <br />
@@ -247,15 +247,15 @@ const LandingPage = () => {
           </p>
         </div>
 
-        <div class="flex flex-col md:flex-row justify-center items-center md:items-start">
+        <div className="flex flex-col md:flex-row justify-center items-center md:items-start">
           <div className="bg-[#0b112b] rounded-[20px] flex flex-col text-center items-center py-[20px] w-[330px] md:w-[430px] mr-[0px] md:mr-[50px]">
             <img
               src={mailIcon}
               alt="mail Icon"
-              class="h-auto w-[50px] md:w-[70px]"
+              className="h-auto w-[50px] md:w-[70px]"
             />
-            <h1 class="text-[20px] md:text-[30px] font-[600]">Email</h1>
-            <p class="text-[14px] font-[300] mx-[50px] md:mx-[0px]">
+            <h1 className="text-[20px] md:text-[30px] font-[600]">Email</h1>
+            <p className="text-[14px] font-[300] mx-[50px] md:mx-[0px]">
               Feel free to reach out to us with any general questions or <br />
               request. We'll do our best to get back to you.
               <br />
@@ -272,10 +272,10 @@ const LandingPage = () => {
             <img
               src={socialsIcon}
               alt="mail Icon"
-              class="h-auto w-[50px] md:w-[70px]"
+              className="h-auto w-[50px] md:w-[70px]"
             />
-            <h1 class="text-[20px] md:text-[30px] font-[600]">Socials</h1>
-            <p class="text-[14px] mb-[30px] font-[300] mx-[50px] md:mx-[0px]">
+            <h1 className="text-[20px] md:text-[30px] font-[600]">Socials</h1>
+            <p className="text-[14px] mb-[30px] font-[300] mx-[50px] md:mx-[0px]">
               Stay connected with us on our Socials! Follow us for the <br />
               latest updates, announcements, and tips. You can also reach <br />
               out through direct messages if you have any questions.
@@ -289,7 +289,7 @@ const LandingPage = () => {
                 <img
                   src={facebook}
                   alt="facebook social"
-                  class="cursor-pointer items-center pl-[13px]"
+                  className="cursor-pointer items-center pl-[13px]"
                 />
               </a>
 
@@ -301,7 +301,7 @@ const LandingPage = () => {
                 <img
                   src={github}
                   alt="github social"
-                  class="cursor-pointer items-center pl-[13px]"
+                  className="cursor-pointer items-center pl-[13px]"
                 />
               </a>
               <a
@@ -312,7 +312,7 @@ const LandingPage = () => {
                 <img
                   src={twitter}
                   alt="twitter social"
-                  class="cursor-pointer items-center pl-[13px]"
+                  className="cursor-pointer items-center pl-[13px]"
                 />
               </a>
               <a
@@ -323,7 +323,7 @@ const LandingPage = () => {
                 <img
                   src={instagram}
                   alt="instagram social"
-                  class="cursor-pointer items-center pl-[13px]"
+                  className="cursor-pointer items-center pl-[13px]"
                 />
               </a>
             </div>
@@ -332,26 +332,26 @@ const LandingPage = () => {
       </div>
 
       {/* Footer section */}
-      <div class="flex justify-center mt-[150px] mb-[10px]">
-        <div class="flex justify-around w-[1500px]">
-          <div class="hidden md:block w-[400px] ml-[10px] mt-[80px]">
+      <div className="flex justify-center mt-[150px] mb-[10px]">
+        <div className="flex justify-around w-[1500px]">
+          <div className="hidden md:block w-[400px] ml-[10px] mt-[80px]">
             <img
               src={wordmark}
               alt="wordmark"
-              class="ml-[10px] h-auto w-[270px]"
+              className="ml-[10px] h-auto w-[270px]"
             />
-            <h1 class="text-[25px] font-[620] text-[#6d6d6d] leading-[30px] mt-[7px]">
+            <h1 className="text-[25px] font-[620] text-[#6d6d6d] leading-[30px] mt-[7px]">
               Join us in shaping the future of
               <br />
               Students as it evolve into a reality
             </h1>
           </div>
 
-          <div class="mt-[70px]">
-            <p class="text-[#6d6d6d] text-[12px] font-semibold mb-[12px]">
+          <div className="mt-[70px]">
+            <p className="text-[#6d6d6d] text-[12px] font-semibold mb-[12px]">
               FOLLOW US
             </p>
-            <div class="flex h-auto w-[150px]">
+            <div className="flex h-auto w-[150px]">
               <a
                 href="https://www.facebook.com/"
                 target="_blank"
@@ -360,7 +360,7 @@ const LandingPage = () => {
                 <img
                   src={facebook}
                   alt="facebook social"
-                  class="mb-[15px] mr-[10px] cursor-pointer"
+                  className="mb-[15px] mr-[10px] cursor-pointer"
                 />
               </a>
 
@@ -372,7 +372,7 @@ const LandingPage = () => {
                 <img
                   src={github}
                   alt="github social"
-                  class="mb-[15px] mr-[10px] cursor-pointer"
+                  className="mb-[15px] mr-[10px] cursor-pointer"
                 />
               </a>
               <a
@@ -383,7 +383,7 @@ const LandingPage = () => {
                 <img
                   src={twitter}
                   alt="twitter social"
-                  class="mb-[15px] mr-[10px] cursor-pointer"
+                  className="mb-[15px] mr-[10px] cursor-pointer"
                 />
               </a>
               <a
@@ -394,35 +394,35 @@ const LandingPage = () => {
                 <img
                   src={instagram}
                   alt="instagram social"
-                  class="mb-[15px] mr-[10px] cursor-pointer"
+                  className="mb-[15px] mr-[10px] cursor-pointer"
                 />
               </a>
             </div>
             <button
-              class="flex items-center gap-2 py-2 px-4 text-sm font-medium text-[#6d6d6d] bg-transparent border border-[#6d6d6d] rounded-full cursor-pointer transition-all duration-300 ease-in-out hover:border-[#eb6e5b] hover:rounded-[80px] hover:text-white"
+              className="flex items-center gap-2 py-2 px-4 text-sm font-medium text-[#6d6d6d] bg-transparent border border-[#6d6d6d] rounded-full cursor-pointer transition-all duration-300 ease-in-out hover:border-[#eb6e5b] hover:rounded-[80px] hover:text-white"
               onClick={() => navigate("/FAQs")}
             >
               Contact Us
               <img
                 src={arrow}
                 alt="go to socials"
-                class="w-[12px] h-auto transition-transform duration-300 ease-linear"
+                className="w-[12px] h-auto transition-transform duration-300 ease-linear"
               />
             </button>
           </div>
 
-          <div class="mt-[70px]">
-            <p class="text-[#6d6d6d] text-[12px] font-semibold mb-[7px]">
+          <div className="mt-[70px]">
+            <p className="text-[#6d6d6d] text-[12px] font-semibold mb-[7px]">
               ABOUT US
             </p>
-            <p class="text-[#6d6d6d] text-[12px] font-semibold mb-[7px]">
+            <p className="text-[#6d6d6d] text-[12px] font-semibold mb-[7px]">
               PRIVACY AND POLICY
             </p>
-            <p class="text-[#6d6d6d] text-[12px] font-semibold mb-[7px]">
+            <p className="text-[#6d6d6d] text-[12px] font-semibold mb-[7px]">
               TERMS AND CONDITIONS
             </p>
             <button
-              class="flex items-center gap-2 py-2 px-4 text-sm font-medium mt-[10px] text-[#6d6d6d] bg-transparent border border-[#6d6d6d] rounded-full cursor-pointer transition-all duration-300 ease-in-out hover:border-[#eb6e5b] hover:rounded-[80px] hover:text-white"
+              className="flex items-center gap-2 py-2 px-4 text-sm font-medium mt-[10px] text-[#6d6d6d] bg-transparent border border-[#6d6d6d] rounded-full cursor-pointer transition-all duration-300 ease-in-out hover:border-[#eb6e5b] hover:rounded-[80px] hover:text-white"
               onClick={() => navigate("/FAQs")}
             >
               FAQs Page
@@ -432,9 +432,9 @@ const LandingPage = () => {
         </div>
       </div>
 
-      <div class="text-center">
-        <div class="w-[1270px] h-[1px] md:h-[2px] bg-gray-600 mx-auto mb-2.5"></div>
-        <p class="text-[#6d6d6d] mt-[10px] mb-[3px] text-[10px] md:text-[12px] font-[500] md:font-[600]">
+      <div className="text-center">
+        <div className="w-[1270px] h-[1px] md:h-[2px] bg-gray-600 mx-auto mb-2.5"></div>
+        <p className="text-[#6d6d6d] mt-[10px] mb-[3px] text-[10px] md:text-[12px] font-[500] md:font-[600]">
           © Copyright 2022, All Rights Reserved by uniconnect group
         </p>
       </div>

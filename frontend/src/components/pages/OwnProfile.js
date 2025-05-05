@@ -60,9 +60,9 @@ const OwnProfile = () => {
     try {
       const response = await axiosInstance.get("/users/get-user-info");
       setUserInfo(response.data.user || {});
-      console.log("User Info Fetched:", response.data.user);
+      
     } catch (error) {
-      console.error("Error fetching user info:", error);
+   
       setUserInfo({});
     } finally {
       setLoading(false);
@@ -71,19 +71,19 @@ const OwnProfile = () => {
 
   const fetchCreatedForums = async () => {
     try {
-      console.log("Fetching created forums...");
+     
 
       const response = await axiosInstance.get("/forum/owner/history");
-      console.log("Raw response from API (created forums):", response.data);
+      
 
       if (!response.data || !Array.isArray(response.data.forums)) {
-        console.log("No created forums found.");
+       
         setCreatedForums([]);
         return;
       }
 
       const forumIds = response.data.forums.map((forum) => forum._id);
-      console.log("Extracted created forum IDs:", forumIds);
+     
 
       if (forumIds.length === 0) {
         setCreatedForums([]);
@@ -100,8 +100,7 @@ const OwnProfile = () => {
       const mappedForums = forumResponses.map((response) => {
         const forum = response.data.forum || response.data;
 
-        // Debugging logs
-        console.log("Created forum data structure:", forum);
+     
 
         return {
           id: forum._id,
@@ -123,26 +122,26 @@ const OwnProfile = () => {
         };
       });
 
-      console.log("Processed created forums data:", mappedForums);
+     
       setCreatedForums(mappedForums);
     } catch (error) {
-      console.error("Error fetching created forums:", error);
+   
       setCreatedForums([]);
     }
   };
 
   const fetchSavedForums = async () => {
     try {
-      console.log("Fetching saved forums...");
+    
 
       const response = await axiosInstance.get(`/users/saved-forums`);
-      console.log("Raw response from API (saved forums):", response.data);
+     
 
       const savedForumIds = response.data.savedForums;
-      console.log("Extracted saved forum IDs:", savedForumIds);
+      
 
       if (!savedForumIds || savedForumIds.length === 0) {
-        console.log("No saved forums found");
+
         setSavedForums([]);
         return;
       }
@@ -185,33 +184,29 @@ const OwnProfile = () => {
         })
         .filter((forum) => forum !== null); // Clean null (excluded private forums)
 
-      console.log(
-        "Processed saved forums data (excluding private ones):",
-        forumsData
-      );
 
       setSavedForums(forumsData);
     } catch (error) {
-      console.error("Error fetching saved forums:", error);
+      
       setSavedForums([]);
     }
   };
 
 const fetchResponseHistory = async () => {
   try {
-    console.log("Fetching response history...");
+  
 
     const response = await axiosInstance.get("/response/owner/history");
-    console.log("Raw response from API (response history):", response.data);
+    
 
     if (!response.data || !Array.isArray(response.data.forums)) {
-      console.log("No response history found.");
+      
       setResponseHistory([]);
       return;
     }
 
     const forumIds = response.data.forums.map((forum) => forum._id);
-    console.log("Extracted response forum IDs:", forumIds);
+    
 
     if (forumIds.length === 0) {
       setResponseHistory([]);
@@ -256,10 +251,7 @@ const fetchResponseHistory = async () => {
       })
       .filter((forum) => forum !== null);
 
-    console.log(
-      "Processed response forum data (excluding private forums):",
-      mappedForums
-    );
+  
     setResponseHistory(mappedForums);
   } catch (error) {
     console.error("Error fetching response history:", error);

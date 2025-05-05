@@ -22,6 +22,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingmessage, setLoadingMessage] = useState("");
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [showToast, setShowToast] = useState({
     isShown: false,
     type: "",
@@ -36,58 +37,57 @@ const Login = () => {
     setShowToast({ isShown: true, type: type, message: message });
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+const handleLogin = async (e) => {
+  e.preventDefault();
 
-    if (!email || !password) {
-      showToastMessage("error", "Please enter your email and password");
-      return;
-    }
+  if (!email || !password) {
+    showToastMessage("error", "Please enter your email and password");
+    return;
+  }
 
-    if (!validateEmail(email)) {
-      showToastMessage("error", "Please enter a valid email address.");
-      return;
-    }
+  if (!validateEmail(email)) {
+    showToastMessage("error", "Please enter a valid email address.");
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    const isVerified = await handleCheckIfVerified();
+  const isVerified = await handleCheckIfVerified();
 
-    try {
-      const response = await axiosInstance.post(
-        "/users/login",
-        { email, password },
-        { withCredentials: true } // ✅ Ensures cookies are included in requests
-      );
+  try {
+    const response = await axiosInstance.post(
+      "/users/login",
+      { email, password },
+      { withCredentials: true } // ✅ Send cookies
+    );
 
-      if (response.data.successful && response.data.token) {
-        if (!isVerified) {
-          setLoadingMessage("Let's verify your account first");
-          setTimeout(() => {
-            setLoading(false);
-            SendOtp();
-            navigate("/account-verify", { state: { email, from: "login" } });
-          }, 2000);
-          return;
-        }
-
-        localStorage.setItem("token", response.data.token);
-        setLoadingMessage("Logging in...");
+    if (response.data.successful) {
+      if (!isVerified) {
+        setLoadingMessage("Let's verify your account first");
         setTimeout(() => {
           setLoading(false);
-          navigate("/dashboard");
+          SendOtp();
+          navigate("/account-verify", { state: { email, from: "login" } });
         }, 2000);
-      } else {
-        showToastMessage("error", "Something went wrong. Try again");
+        return;
       }
-    } catch (err) {
-      setLoading(false);
-      const errorMessage =
-        err.response?.data?.message ||
-        "Something went wrong. Please try again.";
-      showToastMessage("error", errorMessage);
+
+      setLoadingMessage("Logging in...");
+      setTimeout(() => {
+        setLoading(false);
+        navigate("/dashboard");
+      }, 2000);
+    } else {
+      showToastMessage("error", "Something went wrong. Try again.");
     }
-  };
+  } catch (err) {
+    setLoading(false);
+    const errorMessage =
+      err.response?.data?.message || "Something went wrong. Please try again.";
+    showToastMessage("error", errorMessage);
+  }
+};
+
 
   const SendOtp = async () => {
     setLoadingMessage("Sending your Code");
@@ -125,13 +125,16 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      navigate("/dashboard");
-    }
-  }, []);
+   useEffect(() => {
+     axiosInstance
+       .get("/users/check-auth")
+       .then(() => {
+         navigate("/dashboard"); // Redirect if already logged in
+       })
+       .catch(() => {
+         setCheckingAuth(false); // Stay on login if not authenticated
+       });
+   }, [navigate]);
 
   return (
     <div

@@ -96,9 +96,9 @@ const Faqs = () => {
         backgroundSize: "cover",
       }}
     >
-      <div class="flex justify-center items-center flex-col text-white">
+      <div className="flex justify-center items-center flex-col text-white">
         <img
-          class="h-auto w-[290px] md:w-[400px] mb-[20px] md:mb-[0px] cursor-pointer"
+          className="h-auto w-[290px] md:w-[400px] mb-[20px] md:mb-[0px] cursor-pointer"
           src={logo}
           alt="logo"
           onClick={() => navigate("/login")}
@@ -111,13 +111,13 @@ const Faqs = () => {
           knowledge, and grow together with our peers!
         </p>
         <button
-          class="w-[170px] p-[7px] px-[18px] text-[15px] font-medium text-white bg-[#eb6e5b] border-2 border-transparent rounded-[8px] cursor-pointer transition-all duration-300 ease-in-out mt-[15px] mb-[40px] hover:bg-[#d25441] hover:scale-102"
+          className="w-[170px] p-[7px] px-[18px] text-[15px] font-medium text-white bg-[#eb6e5b] border-2 border-transparent rounded-[8px] cursor-pointer transition-all duration-300 ease-in-out mt-[15px] mb-[40px] hover:bg-[#d25441] hover:scale-102"
           onClick={() => navigate("/login")}
         >
           Browse Forums
         </button>
 
-        <h2 class="text-[25px] md:text-[40px] font-semibold md:font-bold mb-[20px] md:mb-[25px]">
+        <h2 className="text-[25px] md:text-[40px] font-semibold md:font-bold mb-[20px] md:mb-[25px]">
           How can we Help?
         </h2>
       </div>
@@ -215,10 +215,10 @@ const Faqs = () => {
       {/* 1st option */}
       <div className="tab-content text-white text-[13px] md:text-base mb-[50px]">
         {activeTab === "public" && (
-          <div class="flex flex-col items-center text-center">
+          <div className="flex flex-col items-center text-center">
             <div className="text-left">
-              <h2 class="font-bold mb-[8px] text-[#ff6b6b]">Instructions:</h2>
-              <ul class="list-disc pl-5">
+              <h2 className="font-bold mb-[8px] text-[#ff6b6b]">Instructions:</h2>
+              <ul className="list-disc pl-5">
                 <li>
                   To browse the forum, simply scroll through the list of
                   questions posted by other users.
@@ -235,8 +235,8 @@ const Faqs = () => {
                   the discussion.
                 </li>
               </ul>
-              <h2 class="font-bold mb-[8px] mt-[40px] text-[#ff6b6b]">Tips:</h2>
-              <ul class="list-disc pl-5">
+              <h2 className="font-bold mb-[8px] mt-[40px] text-[#ff6b6b]">Tips:</h2>
+              <ul className="list-disc pl-5">
                 <li>
                   Be sure to read the full question before responding, and aim
                   to provide clear, helpful answers.
@@ -250,14 +250,14 @@ const Faqs = () => {
                   your ranking!
                 </li>
               </ul>
-              <div class=" flex justify-center mt-[70px]">
+              <div className=" flex justify-center mt-[70px]">
                 <img
                   src={searchBar}
                   alt="search bar"
-                  class="h-auto w-[700px]"
+                  className="h-auto w-[700px]"
                 />
               </div>
-              <h1 class="mt-[20px] font-bold mb-[8px] text-[#ff6b6b]">
+              <h1 className="mt-[20px] font-bold mb-[8px] text-[#ff6b6b]">
                 Search Bar Help
               </h1>
               <p>
@@ -269,8 +269,8 @@ const Faqs = () => {
                 <br />
                 categories.
               </p>
-              <h2 class="font-bold mb-[8px] mt-[10px]">Tips:</h2>
-              <ul class="list-disc pl-5">
+              <h2 className="font-bold mb-[8px] mt-[10px]">Tips:</h2>
+              <ul className="list-disc pl-5">
                 <li>
                   Be specific with your keywords to get more accurate results.
                 </li>
@@ -278,28 +278,28 @@ const Faqs = () => {
                 <li>Check the most upvoted responses for helpful answers!</li>
               </ul>
             </div>
-            <div class=" flex flex-col space-y-[20px] md:space-y-[0px] md:flex-row justify-center items-center md:justify-around mt-[70px] w-full md:w-[1000px]">
+            <div className=" flex flex-col space-y-[20px] md:space-y-[0px] md:flex-row justify-center items-center md:justify-around mt-[70px] w-full md:w-[1000px]">
               <img
                 src={forum1}
                 alt="search bar"
-                class="h-auto w-[300px] md:w-[450px]"
+                className="h-auto w-[300px] md:w-[450px]"
               />
               <img
                 src={forum2}
                 alt="search bar"
-                class="h-auto w-[300px] md:w-[450px]"
+                className="h-auto w-[300px] md:w-[450px]"
               />
             </div>
-            <div class=" flex justify-around mt-[50px] w-[1000px]">
+            <div className=" flex justify-around mt-[50px] w-[1000px]">
               <img
                 src={response}
                 alt="search bar"
-                class="h-auto w-[380px] md:w-[500px]"
+                className="h-auto w-[380px] md:w-[500px]"
               />
             </div>
 
-            <div class="text-left">
-              <h1 class="mt-[20px] font-bold mb-[8px] text-[#ff6b6b]">
+            <div className="text-left">
+              <h1 className="mt-[20px] font-bold mb-[8px] text-[#ff6b6b]">
                 Responses Help
               </h1>
               <p>
@@ -308,8 +308,8 @@ const Faqs = () => {
                 <br />
                 to the entire community.
               </p>
-              <h2 class="font-bold mb-[8px] mt-[10px]">Tips:</h2>
-              <ul class="list-disc pl-5">
+              <h2 className="font-bold mb-[8px] mt-[10px]">Tips:</h2>
+              <ul className="list-disc pl-5">
                 <li>
                   Be specific with your keywords to get more accurate results.
                 </li>
@@ -320,19 +320,19 @@ const Faqs = () => {
                 </li>
               </ul>
             </div>
-            <div class=" flex justify-around mt-[70px] w-[1000px]">
+            <div className=" flex justify-around mt-[70px] w-[1000px]">
               <img
                 src={manage}
                 alt="search bar"
-                class="h-auto w-[380px] md:w-[500px]"
+                className="h-auto w-[380px] md:w-[500px]"
               />
             </div>
-            <div class="text-left">
-              <h1 class="mt-[20px] font-bold mb-[8px] text-[#ff6b6b]">
+            <div className="text-left">
+              <h1 className="mt-[20px] font-bold mb-[8px] text-[#ff6b6b]">
                 Manage Your Forum
               </h1>
               <p>As the owner of a forum post, you have the ability to:</p>
-              <ul class="list-disc pl-5">
+              <ul className="list-disc pl-5">
                 <li>
                   Edit: Update your question or details at any time by clicking
                   the "Edit" button.
@@ -346,8 +346,8 @@ const Faqs = () => {
                   "Delete" option.
                 </li>
               </ul>
-              <h2 class="font-bold mb-[8px] mt-[10px]">Tips:</h2>
-              <ul class="list-disc pl-5">
+              <h2 className="font-bold mb-[8px] mt-[10px]">Tips:</h2>
+              <ul className="list-disc pl-5">
                 <li>
                   Use the edit function to clarify or update your post as
                   needed.
@@ -368,8 +368,8 @@ const Faqs = () => {
         {activeTab === "private" && (
           <div className="flex flex-col items-center text-center">
             <div className="text-left">
-              <h2 class="font-bold mb-[8px] text-[#ff6b6b]">Instructions:</h2>
-              <ul class="list-disc pl-5">
+              <h2 className="font-bold mb-[8px] text-[#ff6b6b]">Instructions:</h2>
+              <ul className="list-disc pl-5">
                 <li>
                   Points are earned based on the upvotes and downvotes your
                   responses receive.
@@ -384,8 +384,8 @@ const Faqs = () => {
                   To earn a badge, you need to collect at least 50 points.
                 </li>
               </ul>
-              <h2 class="font-bold mb-[8px] mt-[40px] text-[#ff6b6b]">Tips:</h2>
-              <ul class="list-disc pl-5">
+              <h2 className="font-bold mb-[8px] mt-[40px] text-[#ff6b6b]">Tips:</h2>
+              <ul className="list-disc pl-5">
                 <li>
                   Be sure to read the full question before responding, and aim
                   to provide clear, helpful answers.
@@ -400,24 +400,24 @@ const Faqs = () => {
                 </li>
               </ul>
             </div>
-            <div class=" flex justify-around mt-[50px] w-[1000px]">
+            <div className=" flex justify-around mt-[50px] w-[1000px]">
               <img
                 src={leaderboard}
                 alt="search bar"
-                class="h-auto w-[380px] md:w-[800px]"
+                className="h-auto w-[380px] md:w-[800px]"
               />
             </div>
             <div className="text-left mt-[40px]">
-              <h2 class="font-bold mb-[8px] text-[#ff6b6b]">Leaderboard</h2>
+              <h2 className="font-bold mb-[8px] text-[#ff6b6b]">Leaderboard</h2>
               <p>
                 The leaderboard showcases the top contributors in the forum,
                 highlighting users based on their
                 <br />
                 points and badges. Here’s what you need to know:
               </p>
-              <ul class="list-disc pl-5 mt-[10px]">
+              <ul className="list-disc pl-5 mt-[10px]">
                 <li>
-                  <span class="font-bold text-[#ff6b6b]">User Rankings:</span>{" "}
+                  <span className="font-bold text-[#ff6b6b]">User Rankings:</span>{" "}
                   View the rankings of all users based on the points they’ve
                   earned from upvotes
                   <br />
@@ -425,7 +425,7 @@ const Faqs = () => {
                   contributions to the community.
                 </li>
                 <li>
-                  <span class="font-bold text-[#ff6b6b]">School Rankings:</span>{" "}
+                  <span className="font-bold text-[#ff6b6b]">School Rankings:</span>{" "}
                   The leaderboard also displays rankings by school, allowing you
                   to see how
                   <br />
@@ -435,7 +435,7 @@ const Faqs = () => {
                   achievements.
                 </li>
                 <li>
-                  <span class="font-bold text-[#ff6b6b]">
+                  <span className="font-bold text-[#ff6b6b]">
                     (Total Upvotes - Total Downvotes) ÷ Total Responses of Users
                     in That School. This reflects
                     <br />
@@ -443,15 +443,15 @@ const Faqs = () => {
                   </span>
                 </li>
                 <li>
-                  <span class="font-bold text-[#ff6b6b]">Stay Updated:</span>{" "}
+                  <span className="font-bold text-[#ff6b6b]">Stay Updated:</span>{" "}
                   Regularly check the leaderboard to track your progress and see
                   how you rank
                   <br />
                   against others in your school and the overall community.
                 </li>
               </ul>
-              <h2 class="font-bold mb-[8px] mt-[40px]">Tips:</h2>
-              <ul class="list-disc pl-5">
+              <h2 className="font-bold mb-[8px] mt-[40px]">Tips:</h2>
+              <ul className="list-disc pl-5">
                 <li>
                   Aim for quality contributions to climb the leaderboard and
                   earn recognition.
@@ -472,8 +472,8 @@ const Faqs = () => {
         {activeTab === "other" && (
           <div className="flex flex-col items-center text-center">
             <div className="text-left">
-              <h2 class="font-bold mb-[8px] text-[#ff6b6b]">Instructions:</h2>
-              <ul class="list-disc pl-5">
+              <h2 className="font-bold mb-[8px] text-[#ff6b6b]">Instructions:</h2>
+              <ul className="list-disc pl-5">
                 <li>
                   The AI in the forum helps you find relevant resources based on
                   your questions or commands.
@@ -485,14 +485,14 @@ const Faqs = () => {
                 </li>
                 <li>
                   For commands, use formats like{" "}
-                  <span class="font-bold text-[#ff6b6b]">
+                  <span className="font-bold text-[#ff6b6b]">
                     @uc search [Tags1]
                   </span>{" "}
                   for more targeted AI responses.
                 </li>
               </ul>
-              <h2 class="font-bold mb-[8px] mt-[40px] text-[#ff6b6b]">Tips:</h2>
-              <ul class="list-disc pl-5">
+              <h2 className="font-bold mb-[8px] mt-[40px] text-[#ff6b6b]">Tips:</h2>
+              <ul className="list-disc pl-5">
                 <li>
                   Be as specific as possible with your questions for the AI to
                   return the most useful results.
@@ -508,22 +508,22 @@ const Faqs = () => {
                 </li>
               </ul>
             </div>
-            <div class=" flex justify-around mt-[50px] w-[1000px]">
+            <div className=" flex justify-around mt-[50px] w-[1000px]">
               <img
                 src={aiworks}
                 alt="search bar"
-                class="h-auto w-[380px] md:w-[500px]"
+                className="h-auto w-[380px] md:w-[500px]"
               />
             </div>
             <div className="text-left mt-[40px]">
-              <h2 class="font-bold mb-[8px] text-[#ff6b6b]">How AI Works</h2>
+              <h2 className="font-bold mb-[8px] text-[#ff6b6b]">How AI Works</h2>
               <p>
                 Our AI enhances your experience in the forum by providing
                 relevant resources based on your
                 <br />
                 questions or commands. Here’s how it functions:
               </p>
-              <ul class="list-disc pl-5 mt-[10px]">
+              <ul className="list-disc pl-5 mt-[10px]">
                 <li>
                   Instant Resource Retrieval: When you type a question or
                   command, the AI searches through the
@@ -534,7 +534,7 @@ const Faqs = () => {
                   User Commands: You can interact with the AI using specific
                   commands. For example, using
                   <br />
-                  <span class="font-bold text-[#ff6b6b]">
+                  <span className="font-bold text-[#ff6b6b]">
                     @uc search [tag1] [tag2]
                   </span>{" "}
                   allows the AI to automatically gather the forum title and
@@ -549,8 +549,8 @@ const Faqs = () => {
                   needs.
                 </li>
               </ul>
-              <h2 class="font-bold mb-[8px] mt-[40px]">Tips:</h2>
-              <ul class="list-disc pl-5">
+              <h2 className="font-bold mb-[8px] mt-[40px]">Tips:</h2>
+              <ul className="list-disc pl-5">
                 <li>
                   Be as specific as possible with your questions to get the best
                   results.
@@ -570,25 +570,25 @@ const Faqs = () => {
       </div>
 
       {/* Questions and Answers */}
-      <div class="bg-[#0b112b] text-center p-[20px] rounded-[10px] max-w-[850px] mx-auto mt-[100px]">
-        <h1 class="text-white text-[25px] md:text-[45px] font-bold">
+      <div className="bg-[#0b112b] text-center p-[20px] rounded-[10px] max-w-[850px] mx-auto mt-[100px]">
+        <h1 className="text-white text-[25px] md:text-[45px] font-bold">
           Questions & Answers
         </h1>
-        <p class="text-white text-[13px] md:text-[14px] font-[300]">
+        <p className="text-white text-[13px] md:text-[14px] font-[300]">
           If you have any other questions - please get in touch
         </p>
-        <div class="mt-[30px] md:ml-[90px] md:mr-[90px]">
+        <div className="mt-[30px] md:ml-[90px] md:mr-[90px]">
           {faqData.map((faq, index) => (
             <div
               key={index}
-              class="bg-[#1a1e33] my-[10px] p-[12px] rounded-[10px] cursor-pointer"
+              className="bg-[#1a1e33] my-[10px] p-[12px] rounded-[10px] cursor-pointer"
             >
               <div
-                class="flex justify-between items-center text-white text-[14px] md:text-[15px] text-left font-medium"
+                className="flex justify-between items-center text-white text-[14px] md:text-[15px] text-left font-medium"
                 onClick={() => toggleAnswer(index)}
               >
                 <h3>{faq.question}</h3>
-                <span class="text-[18px] text-[#ff6b6b]">
+                <span className="text-[18px] text-[#ff6b6b]">
                   {activeIndex === index ? "-" : "+"}
                 </span>
               </div>
@@ -603,7 +603,7 @@ const Faqs = () => {
 
         <div className="mt-[35px] text-[14px] mb-[20px] font-light text-white">
           <p>
-            <span class="font-[500]">Still have questions?</span>
+            <span className="font-[500]">Still have questions?</span>
             <br /> Get in touch with our team
           </p>
         </div>
@@ -612,8 +612,8 @@ const Faqs = () => {
       {/* Contact Us */}
       <div className="mt-[120px] mb-[80px] text-white">
         <div className="text-center mb-[50px]">
-          <h1 class="text-[30px] md:text-[45px] font-bold">Contact Us</h1>
-          <p class="text-[14px] font-[300] mx-[50px] md:mx-[0px]">
+          <h1 className="text-[30px] md:text-[45px] font-bold">Contact Us</h1>
+          <p className="text-[14px] font-[300] mx-[50px] md:mx-[0px]">
             We're here to help! Whether you have questions, feedback, or need
             assistance, our
             <br />
@@ -622,15 +622,15 @@ const Faqs = () => {
           </p>
         </div>
 
-        <div class="flex flex-col md:flex-row justify-center items-center md:items-start">
+        <div className="flex flex-col md:flex-row justify-center items-center md:items-start">
           <div className="bg-[#0b112b] rounded-[20px] flex flex-col text-center items-center py-[20px] w-[330px] md:w-[430px] mr-[0px] md:mr-[50px]">
             <img
               src={mailIcon}
               alt="mail Icon"
-              class="h-auto w-[50px] md:w-[70px]"
+              className="h-auto w-[50px] md:w-[70px]"
             />
-            <h1 class="text-[20px] md:text-[30px] font-[600]">Email</h1>
-            <p class="text-[14px] font-[300] mx-[50px] md:mx-[0px]">
+            <h1 className="text-[20px] md:text-[30px] font-[600]">Email</h1>
+            <p className="text-[14px] font-[300] mx-[50px] md:mx-[0px]">
               Feel free to reach out to us with any general questions or <br />
               request. We'll do our best to get back to you.
               <br />
@@ -647,10 +647,10 @@ const Faqs = () => {
             <img
               src={socialsIcon}
               alt="mail Icon"
-              class="h-auto w-[50px] md:w-[70px]"
+              className="h-auto w-[50px] md:w-[70px]"
             />
-            <h1 class="text-[20px] md:text-[30px] font-[600]">Socials</h1>
-            <p class="text-[14px] mb-[30px] font-[300] mx-[50px] md:mx-[0px]">
+            <h1 className="text-[20px] md:text-[30px] font-[600]">Socials</h1>
+            <p className="text-[14px] mb-[30px] font-[300] mx-[50px] md:mx-[0px]">
               Stay connected with us on our Socials! Follow us for the <br />
               latest updates, announcements, and tips. You can also reach <br />
               out through direct messages if you have any questions.
@@ -664,7 +664,7 @@ const Faqs = () => {
                 <img
                   src={facebook}
                   alt="facebook social"
-                  class="cursor-pointer items-center pl-[13px]"
+                  className="cursor-pointer items-center pl-[13px]"
                 />
               </a>
 
@@ -676,7 +676,7 @@ const Faqs = () => {
                 <img
                   src={github}
                   alt="github social"
-                  class="cursor-pointer items-center pl-[13px]"
+                  className="cursor-pointer items-center pl-[13px]"
                 />
               </a>
               <a
@@ -687,7 +687,7 @@ const Faqs = () => {
                 <img
                   src={twitter}
                   alt="twitter social"
-                  class="cursor-pointer items-center pl-[13px]"
+                  className="cursor-pointer items-center pl-[13px]"
                 />
               </a>
               <a
@@ -698,7 +698,7 @@ const Faqs = () => {
                 <img
                   src={instagram}
                   alt="instagram social"
-                  class="cursor-pointer items-center pl-[13px]"
+                  className="cursor-pointer items-center pl-[13px]"
                 />
               </a>
             </div>
@@ -706,7 +706,7 @@ const Faqs = () => {
         </div>
       </div>
 
-      <div class="text-center mt-[20px] mb-[0px] md:mb-[10px]">
+      <div className="text-center mt-[20px] mb-[0px] md:mb-[10px]">
         <div className="w-full md:w-[1300px] h-[1px] md:h-[2px] bg-[#6d6d6d] mx-auto"></div>
         <p className="text-[#6d6d6d] mt-[10px] text-[12px] font-[400] md:font-[500]">
           © Copyright 2022, All Rights Reserved by uniconnect group

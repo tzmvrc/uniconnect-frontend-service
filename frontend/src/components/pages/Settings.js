@@ -157,7 +157,7 @@ const handleProfilePictureUpdate = async () => {
       // Changed endpoint to match the one in Dashboard.js
       const response = await axiosInstance.get("/users/get-user-info");
       setUserData(response.data.user || {});
-      console.log("User Info Fetched:", response.data.user); // Add this to debug
+    
       setFirstName(response.data.user.FirstName || "");
       setLastName(response.data.user.LastName || "");
       setUsername(response.data.user.Username || "");
@@ -731,12 +731,12 @@ const handleProfilePictureUpdate = async () => {
 
               <div className="tab-content text-[#0b112b] text-[13px] md:text-base font-[550] mb-[50px]">
                 {aactiveTab === "public" && (
-                  <div class="flex flex-col items-center text-center ml-[5px] md:ml-[60px]">
+                  <div className="flex flex-col items-center text-center ml-[5px] md:ml-[60px]">
                     <div className="text-left">
-                      <h2 class="font-bold mb-[8px] text-[#ff6b6b]">
+                      <h2 className="font-bold mb-[8px] text-[#ff6b6b]">
                         Instructions:
                       </h2>
-                      <ul class="list-disc pl-5">
+                      <ul className="list-disc pl-5">
                         <li>
                           To browse the forum, simply scroll through the list of
                           questions posted by other users.
@@ -754,10 +754,10 @@ const handleProfilePictureUpdate = async () => {
                           add to the discussion.
                         </li>
                       </ul>
-                      <h2 class="font-bold mb-[8px] mt-[40px] text-[#ff6b6b]">
+                      <h2 className="font-bold mb-[8px] mt-[40px] text-[#ff6b6b]">
                         Tips:
                       </h2>
-                      <ul class="list-disc pl-5">
+                      <ul className="list-disc pl-5">
                         <li>
                           Be sure to read the full question before responding,
                           and aim to provide clear, helpful answers.
@@ -779,10 +779,10 @@ const handleProfilePictureUpdate = async () => {
                 {aactiveTab === "private" && (
                   <div className="flex flex-col items-center text-center  ml-[5px] md:ml-[60px]">
                     <div className="text-left">
-                      <h2 class="font-bold mb-[8px] text-[#ff6b6b]">
+                      <h2 className="font-bold mb-[8px] text-[#ff6b6b]">
                         Instructions:
                       </h2>
-                      <ul class="list-disc pl-5">
+                      <ul className="list-disc pl-5">
                         <li>
                           Points are earned based on the upvotes and downvotes
                           your responses receive.
@@ -798,10 +798,10 @@ const handleProfilePictureUpdate = async () => {
                           points.
                         </li>
                       </ul>
-                      <h2 class="font-bold mb-[8px] mt-[40px] text-[#ff6b6b]">
+                      <h2 className="font-bold mb-[8px] mt-[40px] text-[#ff6b6b]">
                         Tips:
                       </h2>
-                      <ul class="list-disc pl-5">
+                      <ul className="list-disc pl-5">
                         <li>
                           Be sure to read the full question before responding,
                           and aim to provide clear, helpful answers.
@@ -823,10 +823,10 @@ const handleProfilePictureUpdate = async () => {
                 {aactiveTab === "other" && (
                   <div className="flex flex-col items-center text-center  ml-[5px] md:ml-[60px]">
                     <div className="text-left">
-                      <h2 class="font-bold mb-[8px] text-[#ff6b6b]">
+                      <h2 className="font-bold mb-[8px] text-[#ff6b6b]">
                         Instructions:
                       </h2>
-                      <ul class="list-disc pl-5">
+                      <ul className="list-disc pl-5">
                         <li>
                           The AI in the forum helps you find relevant resources
                           based on your questions or commands.
@@ -838,16 +838,16 @@ const handleProfilePictureUpdate = async () => {
                         </li>
                         <li>
                           For commands, use formats like{" "}
-                          <span class="font-bold text-[#ff6b6b]">
+                          <span className="font-bold text-[#ff6b6b]">
                             @uc search [Tags1]
                           </span>{" "}
                           for more targeted AI responses.
                         </li>
                       </ul>
-                      <h2 class="font-bold mb-[8px] mt-[40px] text-[#ff6b6b]">
+                      <h2 className="font-bold mb-[8px] mt-[40px] text-[#ff6b6b]">
                         Tips:
                       </h2>
-                      <ul class="list-disc pl-5">
+                      <ul className="list-disc pl-5">
                         <li>
                           Be as specific as possible with your questions for the
                           AI to return the most useful results.

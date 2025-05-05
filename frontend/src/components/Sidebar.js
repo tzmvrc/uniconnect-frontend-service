@@ -87,23 +87,31 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
   const handleCloseDialog = () => {
     setShowLogoutDialog(false);
   };
-
-  const handleConfirmLogout = async () => {
-    localStorage.removeItem("token");
-    setShowLogoutDialog(false);
+const handleConfirmLogout = async () => {
+  try {
     setLoading(true);
+
+    await axiosInstance.post("/users/logout", undefined, {
+      withCredentials: true,
+    });
+
+    setShowLogoutDialog(false);
     setTimeout(() => {
       setLoading(false);
       navigate("/login");
     }, 500);
-    
-  };
+  } catch (error) {
+    console.error("Logout failed:", error);
+    setLoading(false);
+  }
+};
+
 
   return (
     <>
       {loading && <Loading message={""} />}
       {showLogoutDialog && (
-        <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-[9999] flex justify-center items-center">
+        <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-[20] flex justify-center items-center">
           <div className="w-[280px] md:w-[350px] h-[169px] md:h-[179px] bg-[#FFCDA9] p-6 rounded-[15px] shadow-lg flex flex-col justify-center items-center text-center">
             <h2 className="font-bold text-[20px] md:text-[28px] text-[#1D274D] mb-0 md:mb-1">
               Going out soon?
@@ -212,7 +220,7 @@ const Sidebar = ({ menuCollapsed, toggleMenu }) => {
             <div className="relative" key={item.name}>
               {item.name === "Leaderboard" ? (
                 // 👇 This part is hidden on laptops and above
-                <div className="block md:hidden w-full">
+                <div className="block lg:hidden w-full">
                   <Link
                     to="/leaderboard"
                     className={`w-full text-left px-4 py-2 flex items-center ${

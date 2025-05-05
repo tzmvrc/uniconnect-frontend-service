@@ -111,7 +111,7 @@ useEffect(() => {
         });
       } else {
         // Other errors (e.g., server error)  
-        navigate("*");
+        navigate("/error");
       }
     }
   };
@@ -145,7 +145,7 @@ useEffect(() => {
     try {
       const res = await axiosInstance.get(`/response/${forum_id}/count`);
       setResponseCount(res.data.count);
-      console.log("Response count:", res.data.count);
+    
     } catch (error) {
       console.error("Error fetching response count:", error);
     }
@@ -211,9 +211,7 @@ useEffect(() => {
         isSaved: !prevForum.isSaved,
       }));
 
-      console.log(
-        `Forum ${isCurrentlySaved ? "unsaved" : "saved"} successfully.`
-      );
+   
     } catch (error) {
       console.error("Error saving/unsaving forum:", error);
     }
@@ -234,7 +232,7 @@ useEffect(() => {
       });
 
       if (createResponse.status === 200 || createResponse.status === 201) {
-        console.log("Response posted successfully:", createResponse.data);
+      
         showToastMessage("success", "Comment Posted!");
         setResponse("");
       } else {
@@ -306,7 +304,7 @@ useEffect(() => {
     hidden md:block fixed top-[0] z-20 md:top-[180px] transition-all duration-300
     ${
       menuCollapsed
-        ? "left-[10px] md:left-[170px] "
+        ? "left-[10px] md:left-[150px] lg:left-[170px] "
         : "left-[220px] md:left-[330px]"
     }
   `}
@@ -322,8 +320,8 @@ useEffect(() => {
       <div
         className={`flex w-full mt-[80px] md:mt-[100px] relative ${
           menuCollapsed
-            ? "ml-[5px] mr-[5px] md:ml-[220px] md:mr-[370px]"
-            : "ml-[380px] mr-[310px] md:ml-[380px] md:mr-[310px]"
+            ? "ml-[5px] mr-[5px] md:ml-[200px] md:mr-[90px] lg:ml-[220px] lg:mr-[370px]"
+            : "ml-[380px] mr-[310px] md:ml-[380px] md:mr-[50px] lg:ml-[380px] lg:mr-[310px]"
         }`}
       >
         <div className="flex flex-col w-full h-full max-h-[calc(100dvh-80px)] px-3 md:max-h-[calc(100vh-100px)] border border-black rounded-[5px] relative pb-16">

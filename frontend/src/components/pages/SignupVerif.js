@@ -103,20 +103,14 @@ const SignupVerif = () => {
       const response = await axiosInstance.post("/otp/verify-otp", {
         email,
         otp: otpValue,
+        purpose: location.state?.from,
       });
 
       const token = response.data?.token;
       const source = location.state?.from;
 
       if (!response.data.error) {
-        // ✅ Only set token in localStorage for signup or login
-        if ((source === "signup" || source === "login") && token) {
-          localStorage.setItem("token", token);
-        }
-
         setLoadingMessage("Verifying your Account");
-       
-
         setTimeout(() => {
           setLoading(false);
           setLoadingMessage("");

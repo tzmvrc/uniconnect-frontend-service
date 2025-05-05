@@ -53,7 +53,7 @@ const SortButton = ({ handleSort }) => {
 
       {/* Dropdown menu shifted left */}
       {showSortOptions && (
-        <div className="absolute mt-2 -left-24 md:-left-0 w-[140px] bg-white border border-gray-300 rounded-md shadow-lg z-10 text-sm">
+        <div className="absolute mt-2 -left-24 lg:-left-0 md:-left-10 w-[140px] bg-white border border-gray-300 rounded-md shadow-lg z-10 text-sm">
           <button
             onClick={() => handleSortClick("recent", "Most Recent")}
             className="block w-full px-4 py-2 text-left hover:bg-gray-100"

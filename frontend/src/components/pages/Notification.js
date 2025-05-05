@@ -265,9 +265,9 @@ const Notification = () => {
       <main
         className={`flex justify-center w-full p-2 md:p-6  bg-white overflow-hidden mt-[70px] md:mt-[85px] max-h-[calc(100vh-85px)] 
     ${menuCollapsed ? "md:ml-[110px]" : "md:ml-[310px]"} 
-    mr-[0px] md:mr-[270px]`}
+    mr-[0px] md:mr-[0px] lg:mr-[270px]`}
       >
-        <div className="flex justify-center w-full md:w-[849px] ">
+        <div className="flex justify-center w-full md:w-[849px] lg:w-[849px] ">
           <div className="border border-black rounded-[10px] md:rounded-[15px] md:w-[90%] bg-white p-4 h-screen flex flex-col">
             <div className="mb-4">
               <h1 className="text-[24px] md:text-[33px] font-semibold">

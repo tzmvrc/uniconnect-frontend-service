@@ -13,7 +13,6 @@ import Toast from "./ToastMessage/ToastMessage";
 import badgeIcon from "../images/badge icon.png";
 import { Pencil } from "lucide-react";
 
-
 const formatDate = (isoDate) => {
   const now = new Date();
   const date = new Date(isoDate);
@@ -29,14 +28,14 @@ const formatDate = (isoDate) => {
   return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 };
 
+
 const ResponseItem = ({ response, userInfo, setResponseCount }) => {
   const navigate = useNavigate();
-  console.log("🚀 Response received in ResponseItem:", response);
+ 
   const author = response.created_by?.username || "";
   const username = userInfo?.Username;
- const timestamp = formatDate(response.updatedAt);
+  const timestamp = formatDate(response.updatedAt);
   const isModified = response.createdAt !== response.updatedAt; // Check if it's been modified
-
   const fullname = `${response.created_by?.first_name} ${response.created_by?.last_name}`;
 
   const [likes, setLikes] = useState(response.likes);
@@ -138,7 +137,7 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
     setUpdatedContent(response.comment);
   };
 
- const handleSaveEdit = async () => {
+  const handleSaveEdit = async () => {
     try {
       const res = await axiosInstance.put(`/response/update/${response._id}`, {
         comment: updatedContent,
@@ -244,11 +243,10 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
             </h3>
           </div>
         )}
-       <h3 className="flex items-center gap-1 text-[13px] md:text-[14px] font-semibold">
-  {isModified && <Pencil className="w-4 h-4" />}
-  {timestamp}
-</h3>
-
+        <h3 className="flex items-center gap-1 text-[13px] md:text-[14px] font-semibold">
+          {isModified && <Pencil className="w-4 h-4" />}
+          {timestamp}
+        </h3>
 
         {author === username && (
           <div className="ml-auto cursor-pointer">

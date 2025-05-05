@@ -89,10 +89,10 @@ const CreateForumModal = ({ onClose }) => {
       if (response.status === 201) {
         setLoadingMessage("Creating forum");
         setLoading(true);
-
+        
         setTimeout(() => {
-          window.location.reload();
-        }, 1200);
+          navigate(`/forum/${response.data.forum._id}`);
+        }, 900);
       }
     } catch (error) {
       console.error("Error creating forum:", error);

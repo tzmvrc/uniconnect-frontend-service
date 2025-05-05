@@ -46,16 +46,16 @@ const AllTopics = () => {
       let allTopics = [];
       if (topicsResponse.data.successful) {
         allTopics = topicsResponse.data.topics;
-        console.log("topics = ", JSON.stringify(allTopics));
+
         setTopics(allTopics);
       }
 
       const userResponse = await axios.get("/users/get-user-info");
 
-      console.log("user response = ", JSON.stringify(userResponse.data));
+    
       if (userResponse.data.user) {
         const userTopics = userResponse.data.user.Topics || [];
-        console.log("user topics = ", JSON.stringify(userTopics));
+       
         setUserTopicsArray(userTopics);
         setUserInfo(userResponse.data.user);
       }
@@ -248,8 +248,8 @@ const AllTopics = () => {
       />
       <div className="flex flex-col w-full items-center">
         <main
-          className={`flex justify-center mb-[90px] w-full md:w-[58%] h-full mt-[0px] transition-all duration-300 ${
-            menuCollapsed ? "ml-0 md:mr-[210px]" : "mr-[30px]"
+          className={`flex justify-center mb-[90px] w-full md:w-[80%] lg:w-[58%] h-full mt-[0px] transition-all duration-300 ${
+            menuCollapsed ? "ml-0 md:mr-[0px] lg:mr-[210px]" : "mr-[30px] md:ml-[190px] lg:ml-[30px]"
           }`}
         >
           <div className="w-full md:w-[1050px] min-h-fit mt-20 md:mt-24 ml-[10px] md:ml-20 mr-[10px] md:mr-4 bg-white r rounded-[10px] md:rounded-xl shadow-md overflow-hidden border border-black p-4 md:p-6">

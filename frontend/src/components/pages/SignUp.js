@@ -9,8 +9,8 @@ import usernIcon from "../images/username icon.png";
 import emailIcon from "../images/entermail icon.png";
 import passIcon from "../images/enterpass icon.png";
 import confirmIcon from "../images/confirmpass icon.png";
-import showIcon from "../images/ShowPass.png"; // Show password icon
-import hideIcon from "../images/BlindPass.png"; // Hide password icon
+import showIcon from "../images/ShowPass.png";
+import hideIcon from "../images/BlindPass.png";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useRef, useEffect } from "react";
 import axiosInstance from "../Utils/axiosInstance";
@@ -26,8 +26,6 @@ const SignUp = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [schools, setSchools] = useState([]);
-  const [schoolValidation, setSchoolValidation] = useState(false);
-  const [passwordValidation, setPasswordValidation] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingmessage, setLoadingMessage] = useState("");
 
@@ -44,7 +42,6 @@ const SignUp = () => {
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const handleCloseToast = () => {
     setShowToast({ isShown: false, message: "" });
@@ -56,10 +53,8 @@ const SignUp = () => {
 
   useEffect(() => {
     const fetchSchools = async () => {
-      
       try {
         const res = await axiosInstance.get("/school/get-all-schools");
-        console.log("Fetched Schools:", res.data); // ✅ Debug: Ensure data is an array
         setSchools(res.data);
       } catch (error) {
         console.error("Error fetching schools:", error);
@@ -96,9 +91,9 @@ const SignUp = () => {
   };
 
   const handleSelect = (school) => {
-    setSelectedUniversity(school.school_name); // ✅ Use correct property
-    setSearchTerm(school.school_name); // ✅ Display selected name in input
-    setIsOpen(false); // ✅ Close dropdown
+    setSelectedUniversity(school.school_name);
+    setSearchTerm(school.school_name);
+    setIsOpen(false);
   };
 
   const handleInputChange = (e) => {
@@ -116,14 +111,12 @@ const SignUp = () => {
       return false;
     }
 
-    // Check if the input matches any school
     const universityExists = schools.some(
       (school) => school.school_name.toLowerCase() === trimmedSearchTerm
     );
 
     if (!universityExists) {
       showToastMessage("error", "Please select a valid university");
-      setSchoolValidation(false);
       return false;
     } else {
       return true;
@@ -175,7 +168,7 @@ const SignUp = () => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Enter" && filteredSchools.length === 1) {
-        handleSelect(filteredSchools[0]); // Auto-select the only school
+        handleSelect(filteredSchools[0]);
       }
     };
 
@@ -196,7 +189,6 @@ const SignUp = () => {
     const schoolValid = handleFormSubmit(e);
 
     if (!emailValid || !passwordValid || !schoolValid) {
-      console.log("Validation failed, stopping signup.");
       return;
     }
 
@@ -228,14 +220,12 @@ const SignUp = () => {
     }
   };
 
-
-  //Main div
   return (
     <div
       className="flex justify-center items-center min-h-screen overflow-y-hidden bg-cover bg-center text-white"
       style={{
-        fontFamily: "'Inter', sans-serif", // Set font family
-        backgroundImage: `url(${bg})`, // Background image
+        fontFamily: "'Inter', sans-serif",
+        backgroundImage: `url(${bg})`,
       }}
     >
       <Toast
@@ -248,39 +238,38 @@ const SignUp = () => {
       {loading && <Loading message={loadingmessage} />}
 
       <div className="flex flex-col md:flex-row w-[1300px] rounded-[20px]">
-        <div class="flex-1 flex flex-col justify-center items-center p-5 text-center">
+        <div className="flex-1 flex flex-col justify-center items-center p-5 text-center">
           <div className="flex flex-col items-center mt-[0px] md:mt-[35px]">
             <img
-              class="h-auto w-[290px] md:w-[500px] cursor-pointer"
+              className="h-auto w-[290px] md:w-[500px] cursor-pointer"
               src={logo}
               alt="logo"
               onClick={() => navigate("/")}
             />
-            <h1 class="text-[24px] md:text-[28px] font-bold mt-[5px]">
-              Your <span class="text-[#fa815c]">Connection</span> starts here!
+            <h1 className="text-[24px] md:text-[28px] font-bold mt-[5px]">
+              Your <span className="text-[#fa815c]">Connection</span> starts here!
             </h1>
             <img
               src={image2}
               alt="image2"
-              class="h-auto w-[250px] md:w-[450px]"
+              className="h-auto w-[250px] md:w-[450px]"
             />
           </div>
         </div>
 
-        <div class="flex-1 flex justify-center items-center px-[25px] md:px-[50px] mb-[40px] md:mb-[0px]">
-          <div class="w-full md:max-h-[520px] md:max-w-[550px] p-[20px] md:p-[20px] bg-[#ffc8a0] rounded-[20px] shadow-md">
-            <h2 class="text-[27px]  md:text-[40px] text-[#141e46] font-bold">
+        <div className="flex-1 flex justify-center items-center px-[25px] md:px-[50px] mb-[40px] md:mb-[0px]">
+          <div className="w-full md:max-h-[520px] md:max-w-[550px] p-[20px] md:p-[20px] bg-[#ffc8a0] rounded-[20px] shadow-md">
+            <h2 className="text-[27px] md:text-[40px] text-[#141e46] font-bold">
               Register
             </h2>
-            <p class="text-[13px] md:text-[14px] text-black mb-[20px] leading-[20px] text-left font-[480]">
+            <p className="text-[13px] md:text-[14px] text-black mb-[20px] leading-[20px] text-left font-[480]">
               Create an account to ask questions, share knowledge, and connect
               with a community of learners. Sign up today and start your
               journey!
             </p>
 
             <form onSubmit={handleFormSubmit}>
-              {/* Error message display */}
-              <div class="mb-[10px] relative" ref={dropdownRef}>
+              <div className="mb-[10px] relative" ref={dropdownRef}>
                 <div className="relative w-full flex items-center border border-gray-300 rounded-[10px] pl-[40px] bg-white">
                   <img
                     src={schoolIcon}
@@ -359,10 +348,7 @@ const SignUp = () => {
                     value={username}
                     onChange={(e) => {
                       const value = e.target.value;
-
-                      // Allow only alphanumeric characters and underscores, no whitespace
                       const validUsername = /^[a-zA-Z0-9_]*$/;
-
                       if (validUsername.test(value)) {
                         setUsername(value);
                       }
@@ -439,7 +425,7 @@ const SignUp = () => {
                       onClick={() =>
                         setShowConfirmPassword(!showConfirmPassword)
                       }
-                      className="absolute  right-2 top-1.7 text-gray-600"
+                      className="absolute right-2 top-1.7 text-gray-600"
                     >
                       <img
                         src={showConfirmPassword ? hideIcon : showIcon}
@@ -455,16 +441,10 @@ const SignUp = () => {
                 </div>
               </div>
 
-              {/** Errors */}
-              <div class="flex flex-col justify-center text-center mb-[10px]">
-                {/* {passordError && (
-                  <p className="text-red-500 text-[14px] font-[500] animate-slide-fade">
-                    {passordError}
-                  </p>
-                )} */}
+              <div className="flex flex-col justify-center text-center mb-[10px]">
               </div>
 
-              <div className="text-center bg-[#eb6e5b] rounded-[20px] mx-[5px]  font-semibold cursor-pointer mb-[10px] shadow-[0_5px_3px_rgba(0,0,0,0.2)] hover:bg-[#d25441] ">
+              <div className="text-center bg-[#eb6e5b] rounded-[20px] mx-[5px] font-semibold cursor-pointer mb-[10px] shadow-[0_5px_3px_rgba(0,0,0,0.2)] hover:bg-[#d25441]">
                 <button
                   type="submit"
                   className="w-full h-[40px] rounded-full"
@@ -479,7 +459,7 @@ const SignUp = () => {
               <p className="text-[14px] text-black font-[480] text-center">
                 Already have an account?{" "}
                 <span
-                  class="ml-[0px] md:ml-[5px] font-bold cursor-pointer hover:text-[#112061] hover:underline"
+                  className="ml-[0px] md:ml-[5px] font-bold cursor-pointer hover:text-[#112061] hover:underline"
                   onClick={() => navigate("/login")}
                 >
                   Log In

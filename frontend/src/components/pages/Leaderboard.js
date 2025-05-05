@@ -100,8 +100,10 @@ const Leaderboard = () => {
       <LeaderboardsRules />
 
       <main
-        className={`w-full h-full flex justify-center mt-20 md:mt-28 transition-all duration-300 p-3 md:p-0
-    ${menuCollapsed ? "md:mr-[140px]" : "md:ml-[40px]"}
+        className={`w-full h-full flex justify-center lg:justify-center md:justify-end mt-20 md:mt-28 transition-all duration-300 p-3 md:p-0
+    ${
+      menuCollapsed ? "md:mr-[50px] lg:mr-[140px]" : "md:ml-[200px] lg:ml-[40px]"
+    }
   `}
       >
         <div className="flex flex-col items-center w-full h-full md:w-[700px] bg-white rounded-xl shadow-md border border-black p-6">
@@ -223,7 +225,7 @@ const Leaderboard = () => {
                     .slice(0, 10)
                     .map((school) => (
                       <div
-                        key={school._id}
+                        key={school.school_name}
                         className="flex justify-between items-center py-3 px-4"
                       >
                         <div className="w-12 h-12 rounded-full  border-black border-[1px] flex items-center justify-center text-[16px] text-slate-950 bg-slate-200">

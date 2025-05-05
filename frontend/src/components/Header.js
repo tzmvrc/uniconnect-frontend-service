@@ -79,23 +79,23 @@ const Header = ({
             <img
               src={logo}
               alt="Logo"
-              className="w-[0] md:w-[270px] ml-[20px] h-auto cursor-pointer"
+              className="w-[0] lg:w-[270px] ml-[20px] h-auto cursor-pointer"
               onClick={handleForumClick}
             />
             <img
               src={iconLogo}
               alt="Logo"
-              className="w-[37px] md:w-[0] ml-[6px] h-auto cursor-pointer"
+              className="w-[37px] lg:w-[0] ml-[6px] h-auto cursor-pointer"
               onClick={handleForumClick}
             />
           </>
         )}
 
         {/* Search and Sort */}
-        <div className="absolute left-0 right-0 flex justify-end md:justify-center items-center space-x-4 mr-[10px] md:mr-[0]">
+        <div className="absolute left-0 right-0 flex justify-end lg:justify-center items-center space-x-4 mr-[10px] lg:mr-[30px]">
           {/* Mobile search */}
           <div
-            className={`md:hidden ${
+            className={`lg:hidden ${
               searchExpanded ? "w-full" : "flex items-center space-x-2"
             }`}
           >
@@ -137,7 +137,7 @@ const Header = ({
           </div>
 
           {/* Desktop search */}
-          <div className="relative w-[170px] md:w-[450px] hidden md:block">
+          <div className="relative w-[170px] lg:w-[450px] hidden lg:block">
             <input
               type="text"
               placeholder="Search forums"
@@ -151,13 +151,13 @@ const Header = ({
             </div>
           </div>
 
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <SortButton handleSort={handleSort} />
           </div>
         </div>
 
         {/* Help Button (Desktop only) */}
-        <div className="hidden md:flex items-center z-20 absolute right-4 top-1/2 transform -translate-y-1/2">
+        <div className="hidden lg:flex items-center z-20 absolute right-4 top-1/2 transform -translate-y-1/2">
           <button onClick={() => navigate("/Faqs")} className="p-2">
             <MessageCircleQuestion className="w-9 h-9 text-white" />
           </button>
