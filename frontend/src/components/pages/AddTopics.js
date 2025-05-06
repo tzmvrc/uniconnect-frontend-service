@@ -59,7 +59,7 @@ const AddTopics = () => {
       );
 
       if (response.data.successful) {
-        navigate("/DashBoard"); // Redirect if successful
+        navigate("/dashboard"); // Redirect if successful
       } else {
         showToastMessage("error", response.data.message);
       }
@@ -314,7 +314,7 @@ const AddTopics = () => {
               <button
                 type="submit"
                 class="w-[130px] md:w-[220px] p-[10px] rounded-[90px] bg-[#1C264C] text-white text-[16px] font-[550] cursor-pointer flex justify-center shadow-[0_5px_3px_rgba(0,0,0,0.2)] transition-all duration-300 ease-in-out hover:bg-[#040D2E]"
-                onClick={() => navigate("/DashBoard")}
+                onClick={() => navigate("/dashboard")}
               >
                 Skip
               </button>
