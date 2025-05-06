@@ -278,7 +278,7 @@ const SignUp = () => {
                   />
                   <input
                     type="text"
-                    placeholder="Select your University"
+                    placeholder="Type your University"
                     value={searchTerm}
                     onChange={handleInputChange}
                     className="w-full p-[10px] pl-[11px] text-base border-none outline-none text-black rounded-[10px]"
