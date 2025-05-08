@@ -109,9 +109,14 @@ const handleConfirmLogout = async () => {
 
   return (
     <>
-      {loading && <Loading message={""} />}
+      {loading && (
+        <div className="z-[99999] fixed top-0 left-0 w-full h-full flex items-center justify-center bg-opacity-50 bg-black">
+          <Loading message={""} />
+        </div>
+      )}
+
       {showLogoutDialog && (
-        <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-[20] flex justify-center items-center">
+        <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-[9999] flex justify-center items-center">
           <div className="w-[280px] md:w-[350px] h-[169px] md:h-[179px] bg-[#FFCDA9] p-6 rounded-[15px] shadow-lg flex flex-col justify-center items-center text-center">
             <h2 className="font-bold text-[20px] md:text-[28px] text-[#1D274D] mb-0 md:mb-1">
               Going out soon?

@@ -56,7 +56,7 @@ const Header = ({
     <>
       {/* HEADER */}
       <header
-        className="fixed top-0 left-0 w-full h-[75px] flex items-center px-4 z-50"
+        className="fixed top-0 left-0 w-full h-[75px] flex items-center px-4 z-50 lg:z-50"
         style={{
           backgroundImage: `url(${bgImage})`,
           backgroundSize: "cover",
@@ -75,20 +75,20 @@ const Header = ({
 
         {/* Logo - hidden when search is expanded */}
         {!searchExpanded && (
-          <>
+          <div className="z-50">
             <img
               src={logo}
               alt="Logo"
               className="w-[0] lg:w-[270px] ml-[20px] h-auto cursor-pointer"
-              onClick={handleForumClick}
+              onClick={() => navigate(`/dashboard`)}
             />
             <img
               src={iconLogo}
               alt="Logo"
               className="w-[37px] lg:w-[0] ml-[6px] h-auto cursor-pointer"
-              onClick={handleForumClick}
+              onClick={() => navigate(`/dashboard`)}
             />
-          </>
+          </div>
         )}
 
         {/* Search and Sort */}
