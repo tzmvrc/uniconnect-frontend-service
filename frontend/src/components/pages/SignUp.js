@@ -136,7 +136,7 @@ const SignUp = () => {
       return false;
     }
     
-    if (value.length > 25) {
+    if (value.length > 20) {
       showToastMessage("error", "Username cannot exceed 20 characters");
       return false;
     }
@@ -148,9 +148,6 @@ const SignUp = () => {
     let value = e.target.value;
     value = value.replace(/[^A-Za-z ]/g, "");
     value = value.replace(/\s{2,}/g, " ");
-      if (value.length > 20) {
-      value = value.slice(0, 20);
-    }
     setFirstName(value);
   };
 
@@ -159,9 +156,6 @@ const SignUp = () => {
   
     value = value.replace(/[^A-Za-z ]/g, "");
     value = value.replace(/\s{2,}/g, " ");
-      if (value.length > 15) {
-      value = value.slice(0, 15);
-    }
     setLastName(value);
   };
 
