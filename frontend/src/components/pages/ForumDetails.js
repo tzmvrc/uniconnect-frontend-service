@@ -69,7 +69,7 @@ useEffect(() => {
 
       // Proceed if response is successful
       const isDeletedUser =
-        forumData.created_by?.username?.startsWith("deleted_user_");
+        forumData.created_by?.username?.startsWith("Deleted_User");
       const formattedUsername = isDeletedUser
         ? forumData.created_by?.username
         : forumData.created_by?.username || "Unknown";
