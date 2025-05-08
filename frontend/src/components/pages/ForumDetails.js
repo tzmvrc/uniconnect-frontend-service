@@ -291,7 +291,7 @@ useEffect(() => {
   };
 
   return (
-    <div className="flex min-h-screen text-[#141E46]">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="flex min-h-screen text-[#141E46]">
       <Header />
       <Sidebar
         menuCollapsed={menuCollapsed}

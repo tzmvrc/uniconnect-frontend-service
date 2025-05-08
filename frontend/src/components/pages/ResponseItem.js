@@ -37,6 +37,7 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
   const timestamp = formatDate(response.updatedAt);
   const isModified = response.createdAt !== response.updatedAt; // Check if it's been modified
   const fullname = `${response.created_by?.first_name} ${response.created_by?.last_name}`;
+  const isDeletedUser = !author || author.toLowerCase().includes("deleted");
 
   const [likes, setLikes] = useState(response.likes);
   const [dislikes, setDislikes] = useState(response.dislikes);
@@ -214,33 +215,47 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
         )}
 
         {hasBadge ? (
-          <div className="flex">
-            <h3
-              className="text-[13px] md:text-[14px] font-semibold cursor-pointer mr-[5px] hover:text-[#e63f3f]"
-              onClick={() => navigate(`/${author}`)}
-            >
-              @{author}
-            </h3>
-            <img
-              src={badgeIcon}
-              alt="Badge Icon"
-              className="inline-block w-5 h-5 ml-[5px] mr-[10px]"
-            />
-            <h3
-              className="text-[14px] font-semibold cursor-pointer mr-[5px] hover:text-[#e63f3f]"
-              onClick={() => navigate(`/${author}`)}
-            >
-              ·
-            </h3>
+          <div className="flex items-center">
+            {!isDeletedUser ? (
+              <>
+                <h3
+                  className="text-[13px] md:text-[14px] font-semibold cursor-pointer mr-[5px] hover:text-[#e63f3f]"
+                  onClick={() => navigate(`/${author}`)}
+                >
+                  @{author}
+                </h3>
+                <img
+                  src={badgeIcon}
+                  alt="Badge Icon"
+                  className="inline-block w-5 h-5 ml-[5px] mr-[10px]"
+                />
+                <h3
+                  className="text-[14px] font-semibold cursor-pointer mr-[5px] hover:text-[#e63f3f]"
+                  onClick={() => navigate(`/${author}`)}
+                >
+                  ·
+                </h3>
+              </>
+            ) : (
+              <h3 className="text-[13px] md:text-[14px] font-semibold mr-[5px] text-[#141E46]">
+                Deleted_User ·
+              </h3>
+            )}
           </div>
         ) : (
           <div>
-            <h3
-              className="text-[13px] md:text-[14px] font-semibold cursor-pointer mr-[5px] hover:text-[#e63f3f]"
-              onClick={() => navigate(`/${author}`)}
-            >
-              @{author} ·
-            </h3>
+            {!isDeletedUser ? (
+              <h3
+                className="text-[13px] md:text-[14px] font-semibold cursor-pointer mr-[5px] hover:text-[#e63f3f]"
+                onClick={() => navigate(`/${author}`)}
+              >
+                @{author} ·
+              </h3>
+            ) : (
+              <h3 className="text-[13px] md:text-[14px] font-semibold mr-[5px] text-[#141E46]">
+                Deleted_User · 
+              </h3>
+            )}
           </div>
         )}
         <h3 className="flex items-center gap-1 text-[13px] md:text-[14px] font-semibold">

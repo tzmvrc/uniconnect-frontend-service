@@ -196,50 +196,150 @@ const handleProfilePictureUpdate = async () => {
     return "";
   };
 
-  const handleUpdateUserProfile = async () => {
-    // ✅ Trim all values before validation
-    const trimmedFirstName = firstName.trim();
-    const trimmedLastName = lastName.trim();
-    const trimmedUsername = username.trim();
-    const trimmedEmail = email.trim();
+  const validateUsernameInput = (value) => {
+    if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+      showToastMessage("error", "Username can only contain letters, numbers, and underscores.");
+      return false;
+    }
+    if (value.length > 20) {
+      showToastMessage("error", "Username cannot exceed 20 characters.");
+      return false;
+    }
+    return true;
+  };
+  
+  
+  const validateFirstNameInput = (value) => {
+    if (!value.trim()) {
+      showToastMessage("error", "First name cannot be empty");
+      return false;
+    }
+    
+    if (/\s{2,}/.test(value)) {
+      showToastMessage("error", "First name cannot contain consecutive spaces");
+      return false;
+    }
+    
+    if (value.length > 20) {
+      showToastMessage("error", "First name cannot exceed 20 characters");
+      return false;
+    }
+    
+    if (/\d/.test(value)) {
+      showToastMessage("error", "First name cannot contain numbers");
+      return false;
+    }
+    
+    return true;
+  };
+  
+  
+  const validateLastNameInput = (value) => {
+    if (!value.trim()) {
+      showToastMessage("error", "Last name cannot be empty");
+      return false;
+    }
+    
+    if (/\s{2,}/.test(value)) {
+      showToastMessage("error", "Last name cannot contain consecutive spaces");
+      return false;
+    }
+    
+    if (value.length > 15) {
+      showToastMessage("error", "Last name cannot exceed 15 characters");
+      return false;
+    }
+    
+    if (/\d/.test(value)) {
+      showToastMessage("error", "Last name cannot contain numbers");
+      return false;
+    }
+    
+    return true;
+  };
 
-    // ✅ Check for empty fields
-    if (
-      !trimmedFirstName ||
-      !trimmedLastName ||
-      !trimmedUsername ||
-      !trimmedEmail
-    ) {
-      showToastMessage("error", "Please fill in all fields before saving.");
+
+  const handleUsernameChange = (e) => {
+    const value = e.target.value;
+    if (/^[a-zA-Z0-9_]*$/.test(value) && value.length <= 20) {
+      setUsername(value);
+    }
+  };
+
+  const handleFirstNameChange = (e) => {
+    let value = e.target.value;
+  
+    value = value.replace(/[^A-Za-z ]/g, "");
+    value = value.replace(/\s{2,}/g, " ");
+      if (value.length > 20) {
+      value = value.slice(0, 20);
+    }
+    setFirstName(value);
+  };
+  
+  const handleLastNameChange = (e) => {
+    let value = e.target.value;
+  
+    value = value.replace(/[^A-Za-z ]/g, "");
+    value = value.replace(/\s{2,}/g, " ");
+      if (value.length > 15) {
+      value = value.slice(0, 15);
+    }
+    setLastName(value);
+  };
+
+  
+
+
+  const handleUpdateUserProfile = async () => {
+  // ✅ Trim all values before validation
+  const trimmedFirstName = firstName.trim();
+  const trimmedLastName = lastName.trim();
+  const trimmedUsername = username.trim();
+  const trimmedEmail = email.trim();
+
+  // ✅ Check for empty fields
+  if (
+    !trimmedFirstName ||
+    !trimmedLastName ||
+    !trimmedUsername ||
+    !trimmedEmail
+  ) {
+    showToastMessage("error", "Please fill in all fields before saving.");
+    return;
+  }
+
+  // Validate username and last name
+  if (!validateUsernameInput(trimmedUsername) || !validateFirstNameInput(trimmedLastName) || !validateLastNameInput(trimmedLastName)) {
+    return;
+  }
+
+  try {
+    const response = await axiosInstance.put("/users/update", {
+      first_name: trimmedFirstName,
+      last_name: trimmedLastName,
+      username: trimmedUsername,
+      email: trimmedEmail,
+    });
+
+    if (!response.data.success) {
+      showToastMessage("error", response.data.message);
       return;
     }
 
-    try {
-      const response = await axiosInstance.put("/users/update", {
-        first_name: trimmedFirstName,
-        last_name: trimmedLastName,
-        username: trimmedUsername,
-        email: trimmedEmail,
-      });
-
-      if (!response.data.success) {
-        showToastMessage("error", response.data.message);
-        return;
-      }
-
-      showToastMessage(
-        "success",
-        response.data.message || "Updated Successfully"
-      );
-      setTimeout(() => {
-        window.location.reload();
-      }, 900);
-    } catch (err) {
-      const errorMessage =
-        err.response?.data?.message || "Update failed. Please try again.";
-      showToastMessage("error", errorMessage);
-    }
-  };
+    showToastMessage(
+      "success",
+      response.data.message || "Updated Successfully"
+    );
+    setTimeout(() => {
+      window.location.reload();
+    }, 900);
+  } catch (err) {
+    const errorMessage =
+      err.response?.data?.message || "Update failed. Please try again.";
+    showToastMessage("error", errorMessage);
+  }
+};
 
   const handleSendOTPEmail = async () => {
     setLoading(true);
@@ -441,13 +541,13 @@ const handleProfilePictureUpdate = async () => {
                             className="rounded-[5px] border border-black w-[120px] md:w-[120px] placeholder:font-[400] placeholder:text-[14px] pl-[10px] pb-1"
                             value={firstName}
                             placeholder="First Name"
-                            onChange={(e) => setFirstName(e.target.value)}
+                            onChange={handleFirstNameChange}
                           />
                           <input
                             className="rounded-[5px] border border-black w-[120px] md:w-[120px] placeholder:font-[400] placeholder:text-[14px] pl-[10px] pb-1"
                             value={lastName}
                             placeholder="Last Name"
-                            onChange={(e) => setLastName(e.target.value)}
+                            onChange={handleLastNameChange}
                           />
                         </div>
                         <div className="flex gap-2 justify-center items-center md:justify-end ml-[15px] md:ml-[10px]">
@@ -481,10 +581,6 @@ const handleProfilePictureUpdate = async () => {
                         </h1>
                         <button
                           onClick={() => {
-                            // Split fullname into first and last name
-                            const nameParts = fullname.split(" ");
-                            setFirstName(nameParts[0] || "");
-                            setLastName(nameParts.slice(1).join(" ") || "");
                             setIsEditingFullname(true);
                           }}
                           className="border ml-[40px] md:ml-[127px] border-black rounded-[5px] bg-[#1D274D] px-[17px] py-[6px] text-white hover:text-[#ff9889]"
@@ -505,13 +601,13 @@ const handleProfilePictureUpdate = async () => {
                         USERNAME
                       </p>
                       <div className="flex justify-between items-center mx-[20px] md:mx-[0px] ">
-                        <input
+                      <input
                           className={`rounded-[5px] border border-black w-[190px] md:w-[300px] placeholder:font-[400] placeholder:text-[14px] pl-[10px] pb-1 ${
                             !isEditingUsername ? "text-gray-400" : "text-black"
                           }`}
                           value={username}
                           placeholder={tempUsername}
-                          onChange={(e) => setUsername(e.target.value)}
+                          onChange={handleUsernameChange}
                           disabled={!isEditingUsername}
                         />
                         <div className="flex gap-2 mr-[10px]">

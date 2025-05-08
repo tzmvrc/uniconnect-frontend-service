@@ -50,11 +50,9 @@ const OtherProfile = () => {
 
   const fetchUserInfo = async () => {
     try {
-      const currentUserResponse = await axiosInstance.get(
-        "/users/get-user-info"
-      );
+      const currentUserResponse = await axiosInstance.get("/users/get-user-info");
       const currentUsername = currentUserResponse.data.user?.Username;
-
+  
       if (
         currentUsername &&
         currentUsername.toLowerCase() === username.toLowerCase()
@@ -62,75 +60,63 @@ const OtherProfile = () => {
         navigate("/profile");
         return false;
       }
-
+  
       const response = await axiosInstance.get(`/users/${username}`);
       if (response.data.user) {
-        const userData = response.data.user;
-        console.log("Fetched user info:", userData);
-
-        setUserInfo(userData);
+        setUserInfo(response.data.user);
+        console.log("User info fetch successful.");
         return true;
       } else {
-        console.log("User not found.");
         setUserInfo({});
         setCreatedForums([]);
         navigate("*", {
           state: { title: "Oops! User not found" },
         });
+        console.log("User info fetch failed.");
         return false;
       }
     } catch (error) {
-      console.error("Error fetching user info:", error);
       setUserInfo({});
       setCreatedForums([]);
       navigate("*", {
         state: { title: "Oops! User not found" },
       });
+      console.log("User info fetch failed.");
       return false;
     }
   };
-
+  
   const fetchUserForums = async () => {
     try {
       if (!userInfo?.Username) {
-        console.log("No username available");
         setCreatedForums([]);
+        console.log("Forum fetch failed.");
         return;
       }
-
-      console.log("Fetching forums for username:", userInfo.Username);
-
-      const response = await axiosInstance.get(
-        `/forum/user/${userInfo.Username}`
-      );
-      console.log("Raw API response:", response.data);
-
+  
+      const response = await axiosInstance.get(`/forum/user/${userInfo.Username}`);
+  
       if (!response.data || !Array.isArray(response.data.forums)) {
-        console.error("Failed to fetch forums or invalid data format");
         setCreatedForums([]);
+        console.log("Forum fetch failed.");
         return;
       }
-
+  
       const forumIds = response.data.forums.map((forum) => forum._id);
-      console.log("Extracted forum IDs:", forumIds);
-
       if (forumIds.length === 0) {
         setCreatedForums([]);
+        console.log("Forum fetch successful (no forums).");
         return;
       }
-
-      // Fetch detailed data for each forum
+  
       const forumDetailsPromises = forumIds.map((id) =>
         axiosInstance.get(`/forum/${id}`)
       );
       const forumResponses = await Promise.all(forumDetailsPromises);
-
-      // Process and map the forum data
+  
       const mappedForums = forumResponses.map((response) => {
         const forum = response.data.forum || response.data;
-
-        console.log("Fetched forum details:", forum);
-
+  
         return {
           id: forum._id,
           title: forum.title || "Untitled Forum",
@@ -150,16 +136,17 @@ const OtherProfile = () => {
             : "Unknown",
         };
       });
-
-      console.log("Final mapped forums:", mappedForums);
+  
       setCreatedForums(mappedForums);
+      console.log("Forum fetch successful.");
     } catch (error) {
-      console.error("Error fetching user forums:", error);
       setCreatedForums([]);
+      console.log("Forum fetch failed.");
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div

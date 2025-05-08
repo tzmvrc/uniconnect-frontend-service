@@ -77,6 +77,101 @@ const SignUp = () => {
     };
   }, []);
 
+  const validateFirstName = (value) => {
+    if (!value.trim()) {
+      showToastMessage("error", "First name cannot be empty");
+      return false;
+    }
+    
+    if (/\s{2,}/.test(value)) {
+      showToastMessage("error", "First name cannot contain consecutive spaces");
+      return false;
+    }
+    
+    if (value.length > 20) {
+      showToastMessage("error", "First name cannot exceed 20 characters");
+      return false;
+    }
+    
+    if (/\d/.test(value)) {
+      showToastMessage("error", "First name cannot contain numbers");
+      return false;
+    }
+    
+    return true;
+  };
+
+  const validateLastName = (value) => {
+    if (!value.trim()) {
+      showToastMessage("error", "Last name cannot be empty");
+      return false;
+    }
+    
+    if (/\s{2,}/.test(value)) {
+      showToastMessage("error", "Last name cannot contain consecutive spaces");
+      return false;
+    }
+    
+    if (value.length > 15) {
+      showToastMessage("error", "Last name cannot exceed 15 characters");
+      return false;
+    }
+    
+    if (/\d/.test(value)) {
+      showToastMessage("error", "Last name cannot contain numbers");
+      return false;
+    }
+    
+    return true;
+  };
+
+  const validateUsername = (value) => {
+    if (!value.trim()) {
+      showToastMessage("error", "Username cannot be empty");
+      return false;
+    }
+    
+    if (/\s/.test(value)) {
+      showToastMessage("error", "Username cannot contain spaces");
+      return false;
+    }
+    
+    if (value.length > 25) {
+      showToastMessage("error", "Username cannot exceed 20 characters");
+      return false;
+    }
+    
+    return true;
+  };
+
+  const handleFirstNameChange = (e) => {
+    let value = e.target.value;
+    value = value.replace(/[^A-Za-z ]/g, "");
+    value = value.replace(/\s{2,}/g, " ");
+      if (value.length > 20) {
+      value = value.slice(0, 20);
+    }
+    setFirstName(value);
+  };
+
+  const handleLastNameChange = (e) => {
+    let value = e.target.value;
+  
+    value = value.replace(/[^A-Za-z ]/g, "");
+    value = value.replace(/\s{2,}/g, " ");
+      if (value.length > 15) {
+      value = value.slice(0, 15);
+    }
+    setLastName(value);
+  };
+
+  const handleUsernameChange = (e) => {
+    const value = e.target.value;
+    if (/^[a-zA-Z0-9_]*$/.test(value)) {
+      setUsername(value);
+    }
+  };
+
   const handlePassword = () => {
     if (newPassword === "" || confirmPassword === "") {
       showToastMessage("error", "Please fill out all password fields");
@@ -179,6 +274,16 @@ const SignUp = () => {
   const handleValidation = async (e) => {
     e.preventDefault();
 
+    // Validate all fields
+    const isFirstNameValid = validateFirstName(firstName);
+    const isLastNameValid = validateLastName(lastName);
+    const isUsernameValid = validateUsername(username);
+
+    if (!isFirstNameValid || !isLastNameValid || !isUsernameValid) {
+      // If any validation fails, show appropriate errors and return
+      return;
+    }
+
     if (!firstName || !lastName || !username) {
       showToastMessage("error", "Please fill out all fields");
       return;
@@ -198,8 +303,8 @@ const SignUp = () => {
       
       const response = await axiosInstance.post("/users/signup", {
         school_name: selectedUniversity,
-        first_name: firstName,
-        last_name: lastName,
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
         username,
         email: email.trim(),
         password: newPassword, 
@@ -219,6 +324,8 @@ const SignUp = () => {
       showToastMessage("error", errorMessage);
     }
   };
+
+  // We don't need the render error message helper anymore since we're using toast
 
   return (
     <div
@@ -313,7 +420,7 @@ const SignUp = () => {
                     type="text"
                     placeholder="First Name"
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    onChange={handleFirstNameChange}
                     className="w-full p-[10px] pl-[11px] text-base border-none outline-none text-black rounded-[10px]"
                     required
                   />
@@ -328,7 +435,7 @@ const SignUp = () => {
                     type="text"
                     placeholder="Last Name"
                     value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    onChange={handleLastNameChange}
                     className="w-full p-[10px] pl-[11px] text-base border-none outline-none text-black rounded-[10px]"
                     required
                   />
@@ -346,13 +453,7 @@ const SignUp = () => {
                     type="text"
                     placeholder="Username"
                     value={username}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const validUsername = /^[a-zA-Z0-9_]*$/;
-                      if (validUsername.test(value)) {
-                        setUsername(value);
-                      }
-                    }}
+                    onChange={handleUsernameChange}
                     className="w-full p-[10px] pl-[11px] text-base border-none outline-none text-black rounded-[10px]"
                     required
                   />
