@@ -66,7 +66,7 @@ const Announcement = () => {
   // NEW FUNCTION: Format username to handle deleted users
   const formatUsername = (username) => {
     // Check if the username starts with "deleted_user_"
-    const isDeletedUser = username?.startsWith("deleted_user_");
+    const isDeletedUser = username?.startsWith("Deleted_User");
     return isDeletedUser ? username : `@${username}`;
   };
 
@@ -173,6 +173,35 @@ const Announcement = () => {
       return;
     }
 
+    // Step 1: Check for bad words before submitting
+    try {
+      const [titleCheck, descriptionCheck] = await Promise.all([
+        axiosInstance.post("/badwords/check", { text: title }),
+        axiosInstance.post("/badwords/check", { text: description }),
+      ]);
+
+      if (titleCheck.data.containsBad) {
+        showToastMessage(
+          "error",
+          "Your announcement title contains inappropriate language."
+        );
+        return;
+      }
+
+      if (descriptionCheck.data.containsBad) {
+        showToastMessage(
+          "error",
+          "Your announcement description contains inappropriate language."
+        );
+        return;
+      }
+    } catch (err) {
+      console.error("Error checking for bad words:", err);
+      showToastMessage("error", "Error checking for bad words.");
+      return;
+    }
+
+    // Step 2: Proceed with submitting or updating the announcement
     try {
       setLoading(true);
       setIsFormVisible(false);
@@ -228,6 +257,7 @@ const Announcement = () => {
     } catch (error) {
       console.error("Error with announcement:", error);
       setLoading(false);
+
       const errorMsg =
         error.response?.data?.message ||
         (isEditing
@@ -237,6 +267,8 @@ const Announcement = () => {
       showToastMessage("error", errorMsg);
     }
   };
+  
+  
 
   const handleDelete = async () => {
     if (!announcementToDelete) return;
@@ -430,10 +462,18 @@ const Announcement = () => {
                             .toUpperCase()
                         )}
                       </div>
-                      <span className="text-[14px] font-medium">
-                        {/* MODIFIED: Check if username starts with "deleted_user_" */}
-                        {formatUsername(announcement.created_by?.username)}
-                      </span>
+                      {announcement.created_by?.username?.startsWith("Deleted_User") ? (
+                        <span className="text-[14px] font-medium text-gray-500">
+                          {formatUsername(announcement.created_by?.username)}
+                        </span>
+                      ) : (
+                        <a
+                          href={`/${announcement.created_by?.username}`}
+                          className="text-[14px] font-medium hover:text-[#e63f3f]"
+                        >
+                          {formatUsername(announcement.created_by?.username)}
+                        </a>
+                      )}
                     </div>
 
                     {/* Ellipsis button for user's own announcements */}
@@ -610,10 +650,18 @@ const Announcement = () => {
                       .toUpperCase()
                   )}
                 </div>
-                <span className="text-[14px] font-medium">
-                  {/* MODIFIED: Check if username starts with "deleted_user_" */}
-                  {formatUsername(singleAnnouncement.created_by?.username)}
-                </span>
+                {singleAnnouncement.created_by?.username?.startsWith("Deleted_User") ? (
+                  <span className="text-[14px] font-medium text-gray-500">
+                    {formatUsername(singleAnnouncement.created_by?.username)}
+                  </span>
+                ) : (
+                  <a
+                    href={`/${singleAnnouncement.created_by?.username}`}
+                    className="text-[14px] font-medium hover:text-[#e63f3f]"
+                  >
+                    {formatUsername(singleAnnouncement.created_by?.username)}
+                  </a>
+                )}
               </div>
 
               <div className="flex items-center">

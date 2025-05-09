@@ -286,7 +286,7 @@ const handleSearchChange = (e) => {
                   )}
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold">{user.username}</h4>
+                  <h4 className="text-lg font-semibold">@{user.username}</h4>
                   <p className="text-sm text-gray-600">
                     Forums Created: {user.forumCount}
                   </p>

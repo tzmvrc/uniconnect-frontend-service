@@ -137,17 +137,25 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
     setIsEditing(false);
     setUpdatedContent(response.comment);
   };
-
   const handleSaveEdit = async () => {
     try {
       const res = await axiosInstance.put(`/response/update/${response._id}`, {
         comment: updatedContent,
       });
 
-      const { updated, message } = res.data;
+      const { message } = res.data;
 
-      if (updated) {
-        showToastMessage("success", message || "Response updated successfully");
+      // Check for bad words message from backend
+      if (
+        message ===
+        "Your comment contains inappropriate language. Please modify it."
+      ) {
+        showToastMessage("error", message);
+        return; // Exit early without proceeding
+      }
+
+      if (message === "Response updated successfully") {
+        showToastMessage("success", message);
         setIsEditing(false);
       } else {
         showToastMessage("info", message || "No changes were made.");
@@ -157,6 +165,8 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
       showToastMessage("error", "Failed to update response");
     }
   };
+  
+  
 
   const handleDelete = async () => {
     showToastMessage("success", "Response Deleted");
@@ -213,7 +223,6 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
             )}
           </div>
         )}
-
         {hasBadge ? (
           <div className="flex items-center">
             {!isDeletedUser ? (
@@ -237,7 +246,7 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
                 </h3>
               </>
             ) : (
-              <h3 className="text-[13px] md:text-[14px] font-semibold mr-[5px] text-[#141E46]">
+              <h3 className="text-[13px] md:text-[14px] font-semibold mr-[5px] text-gray-500">
                 Deleted_User ·
               </h3>
             )}
@@ -252,7 +261,7 @@ const ResponseItem = ({ response, userInfo, setResponseCount }) => {
                 @{author} ·
               </h3>
             ) : (
-              <h3 className="text-[13px] md:text-[14px] font-semibold mr-[5px] text-[#141E46]">
+              <h3 className="text-[13px] md:text-[14px] font-semibold mr-[5px] text-gray-500">
                 Deleted_User · 
               </h3>
             )}

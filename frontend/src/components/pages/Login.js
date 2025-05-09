@@ -37,56 +37,56 @@ const Login = () => {
     setShowToast({ isShown: true, type: type, message: message });
   };
 
-const handleLogin = async (e) => {
-  e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-  if (!email || !password) {
-    showToastMessage("error", "Please enter your email and password");
-    return;
-  }
+    if (!email || !password) {
+      showToastMessage("error", "Please enter your email and password");
+      return;
+    }
 
-  if (!validateEmail(email)) {
-    showToastMessage("error", "Please enter a valid email address.");
-    return;
-  }
+    if (!validateEmail(email)) {
+      showToastMessage("error", "Please enter a valid email address.");
+      return;
+    }
 
-  setLoading(true);
+    setLoading(true);
 
-  const isVerified = await handleCheckIfVerified();
+    try {
+      const response = await axiosInstance.post(
+        "/users/login",
+        { email, password },
+        { withCredentials: true } // ✅ Send cookies
+      );
 
-  try {
-    const response = await axiosInstance.post(
-      "/users/login",
-      { email, password },
-      { withCredentials: true } // ✅ Send cookies
-    );
+      if (response.data.successful) {
+        setLoadingMessage("Logging in...");
+        setTimeout(() => {
+          navigate("/dashboard");
+          setLoading(false);
+        }, 2000);
+      }
+    } catch (err) {
+      
+      const errorMessage =
+        err.response?.data?.message ||
+        "Something went wrong. Please try again.";
 
-    if (response.data.successful) {
-      if (!isVerified) {
+      if (err.response?.status === 403) {
+        // If user is not verified, redirect to OTP page
         setLoadingMessage("Let's verify your account first");
         setTimeout(() => {
-          setLoading(false);
           SendOtp();
           navigate("/account-verify", { state: { email, from: "login" } });
-        }, 2000);
-        return;
-      }
-
-      setLoadingMessage("Logging in...");
-      setTimeout(() => {
+          setLoading(false);
+        }, 1500);
+      } else {
         setLoading(false);
-        navigate("/dashboard");
-      }, 2000);
-    } else {
-      showToastMessage("error", "Something went wrong. Try again.");
+        showToastMessage("error", errorMessage);
+      }
     }
-  } catch (err) {
-    setLoading(false);
-    const errorMessage =
-      err.response?.data?.message || "Something went wrong. Please try again.";
-    showToastMessage("error", errorMessage);
-  }
-};
+  };
+  
 
 
   const SendOtp = async () => {

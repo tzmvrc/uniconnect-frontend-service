@@ -173,8 +173,12 @@ const Notification = () => {
               onClick={() => handleNotificationClick(notification)}
             >
               <div className="flex items-start gap-4">
-                <div className="w-[38px] h-[38px] md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-200 mr-[2px] md:mr-[10px] border-[1px] border-black">
-                  {getInitials(userList)}
+                <div className="w-[38px] h-[38px] md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-200 mr-[2px] md:mr-[10px] border-[1px] border-black overflow-hidden">
+                  <img
+                    src="https://res.cloudinary.com/dlbclsvt5/image/upload/v1746791437/profile-picture/profile-pictures/681da3e13f35169ff3c1a102_1746791435175_avatar.png"
+                    alt="User Profile"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
 
                 <div>

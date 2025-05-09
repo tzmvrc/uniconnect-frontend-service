@@ -192,12 +192,18 @@ const ForumFunctions = ({ forums, userInfo, handleForumClick, compact }) => {
             Posted on {forum.date}
             <br />
             By:{" "}
-            <a
-              href={`/${forum.author}`}
-              className="text-[11px] md:text-[13px] hover:underline"
-            >
-              {forum.author || "Unknown"}
-            </a>
+              {forum.author === "Deleted_User" ? (
+                <span className="text-[11px] md:text-[13px] text-gray-500">
+                  {forum.author}
+                </span>
+              ) : (
+                <a
+                  href={`/${forum.author}`}
+                  className="text-[11px] md:text-[13px] hover:underline"
+                >
+                  {forum.author}
+                </a>
+              )}
           </p>
           <div className="flex items-center mt-[5px]">
             <div className="px-2 py-[2px] md:py-1 bg-[#F8C7BF] rounded-[4px] md:rounded-[5px] flex items-center flex-wrap">

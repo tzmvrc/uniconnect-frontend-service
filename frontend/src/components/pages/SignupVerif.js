@@ -46,6 +46,7 @@ const SignupVerif = () => {
   useEffect(() => {
     let timer;
     if (countdown > 0) {
+      handleCloseToast();
       timer = setInterval(() => {
         setCountdown((prev) => prev - 1);
       }, 1000);

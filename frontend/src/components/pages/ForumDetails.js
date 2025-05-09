@@ -223,6 +223,26 @@ useEffect(() => {
       return; // Prevent further execution
     }
 
+    // Step 1: Check for bad words before submitting
+    try {
+      const badWordCheck = await axiosInstance.post("/badwords/check", {
+        text: response,
+      });
+
+      if (badWordCheck.data.containsBad) {
+        showToastMessage(
+          "error",
+          "Your comment contains inappropriate language."
+        );
+        return; // Prevent further execution if bad words are detected
+      }
+    } catch (err) {
+      console.error("Error checking for bad words:", err);
+      showToastMessage("error", "Error checking for bad words.");
+      return;
+    }
+
+    // Step 2: Proceed with posting the comment if no bad words are detected
     setLoading(true);
 
     try {
@@ -232,9 +252,8 @@ useEffect(() => {
       });
 
       if (createResponse.status === 200 || createResponse.status === 201) {
-      
         showToastMessage("success", "Comment Posted!");
-        setResponse("");
+        setResponse(""); // Clear the response input
       } else {
         console.log("Unexpected response:", createResponse);
       }
@@ -245,8 +264,11 @@ useEffect(() => {
       setLoading(false);
     }
 
-    refreshForum();
+    refreshForum(); // Refresh the forum (optional)
   };
+  
+  
+  
 
   const handleClose = async () => {
     try {
@@ -373,9 +395,11 @@ useEffect(() => {
               </div>
 
               <p className="text-[13px] md:text-[16px] mr-4 font-[650] md:font-[600]">
-                {forum?.isDeletedUser ? forum?.author : `@${forum?.author}`} ·{" "}
-                {forum?.date}
-              </p>
+              <span className={forum?.isDeletedUser ? 'text-gray-500' : ''}>
+                {forum?.isDeletedUser ? forum?.author : `@${forum?.author}`}
+              </span>{" "}
+              · {forum?.date}
+            </p>
               {forum?.status === "closed" && (
                 <div className="bg-[#fdb0a4] rounded-md px-4 py-1 text-sm font-bold mr-[20px]">
                   FORUM CLOSED
