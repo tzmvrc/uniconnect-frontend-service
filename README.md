@@ -99,5 +99,5 @@ This project was developed as part of an **academic and learning-focused initiat
 **Joshua Natino**
 
 ---
-
+ 
 You may update this README as features and integrations evolve.
